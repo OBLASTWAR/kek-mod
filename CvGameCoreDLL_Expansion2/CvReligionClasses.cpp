@@ -1,5 +1,5 @@
 /*	-------------------------------------------------------------------------------------------------------
-	© 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
+	ï¿½ 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
 	Sid Meier's Civilization V, Civ, Civilization, 2K Games, Firaxis Games, Take-Two Interactive Software 
 	and their respective logos are all trademarks of Take-Two interactive Software, Inc.  
 	All other marks and trademarks are the property of their respective owners.  
@@ -661,8 +661,9 @@ ReligionTypes CvGameReligions::GetReligionToFound(PlayerTypes ePlayer)
 	ReligionTypes eCivReligion;
 	eCivReligion = GET_PLAYER(ePlayer).getCivilizationInfo().GetReligion();
 
+#ifndef REMOVE_UNUSED_RELIGION_LUA_HOOKS
 	ICvEngineScriptSystem1* pkScriptSystem = gDLL->GetScriptSystem();
-	if(pkScriptSystem) 
+	if(pkScriptSystem)
 	{
 		CvLuaArgsHandle args;
 		args->Push(ePlayer);
@@ -670,7 +671,7 @@ ReligionTypes CvGameReligions::GetReligionToFound(PlayerTypes ePlayer)
 		args->Push(HasBeenFounded(eCivReligion));
 
 		int iValue = 0;
-		if (LuaSupport::CallAccumulator(pkScriptSystem, "GetReligionToFound", args.get(), iValue)) 
+		if (LuaSupport::CallAccumulator(pkScriptSystem, "GetReligionToFound", args.get(), iValue))
 		{
 			if (iValue >= 0 && iValue < GC.getNumReligionInfos() && iValue != RELIGION_PANTHEON)
 			{
@@ -678,6 +679,7 @@ ReligionTypes CvGameReligions::GetReligionToFound(PlayerTypes ePlayer)
 			}
 		}
 	}
+#endif
 
 	if(!HasBeenFounded(eCivReligion))
 	{
@@ -1633,6 +1635,13 @@ ReligionTypes CvGameReligions::GetFounderBenefitsReligion(PlayerTypes ePlayer) c
 {
 	ReligionTypes eReligion;
 
+	// kekmod: this accumulator fires on EVERY treasury gold recalculation (via
+	// GetGoldPerTurnFromReligion), i.e. constantly during CvGame::doTurn -- and
+	// it can deadlock against the UI thread's script system (observed 2026-07-17:
+	// gamecore blocked here forever at a turn rollover while the UI side was
+	// processing a popup). See REMOVE_UNUSED_RELIGION_LUA_HOOKS in _Defines.h.
+	// The Community Patch removed this callout from gamecore entirely.
+#ifndef REMOVE_UNUSED_RELIGION_LUA_HOOKS
 	ICvEngineScriptSystem1* pkScriptSystem = gDLL->GetScriptSystem();
 	if(pkScriptSystem)
 	{
@@ -1646,6 +1655,7 @@ ReligionTypes CvGameReligions::GetFounderBenefitsReligion(PlayerTypes ePlayer) c
 			return eReligion;
 		}
 	}
+#endif
 
 	eReligion = GetReligionCreatedByPlayer(ePlayer);
 
@@ -5132,6 +5142,7 @@ ReligionTypes CvReligionAI::GetReligionToSpread() const
 {
 	ReligionTypes eRtnValue = NO_RELIGION;
 
+#ifndef REMOVE_UNUSED_RELIGION_LUA_HOOKS
 	ICvEngineScriptSystem1* pkScriptSystem = gDLL->GetScriptSystem();
 	if(pkScriptSystem)
 	{
@@ -5145,6 +5156,7 @@ ReligionTypes CvReligionAI::GetReligionToSpread() const
 			return eRtnValue;
 		}
 	}
+#endif
 
 	CvGameReligions *pReligions = GC.getGame().GetGameReligions();
 	eRtnValue = pReligions->GetReligionCreatedByPlayer(m_pPlayer->GetID());

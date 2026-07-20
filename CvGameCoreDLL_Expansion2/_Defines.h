@@ -1677,4 +1677,16 @@
 // matching immos's upstream balance change (kekmod had never merged it).
 #define REMOVE_CONTROL_CYCLE_PLOT_UNITS
 
+// Compile out the three religion-path Lua accumulator callouts
+// (GetReligionToFound / GetFounderBenefitsReligion / GetReligionToSpread).
+// No Lua in the kek modpack registers any of them, so they can never change
+// a result -- but GetFounderBenefitsReligion fires on EVERY treasury gold
+// recalculation during CvGame::doTurn and calls into the engine's script
+// system, which can deadlock against the UI thread (observed 2026-07-17:
+// MP turn rollover froze with gamecore blocked in LuaSupport::CallAccumulator
+// while the UI thread processed a popup; confirmed via minidump + PDB).
+// The Community Patch removed the founder-benefits callout from gamecore
+// entirely and gated the others behind listener-checked GameEvents.
+#define REMOVE_UNUSED_RELIGION_LUA_HOOKS
+
 #endif
