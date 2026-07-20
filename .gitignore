@@ -1,0 +1,28 @@
+# Build output
+*.dll
+*.pdb
+*.obj
+*.lib
+*.exp
+CvGameCoreDLL_Expansion2/BuildOutput/
+CvGameCoreDLL_Expansion2/BuildTemp/
+
+# Visual Studio
+*.user
+*.suo
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.opendb
+.vs/
+ipch/
+x64/
+Debug/
+Release/
+
+# JetBrains IDEs
+.idea/
+
+# Windows
+Thumbs.db
+Desktop.ini

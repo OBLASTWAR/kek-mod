@@ -966,7 +966,7 @@
 #endif
 ///
 // A more flexible alternative to Replay Messages; primarily for statistics purposes
-#define REPLAY_EVENTS
+// #define REPLAY_EVENTS  // disabled: requires winsqlite3.h from Windows 10 SDK (10.0.15063+)
 
 // Adds timestamp for replay messages, saves chat messages
 #define REPLAY_MESSAGE_EXTENDED
