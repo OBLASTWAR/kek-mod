@@ -21,10 +21,14 @@
 // Technical Improvements
 /// New GUID for NQMod
 #define MYMOD_GUID
-/*
-/// Enables Minidump Generation (originally for Civ4 by terkhen, ported to Civ5 by ls612)
+
+/// Enables Minidump Generation (originally for Civ4 by terkhen, ported to Civ5 by ls612).
+/// Pulled out of the disabled block below -- CvCrashReporter.cpp (plan/CRASH_REPORTER_PLAN.md)
+/// gates its entire real implementation on this flag; left commented out, the whole file
+/// compiled down to two empty stub functions with nobody noticing until the acceptance test.
 #define NQM_MINIDUMPS
 
+/*
 /// Can cache doubles from XML (Delnar: DatabaseUtility actually supports double-type, don't know why Firaxis didn't bother putting this in for good measure)
 #define NQM_CACHE_DOUBLE
 /// Enables const for functions, variables, and parameters that both allow it and are intended to be const

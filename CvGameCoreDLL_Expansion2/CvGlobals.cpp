@@ -1,5 +1,5 @@
 /*	-------------------------------------------------------------------------------------------------------
-	© 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
+	ï¿½ 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
 	Sid Meier's Civilization V, Civ, Civilization, 2K Games, Firaxis Games, Take-Two Interactive Software 
 	and their respective logos are all trademarks of Take-Two interactive Software, Inc.  
 	All other marks and trademarks are the property of their respective owners.  
@@ -34,6 +34,7 @@
 
 #include "CvDllDatabaseUtility.h"
 #include "CvDllScriptSystemUtility.h"
+#include "CvCrashReporter.h"
 
 #include "CvDllCity.h"
 #include "CvDllDeal.h"
@@ -1822,6 +1823,11 @@ CvGlobals::~CvGlobals()
 //
 void CvGlobals::init()
 {
+	// Process-wide crash filter (plan/CRASH_REPORTER_PLAN.md). Installed
+	// here rather than DllMain: the LAST SetUnhandledExceptionFilter call
+	// wins, and by now Steam and the game have already registered theirs.
+	KekCrashReporter_Install();
+
 	//
 	// These vars are used to initialize the globals.
 	//

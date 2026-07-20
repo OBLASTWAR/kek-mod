@@ -68,6 +68,7 @@
 #endif
 #define KEKMOD_SAVE_PATH        L"/api/saves"
 #define KEKMOD_TURNS_PATH       L"/api/turns"
+#define KEKMOD_CRASHES_PATH     L"/api/crashes"
 // Shared secret checked by GDR's KekApiKeyFilter (kek.api-key in its
 // application.yml -- keep the two in sync). It ships inside a public DLL,
 // so it's a spam/scanner barrier, not real secrecy -- kept out of source
@@ -123,6 +124,14 @@ static void WriteLog(const char* pszFmt, ...)
     pLog->Msg("%s", szBuf);
 }
 
+
+// The version DEFINE must stay in this file -- package.sh/stage.sh/publish.sh
+// sed it out of CvHttpUtils.cpp by name. Other code (CvCrashReporter.cpp)
+// consumes it through this accessor.
+const char* CvHttp_GetModVersion()
+{
+    return KEKMOD_MOD_VERSION;
+}
 
 // Compile-time only -- see the config block above. No file/registry check,
 // so there is nothing on disk for a player to tamper with.
@@ -1646,6 +1655,88 @@ static SendResult SendPendingUpload(HINTERNET hConnect, const PendingUpload& ent
     return SEND_OK;
 }
 
+// Crash report upload (Phase 3, plan/CRASH_REPORTER_PLAN.md). Unlike the
+// turn-upload path above, this is one user-triggered action per report, not
+// a persistent per-turn queue -- no PendingUpload entry, no backoff/retry
+// loop; a failure is just reported back so the caller can leave the files
+// queued for the next launch's popup. BACKGROUND THREAD ONLY.
+bool CvHttp_PostCrashDump(const char* pszDumpPath, const char* pszKind,
+                          const char* pszMetaJson, DWORD* pdwStatusOut)
+{
+    *pdwStatusOut = 0;
+
+    char* pFileBuf = NULL;
+    DWORD dwRead   = 0;
+    HANDLE hFile = CreateFileA(
+        pszDumpPath, GENERIC_READ,
+        FILE_SHARE_READ | FILE_SHARE_WRITE,
+        NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (hFile == INVALID_HANDLE_VALUE)
+    {
+        WriteLog("[kekmod_http] crash dump '%s' not readable (error=%u)",
+                 pszDumpPath, GetLastError());
+        return false;
+    }
+
+    LARGE_INTEGER liSize;
+    ZeroMemory(&liSize, sizeof(liSize));
+    GetFileSizeEx(hFile, &liSize);
+    DWORD dwFileSize = (DWORD)liSize.QuadPart;
+    pFileBuf = new char[dwFileSize];
+    if (!ReadFile(hFile, pFileBuf, dwFileSize, &dwRead, NULL))
+        dwRead = 0;
+    CloseHandle(hFile);
+
+    if (dwRead == 0)
+    {
+        delete[] pFileBuf;
+        WriteLog("[kekmod_http] crash dump '%s' read 0 bytes", pszDumpPath);
+        return false;
+    }
+
+    HINTERNET hSession = NULL;
+    HINTERNET hConnect = NULL;
+    OpenConnection(&hSession, &hConnect);
+    if (!hConnect)
+    {
+        delete[] pFileBuf;
+        return false;
+    }
+
+    wchar_t wszHeaders[2048];
+    swprintf_s(wszHeaders, _countof(wszHeaders),
+               L"Content-Type: application/octet-stream\r\n"
+               L"X-Mod-Version: %hs\r\n"
+               L"X-Report-Kind: %hs\r\n"
+               L"X-Crash-Meta: %hs\r\n"
+               L"%hs%hs%hs",
+               KEKMOD_MOD_VERSION, pszKind, pszMetaJson,
+               KEKMOD_API_KEY[0] ? "X-Api-Key: " : "",
+               KEKMOD_API_KEY[0] ? KEKMOD_API_KEY : "",
+               KEKMOD_API_KEY[0] ? "\r\n" : "");
+
+    bool bSent = HttpPost(hConnect, KEKMOD_CRASHES_PATH, wszHeaders,
+                          pFileBuf, dwRead, pdwStatusOut);
+    delete[] pFileBuf;
+    WinHttpCloseHandle(hConnect);
+    WinHttpCloseHandle(hSession);
+
+    if (!bSent)
+    {
+        WriteLog("[kekmod_http] crash dump POST failed (WinHTTP error=%u)", GetLastError());
+        return false;
+    }
+    if (*pdwStatusOut < 200 || *pdwStatusOut >= 300)
+    {
+        WriteLog("[kekmod_http] crash dump POST '%s' -> status=%u (not accepted)",
+                 pszDumpPath, *pdwStatusOut);
+        return false;
+    }
+    WriteLog("[kekmod_http] crash dump POST '%s' (%u bytes) -> status=%u",
+             pszDumpPath, dwRead, *pdwStatusOut);
+    return true;
+}
+
 // Drains the pending queue FIFO. Runs until the queue is empty (success) or
 // a send fails (leaves the remainder queued for the next turn's kick). While
 // a game-end payload is anywhere in the queue, failures retry in-thread on
@@ -1955,5 +2046,6 @@ void CvHttp_OnProposalResolved() {}
 void CvHttp_RecordRuinEvent(const KekRuinEvent&) {}
 void CvHttp_RecordVoteEvent(const KekVoteEvent&) {}
 void CvHttp_RecordCityCaptureEvent(const KekCityCaptureEvent&) {}
+const char* CvHttp_GetModVersion() { return ""; }
 
 #endif // _WIN32

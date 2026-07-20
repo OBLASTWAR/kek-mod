@@ -12,6 +12,11 @@
 
 #include <string.h>
 
+// Mod version string, e.g. "2.0-beta1". The KEKMOD_MOD_VERSION define lives
+// in CvHttpUtils.cpp and must stay there (the release scripts sed it by
+// filename); consumers outside that file use this accessor.
+const char* CvHttp_GetModVersion();
+
 // Call from the CvGame.cpp end-of-turn auto-save hook (game thread).
 // Applies the single-uploader rule (local player == first alive human),
 // dedups against the last uploaded save, builds the schema-v1 turn JSON,
@@ -86,6 +91,15 @@ struct KekCityCaptureEvent
 // "cityCaptures" arrays, schema 4).
 void CvHttp_RecordVoteEvent(const KekVoteEvent& evt);
 void CvHttp_RecordCityCaptureEvent(const KekCityCaptureEvent& evt);
+
+// POSTs one crash-report dump (Phase 3, plan/CRASH_REPORTER_PLAN.md; see
+// CvCrashReporter.cpp). Reads pszDumpPath's raw bytes as the body;
+// pszMetaJson (the sidecar JSON, single line, no trailing newline) goes in
+// the X-Crash-Meta header. Returns true only on a 2xx response;
+// *pdwStatusOut is set either way for logging. BACKGROUND THREAD ONLY
+// (blocking WinHTTP calls) -- never call from the game thread.
+bool CvHttp_PostCrashDump(const char* pszDumpPath, const char* pszKind,
+                          const char* pszMetaJson, DWORD* pdwStatusOut);
 
 // Call from CvGame::setWinner (game thread). Game end never gets another
 // end-of-turn autosave, so the deciding vote result / final state would be

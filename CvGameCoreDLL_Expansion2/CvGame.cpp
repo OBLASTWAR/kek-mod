@@ -48,6 +48,7 @@
 #include "CvStringUtils.h"
 #include "CvBarbarians.h"
 #include "CvHttpUtils.h"
+#include "CvCrashReporter.h"
 #include "CvGoodyHuts.h"
 
 #include <sstream>
@@ -1484,6 +1485,12 @@ void CvGame::assignStartingPlots()
 //	---------------------------------------------------------------------------
 void CvGame::update()
 {
+	// Hang watchdog heartbeat (plan/CRASH_REPORTER_PLAN.md Phase 2).
+	KekCrashReporter_Heartbeat();
+
+	// Dev builds only: crash-test trigger file poll (no-op in prod).
+	KekCrashReporter_CheckTestTrigger();
+
 	if(IsWaitingForBlockingInput())
 	{
 		if(!GC.GetEngineUserInterface()->isDiploActive())
