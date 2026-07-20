@@ -1673,5 +1673,8 @@
 // Adjacent Mod (PROMOTION_ADJACENT_BONUS) now requires same combat type
 #define NQ_ADJACENT_MOD_REQUIRES_SAME_COMBAT_TYPE
 */
+// Disable Ctrl+Period/Comma cycling between units stacked on the same tile,
+// matching immos's upstream balance change (kekmod had never merged it).
+#define REMOVE_CONTROL_CYCLE_PLOT_UNITS
 
 #endif

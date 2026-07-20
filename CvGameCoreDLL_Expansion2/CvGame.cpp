@@ -3579,23 +3579,27 @@ void CvGame::doControl(ControlTypes eControl)
 
 	case CONTROL_NEXTUNIT:
 	{
+#ifndef REMOVE_CONTROL_CYCLE_PLOT_UNITS
 		auto_ptr<ICvPlot1> pSelectionPlot(GC.GetEngineUserInterface()->getSelectionPlot());
 		CvPlot* pkSelectionPlot = GC.UnwrapPlotPointer(pSelectionPlot.get());
 		if(pkSelectionPlot != NULL)
 		{
 			cyclePlotUnits(pkSelectionPlot);
 		}
+#endif
 		break;
 	}
 
 	case CONTROL_PREVUNIT:
 	{
+#ifndef REMOVE_CONTROL_CYCLE_PLOT_UNITS
 		auto_ptr<ICvPlot1> pSelectionPlot(GC.GetEngineUserInterface()->getSelectionPlot());
 		CvPlot* pkSelectionPlot = GC.UnwrapPlotPointer(pSelectionPlot.get());
 		if(pkSelectionPlot != NULL)
 		{
 			cyclePlotUnits(pkSelectionPlot, false);
 		}
+#endif
 		break;
 	}
 
