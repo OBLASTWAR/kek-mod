@@ -72,8 +72,8 @@
 // application.yml -- keep the two in sync). It ships inside a public DLL,
 // so it's a spam/scanner barrier, not real secrecy. "" = header omitted.
 #define KEKMOD_API_KEY          "439ccee8d7722959490225f570ac1bd0"
-#define KEKMOD_MOD_VERSION      "1.5-beta14"
-#define KEKMOD_MOD_VERSION_W    L"1.5-beta14"
+#define KEKMOD_MOD_VERSION      "2.0-beta1"
+#define KEKMOD_MOD_VERSION_W    L"2.0-beta1"
 #define KEKMOD_JSON_SCHEMA      8
 #define KEKMOD_HTTP_LOG         "kekmod_http.log"
 
