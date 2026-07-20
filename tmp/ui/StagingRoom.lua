@@ -1319,11 +1319,20 @@ Controls.OptionsPageTab:RegisterCallback( Mouse.eLClick, OnOptionsPageTab );
 
 -------------------------------------------------
 -------------------------------------------------
+-- kekmod: version is stamped into this file at package/deploy time from
+-- KEKMOD_MOD_VERSION in CvHttpUtils.cpp (single source of truth).
+local KEKMOD_VERSION = "@KEKMOD_VERSION@";
+if( string.sub( KEKMOD_VERSION, 1, 1 ) == "@" ) then
+	KEKMOD_VERSION = "unstamped";
+end
+local m_bKekVersionAnnounced = false;
+
 function ShowHideHandler( bIsHide, bIsInit )
 
 		--print("ShowHideHandler Hide: " .. tostring(bIsHide) .. " Init: " .. tostring(bIsInit));
     if( bIsHide ) then
 			Controls.ChatStack:DestroyAllChildren();
+			m_bKekVersionAnnounced = false;	-- chat was cleared; re-announce next show
     end
     
     -- Create slot instances.
@@ -1386,6 +1395,12 @@ function ShowHideHandler( bIsHide, bIsInit )
 		UpdateDisplay();
 		ShowHideSaveButton();
 		UIManager:SetUICursor( 0 );
+
+		-- kekmod: announce the running mod version in the local chat log
+		if( not m_bKekVersionAnnounced ) then
+			KekAddSystemChat( "[COLOR_POSITIVE_TEXT]KEK Mod v" .. KEKMOD_VERSION .. "[ENDCOLOR]" );
+			m_bKekVersionAnnounced = true;
+		end
 	end
 
 end
@@ -1396,9 +1411,9 @@ ContextPtr:SetShowHideHandler( ShowHideHandler );
 -------------------------------------------------
 function UpdateOptions()
 
-	-- Set Game Name
+	-- Set Game Name (kekmod: suffix the lobby title with the mod version)
 	local strGameName = Matchmaking.GetCurrentGameName();
-	Controls.NameLabel:SetText( strGameName );
+	Controls.NameLabel:SetText( strGameName .. " [COLOR_GREY](KEK v" .. KEKMOD_VERSION .. ")[ENDCOLOR]" );
 	
 	-- Game State Indicator
 	if( PreGame.GameStarted() ) then
@@ -1807,6 +1822,28 @@ end
 -- Chat
 --------------------------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------
+-- kekmod: append a local-only system line to the chat log (no network send)
+-------------------------------------------------
+function KekAddSystemChat( text )
+	local controlTable = {};
+	ContextPtr:BuildInstanceForControl( "ChatEntry", controlTable, Controls.ChatStack );
+
+	table.insert( g_ChatInstances, controlTable );
+	if( #g_ChatInstances > 100 ) then
+		Controls.ChatStack:ReleaseChild( g_ChatInstances[ 1 ].Box );
+		table.remove( g_ChatInstances, 1 );
+	end
+
+	controlTable.String:SetText( text );
+	controlTable.Box:SetSizeY( controlTable.String:GetSizeY() + 15 );
+	controlTable.Box:ReprocessAnchoring();
+
+	Controls.ChatStack:CalculateSize();
+	Controls.ChatScroll:CalculateInternalSize();
+	Controls.ChatScroll:SetScrollValue( 1 );
+end
 
 -------------------------------------------------
 -------------------------------------------------

@@ -1,7 +1,9 @@
 @ECHO off
 pushd "%~dp0"
+REM patchfolder = the name of the folder this script lives in (the deployed
+REM DLC folder, e.g. "KEK Mod v1.5-beta2") -- no version hardcoding.
+for %%I in ("%cd%") do set "patchfolder=%%~nxI"
 cd ..
-set patchfolder=KEK Mod v1.4
 ECHO Y | del "%cd%\%patchfolder%\UI\"
 REM -------------------------------------------------
 ECHO F | xcopy /s /y "%cd%\%patchfolder%\tmp\ui\CultureOverview.lua" "%cd%\%patchfolder%\UI\CultureOverview.lua"

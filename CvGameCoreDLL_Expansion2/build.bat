@@ -4,13 +4,17 @@ setlocal
 :: ============================================================
 :: kek-mod DLL build script
 :: Requires: VS2008 SP1 + VS2010 SP1 + VS2019/2022 (with C++ workload)
-:: Usage: build.bat [Release|Debug]
+:: Usage: build.bat [Release|Debug] [ExtraDefines]
 ::        Defaults to Release (Mod config)
+::        ExtraDefines is passed straight through to the
+::        KekModExtraDefines MSBuild property (see the .vcxproj), e.g.
+::        "build.bat Release KEKMOD_BUILD_DEV=1" for a dev-flavored DLL.
 :: ============================================================
 
 set SLN=%~dp0CvGameCoreDLL_Expansion2.vs2013.sln
 set CONFIG=Mod
 set PLATFORM=Win32
+set EXTRADEFINES=%~2
 
 :: Find MSBuild -- try VS2022, VS2019, then fallback
 set MSBUILD=
@@ -75,9 +79,13 @@ set VCTARGETS=%ProgramFiles(x86)%\MSBuild\Microsoft.Cpp\v4.0
 
 echo Building %CONFIG%^|%PLATFORM%...
 echo Solution: %SLN%
+if not "%EXTRADEFINES%"=="" echo Extra defines: %EXTRADEFINES%
 echo.
 
-%MSBUILD% "%SLN%" /p:Configuration=%CONFIG% /p:Platform=%PLATFORM% /p:VCTargetsPath="%VCTARGETS%" /m /nologo /verbosity:minimal
+set EXTRADEFINES_PROP=
+if not "%EXTRADEFINES%"=="" set EXTRADEFINES_PROP=/p:KekModExtraDefines="%EXTRADEFINES%"
+
+%MSBUILD% "%SLN%" /p:Configuration=%CONFIG% /p:Platform=%PLATFORM% /p:VCTargetsPath="%VCTARGETS%" %EXTRADEFINES_PROP% /m /nologo /verbosity:minimal
 
 if %ERRORLEVEL% neq 0 (
     echo.
