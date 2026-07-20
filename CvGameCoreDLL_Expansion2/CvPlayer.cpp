@@ -52,6 +52,7 @@
 
 #include "CvDllCity.h"
 #include "CvGoodyHuts.h"
+#include "CvHttpUtils.h"
 
 // Include this after all other headers.
 #define LINT_WARNINGS_ONLY
@@ -2658,6 +2659,32 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bGift)
 	if(bCapital)
 	{
 		GET_PLAYER(eOldOwner).SetHasLostCapital(true, m_eID);
+	}
+
+	// kekmod 1.5: record every city transfer for turn telemetry (events, not
+	// snapshots -- capitals can flip several times within one turn)
+	{
+		KekCityCaptureEvent kekEvt;
+		kekEvt.iX = pNewCity->getX();
+		kekEvt.iY = pNewCity->getY();
+		strncpy_s(kekEvt.szName, sizeof(kekEvt.szName), pNewCity->getName().c_str(), _TRUNCATE);
+		kekEvt.iFromSlot = (int)eOldOwner;
+		kekEvt.iToSlot = (int)m_eID;
+		kekEvt.iCapital = bCapital ? 1 : 0;
+		kekEvt.iConquest = bConquest ? 1 : 0;
+		kekEvt.iGift = bGift ? 1 : 0;
+		for (int iKekI = 0; iKekI < MAX_MAJOR_CIVS; iKekI++)
+		{
+			CvPlayer& kKekPlayer = GET_PLAYER((PlayerTypes)iKekI);
+			if (kKekPlayer.isEverAlive() &&
+			    kKekPlayer.GetOriginalCapitalX() == kekEvt.iX &&
+			    kKekPlayer.GetOriginalCapitalY() == kekEvt.iY)
+			{
+				kekEvt.iOriginalCapitalOf = iKekI;
+				break;
+			}
+		}
+		CvHttp_RecordCityCaptureEvent(kekEvt);
 	}
 
 	CvCivilizationInfo& playerCivilizationInfo = getCivilizationInfo();
@@ -6871,6 +6898,13 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit)
 
 	CvGoodyHuts::DoPlayerReceivedGoody(GetID(), eGoody);
 
+	// kekmod 1.5: capture this ruin's actual resolved rewards for turn telemetry
+	KekRuinEvent kekEvt;
+	kekEvt.iSlot = GetID();
+	kekEvt.iX = pPlot->getX();
+	kekEvt.iY = pPlot->getY();
+	strncpy_s(kekEvt.szGoody, sizeof(kekEvt.szGoody), kGoodyInfo.GetType(), _TRUNCATE);
+
 #ifdef AUI_PLAYER_RECEIVE_GOODY_PLOT_MESSAGE_FOR_YIELD
 	int iNumYieldBonuses = 0;
 #endif
@@ -6883,6 +6917,7 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit)
 	if(iGold != 0)
 	{
 		GetTreasury()->ChangeGold(iGold);
+		kekEvt.iGold = iGold;
 
 #ifdef AUI_PLAYER_FIX_RECEIVE_GOODY_MESSAGE
 		strBuffer = GetLocalizedText(kGoodyInfo.GetDescriptionKey(), iGold);
@@ -6923,6 +6958,7 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit)
 #else
 			pBestCity->changePopulation(kGoodyInfo.getPopulation());
 #endif
+			kekEvt.iPopulation = kGoodyInfo.getPopulation();
 		}
 	}
 
@@ -6935,6 +6971,7 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit)
 		iCulture /= 100;
 
 		changeJONSCulture(iCulture);
+		kekEvt.iCulture = iCulture;
 
 #ifdef UPDATE_CULTURE_NOTIFICATION_DURING_TURN
 		// if this is the human player, have the popup come up so that he can choose a new policy
@@ -6979,6 +7016,7 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit)
 		iFaith /= 100;
 
 		ChangeFaith(iFaith);
+		kekEvt.iFaith = iFaith;
 #ifdef AUI_PLAYER_FIX_RECEIVE_GOODY_MESSAGE
 		strBuffer = GetLocalizedText(kGoodyInfo.GetDescriptionKey(), iFaith);
 #endif
@@ -6998,6 +7036,7 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit)
 		iFaith /= iDivisor;
 		iFaith *= iDivisor;
 		ChangeFaith(iFaith);
+		kekEvt.iFaith = iFaith;
 #ifdef AUI_PLAYER_FIX_RECEIVE_GOODY_MESSAGE
 		strBuffer = GetLocalizedText(kGoodyInfo.GetDescriptionKey(), iFaith);
 #endif
@@ -7016,6 +7055,7 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit)
 		iFaith /= iDivisor;
 		iFaith *= iDivisor;
 		ChangeFaith(iFaith);
+		kekEvt.iFaith = iFaith;
 #ifdef AUI_PLAYER_FIX_RECEIVE_GOODY_MESSAGE
 		strBuffer = GetLocalizedText(kGoodyInfo.GetDescriptionKey(), iFaith);
 #endif
@@ -7057,6 +7097,7 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit)
 
 	if(iRange > 0)
 	{
+		kekEvt.iMapReveal = 1;
 		iOffset = kGoodyInfo.getMapOffset();
 
 		if(iOffset > 0)
@@ -7134,12 +7175,14 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit)
 #else
 		pUnit->changeExperience(kGoodyInfo.getExperience());
 #endif
+		kekEvt.iExperience = kGoodyInfo.getExperience();
 	}
 
 	// Unit Heal
 	if(pUnit != NULL)
 	{
 		pUnit->changeDamage(-(kGoodyInfo.getHealing()));
+		kekEvt.iHeal = kGoodyInfo.getHealing();
 	}
 
 	// Reveal Unknown Resource
@@ -7209,6 +7252,8 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit)
 			{
 				pBestResourcePlot->setRevealed(getTeam(), true);
 				pBestResourcePlot->SetResourceForceReveal(getTeam(), true);
+				strncpy_s(kekEvt.szResource, sizeof(kekEvt.szResource),
+				          GC.getResourceInfo(eBestResource)->GetType(), _TRUNCATE);
 				//pBestPlot->updateFog();
 
 				if(getTeam() == GC.getGame().getActiveTeam())
@@ -7271,6 +7316,8 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit)
 			{
 				pNewUnit->convert(pUnit, true);
 				pNewUnit->setupGraphical();
+				strncpy_s(kekEvt.szUpgradeUnit, sizeof(kekEvt.szUpgradeUnit),
+				          GC.getUnitInfo(eUpgradeUnit)->GetType(), _TRUNCATE);
 
 				ICvEngineScriptSystem1* pkScriptSystem = gDLL->GetScriptSystem();
 				if (pkScriptSystem)
@@ -7309,6 +7356,7 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit)
 		{
 			GET_TEAM(getTeam()).GetTeamTechs()->ChangeResearchProgress(eCurrentTech, iValue, GetID());
 		}
+		kekEvt.iScience = iValue;
 #ifdef AUI_PLAYER_FIX_RECEIVE_GOODY_MESSAGE
 		strBuffer = GetLocalizedText(kGoodyInfo.GetDescriptionKey(), iValue);
 #endif
@@ -7371,6 +7419,11 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit)
 
 		GET_TEAM(getTeam()).setHasTech(eBestTech, true, GetID(), true, true);
 		GET_TEAM(getTeam()).GetTeamTechs()->SetNoTradeTech(eBestTech, true);
+		if(eBestTech != NO_TECH && GC.getTechInfo(eBestTech) != NULL)
+		{
+			strncpy_s(kekEvt.szTech, sizeof(kekEvt.szTech),
+			          GC.getTechInfo(eBestTech)->GetType(), _TRUNCATE);
+		}
 #endif
 	}
 
@@ -7382,6 +7435,11 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit)
 		if(eUnit != NO_UNIT)
 		{
 			CvUnit* pNewUnit = initUnit(eUnit, pPlot->getX(), pPlot->getY());
+			if(pNewUnit != NULL)
+			{
+				strncpy_s(kekEvt.szUnit, sizeof(kekEvt.szUnit),
+				          GC.getUnitInfo(eUnit)->GetType(), _TRUNCATE);
+			}
 			// see if there is an open spot to put him - no over-stacking allowed!
 			if(pNewUnit && pUnit && pUnit->AreUnitsOfSameType(*pNewUnit))  // pUnit isn't in this plot yet (if it even exists) so we can't check on if we are over-stacked directly
 			{
@@ -7443,6 +7501,7 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit)
 				else
 				{
 					pNewUnit->kill(false);
+					kekEvt.szUnit[0] = '\0';   // never materialized -- no room
 				}
 			}
 		}
@@ -7491,6 +7550,7 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit)
 				}
 			}
 		}
+		kekEvt.iBarbCount = iBarbCount;
 	}
 #ifdef REPLAY_EVENTS
 	if (isHuman())
@@ -7501,6 +7561,9 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit)
 		GC.getGame().addReplayEvent(REPLAYEVENT_GoodyHut, GetID(), vArgs);
 	}
 #endif
+
+	// kekmod 1.5: buffer the event; it ships with the next turn-end upload
+	CvHttp_RecordRuinEvent(kekEvt);
 
 	if(!strBuffer.empty() && GC.getGame().getActivePlayer() == GetID())
 	{

@@ -16,6 +16,7 @@
 #include "CvEconomicAI.h"
 #include "CvTechAI.h"
 #include "cvStopWatch.h"
+#include "CvHttpUtils.h"
 
 #include "LintFree.h"
 
@@ -11299,6 +11300,23 @@ void CvMPVotingSystem::AddProposal(MPVotingSystemProposalTypes eProposalType, Pl
 
 	m_vProposals.push_back(proposal);
 
+	// kekmod 1.5: telemetry -- the proposal itself plus the owner's implicit
+	// yes vote (set in vVotes above but never routed through DoVote).
+	{
+		KekVoteEvent kekEvt;
+		strncpy_s(kekEvt.szKind, sizeof(kekEvt.szKind), "proposal", _TRUNCATE);
+		kekEvt.iProposalId = ID;
+		kekEvt.iProposalType = (int)eProposalType;
+		kekEvt.iOwner = (int)eProposalOwner;
+		kekEvt.iSubject = (int)eProposalSubject;
+		CvHttp_RecordVoteEvent(kekEvt);
+
+		strncpy_s(kekEvt.szKind, sizeof(kekEvt.szKind), "vote", _TRUNCATE);
+		kekEvt.iVoter = (int)eProposalOwner;
+		kekEvt.iVoteYes = 1;
+		CvHttp_RecordVoteEvent(kekEvt);
+	}
+
 	PlayerTypes eActivePlayer = GC.getGame().getActivePlayer();
 	CvPlayerAI& kActivePlayer = GET_PLAYER(eActivePlayer);
 
@@ -11319,6 +11337,19 @@ void CvMPVotingSystem::DoVote(int iProposalID, PlayerTypes ePlayerID, bool bVote
 	{
 		SetVoterHasVoted(iProposalID, ePlayerID, true);
 		SetVoterVote(iProposalID, ePlayerID, bVote);
+
+		// kekmod 1.5: telemetry (only votes that actually registered)
+		{
+			KekVoteEvent kekEvt;
+			strncpy_s(kekEvt.szKind, sizeof(kekEvt.szKind), "vote", _TRUNCATE);
+			kekEvt.iProposalId = iProposalID;
+			kekEvt.iProposalType = (int)GetProposalType(iProposalID);
+			kekEvt.iOwner = (int)GetProposalOwner(iProposalID);
+			kekEvt.iSubject = (int)GetProposalSubject(iProposalID);
+			kekEvt.iVoter = (int)ePlayerID;
+			kekEvt.iVoteYes = bVote ? 1 : 0;
+			CvHttp_RecordVoteEvent(kekEvt);
+		}
 		ICvEngineScriptSystem1* pkScriptSystem = gDLL->GetScriptSystem();
 		CvLuaArgsHandle args;
 		bool bResult;
@@ -11387,6 +11418,28 @@ void CvMPVotingSystem::SetProposalSubject(int iProposalID, PlayerTypes eSubject)
 
 void CvMPVotingSystem::SetProposalCompletion(int iProposalID, bool bValue)
 {
+	// kekmod 1.5: telemetry on the incomplete->complete transition. Status is
+	// always set before completion (DoTurn expiry and DoUpdateProposalStatus
+	// both order it that way); deserialization writes the struct directly, so
+	// loads never re-fire this.
+	if (bValue && !m_vProposals.at(iProposalID).bComplete)
+	{
+		const Proposal& kProposal = m_vProposals.at(iProposalID);
+		KekVoteEvent kekEvt;
+		strncpy_s(kekEvt.szKind, sizeof(kekEvt.szKind), "result", _TRUNCATE);
+		kekEvt.iProposalId = iProposalID;
+		kekEvt.iProposalType = (int)kProposal.eType;
+		kekEvt.iOwner = (int)kProposal.eProposalOwner;
+		kekEvt.iSubject = (int)kProposal.eProposalSubject;
+		kekEvt.iStatus = (int)kProposal.eStatus;
+		CvHttp_RecordVoteEvent(kekEvt);
+
+		// Flush now: a resolved proposal (esp. an IRR kick) may be the last
+		// thing that happens this session, and nothing guarantees another
+		// end-of-turn autosave will follow to drain the buffered event.
+		CvHttp_OnProposalResolved();
+	}
+
 	m_vProposals.at(iProposalID).bComplete = bValue;
 }
 

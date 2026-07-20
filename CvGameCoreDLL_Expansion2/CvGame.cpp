@@ -47,6 +47,7 @@
 #include "FAutoVariableBase.h"
 #include "CvStringUtils.h"
 #include "CvBarbarians.h"
+#include "CvHttpUtils.h"
 #include "CvGoodyHuts.h"
 
 #include <sstream>
@@ -1637,6 +1638,7 @@ void CvGame::CheckPlayerTurnDeactivate()
 						if (iI == iFirstAlivePlayer)  // save just before first player deactivation
 						{
 							gDLL->AutoSave(false, true);
+							CvHttp_OnTurnAutoSave();   // kekmod 1.5: upload save + turn JSON (single-uploader gated)
 						}
 #endif
 						kPlayer.setTurnActive(false);
@@ -6105,6 +6107,13 @@ void CvGame::setWinner(TeamTypes eNewWinner, VictoryTypes eNewVictory)
 
 		// Reset UN countdown if necessary
 		SetUnitedNationsCountdown(0);
+
+		// kekmod 1.5: no end-of-turn autosave follows a game end, so flush the
+		// final turn JSON (winner block + buffered vote/capture events) now.
+		if (eNewVictory != NO_VICTORY)
+		{
+			CvHttp_OnGameEnd();
+		}
 
 		if(getVictory() != NO_VICTORY && !IsStaticTutorialActive())
 		{
