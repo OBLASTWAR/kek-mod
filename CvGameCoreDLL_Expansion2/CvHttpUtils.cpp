@@ -70,8 +70,10 @@
 #define KEKMOD_TURNS_PATH       L"/api/turns"
 // Shared secret checked by GDR's KekApiKeyFilter (kek.api-key in its
 // application.yml -- keep the two in sync). It ships inside a public DLL,
-// so it's a spam/scanner barrier, not real secrecy. "" = header omitted.
-#define KEKMOD_API_KEY          "439ccee8d7722959490225f570ac1bd0"
+// so it's a spam/scanner barrier, not real secrecy -- kept out of source
+// control anyway to stay off GitHub's diff/secret scanners. "" = header
+// omitted. See KekSecrets.h.example for setup.
+#include "KekSecrets.h"
 #define KEKMOD_MOD_VERSION      "2.0-beta1"
 #define KEKMOD_MOD_VERSION_W    L"2.0-beta1"
 #define KEKMOD_JSON_SCHEMA      8

@@ -47,3 +47,6 @@ deploy-package.sh
 package.sh
 publish.sh
 stage.sh
+
+# Real API key -- see KekSecrets.h.example for setup. Not for public repo.
+CvGameCoreDLL_Expansion2/KekSecrets.h
