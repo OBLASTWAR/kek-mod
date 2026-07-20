@@ -60,7 +60,7 @@
 #include "CvInfosSerializationHelper.h"
 #include "CvCityManager.h"
 
-#if defined (DEV_RECORDING_STATISTICS) || defined (REPLAY_EVENTS)
+#if defined (DEV_RECORDING_STATISTICS) || defined (REPLAY_EVENTS_SQLITE_EXPORT)
 # include <winsqlite3.h>
 # pragma comment(lib, "winsqlite3.lib")
 #endif
@@ -7273,12 +7273,36 @@ void CvGame::setGameState(GameStateTypes eNewValue)
 				}
 			}
 
+#ifdef REVEAL_MAP_GAME_OVER
+			for (int iI = 0; iI < MAX_CIV_TEAMS; iI++)
+			{
+				TeamTypes eLoopTeam = (TeamTypes)iI;
+				GC.getMap().setRevealedPlots(eLoopTeam, true, true);
+				GC.getMap().updateDeferredFog();
+
+				for (int iJ = 0; iJ < GC.getMap().numPlots(); iJ++)
+				{
+					CvPlot* pLoopPlot = GC.getMap().plotByIndexUnchecked(iJ);
+					ResourceTypes eResource = pLoopPlot->getResourceType();
+
+					if (eResource != NO_RESOURCE)
+					{
+						pLoopPlot->updateYield();
+						if (pLoopPlot->isRevealed(eLoopTeam))
+						{
+							pLoopPlot->setLayoutDirty(true);
+						}
+					}
+				}
+			}
+#endif
+
 			saveReplay();
 			showEndGameSequence();
 #ifdef DEV_RECORDING_STATISTICS
 			generateReplayKeys(); // Recreates key tables with up-to-date xml data; may be called just once and then commented out to increase performance
 			exportReplayDatasets();
-# ifdef REPLAY_EVENTS
+# ifdef REPLAY_EVENTS_SQLITE_EXPORT
 			exportReplayEvents();
 # endif
 #endif
@@ -10004,7 +10028,7 @@ void CvGame::generateReplayKeys()
 	}
 }
 #endif
-#ifdef REPLAY_EVENTS
+#ifdef REPLAY_EVENTS_SQLITE_EXPORT
 
 //	--------------------------------------------------------------------------------
 void CvGame::exportReplayEvents()

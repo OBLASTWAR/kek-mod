@@ -820,6 +820,8 @@
 // #define REMOVE_DOF
 ///
 // #define CREATE_APOLLO_PROGRAM_WITH_CAP_FOUND
+///
+#define REVEAL_MAP_GAME_OVER
 // Maintain backwards compatibility with older versions
 // Starting from v7.0
 #define SAVE_BACKWARDS_COMPATIBILITY
@@ -1021,7 +1023,12 @@
 #endif
 ///
 // A more flexible alternative to Replay Messages; primarily for statistics purposes
-// #define REPLAY_EVENTS  // disabled: requires winsqlite3.h from Windows 10 SDK (10.0.15063+)
+#define REPLAY_EVENTS
+// Dev-only: dumps finished games to an external SQLite file (Civ5FinishedGameDatabase.db)
+// for cross-game analytics. Separate from REPLAY_EVENTS because this is the only piece
+// that actually needs winsqlite3.h from the Windows 10 SDK (10.0.15063+); the in-game
+// Events log only needs the in-memory event list, which REPLAY_EVENTS alone provides.
+// #define REPLAY_EVENTS_SQLITE_EXPORT  // disabled: requires winsqlite3.h from the Windows 10 SDK
 
 // Adds timestamp for replay messages, saves chat messages
 #define REPLAY_MESSAGE_EXTENDED
