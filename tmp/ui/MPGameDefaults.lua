@@ -20,7 +20,7 @@ function ResetMultiplayerOptions()
 	-- Default Map Type
 	PreGame.SetLoadWBScenario(false);
 	PreGame.SetRandomMapScript(false);
-	local mapScript = GameInfo.MapScripts{FileName = "Assets\\Maps\\Pangaea.lua"}();
+	local mapScript = GameInfo.MapScripts{FileName = "Assets\\Maps\\Fish Map Script\\VanillaPangaea.lua"}();
 	if(mapScript ~= nil) then
 		PreGame.SetMapScript(mapScript.FileName);
 	else
@@ -42,7 +42,21 @@ function ResetMultiplayerOptions()
 
 	PreGame.ResetGameOptions();
 	PreGame.ResetMapOptions();
-	
+
+	-- Default Map Options: World Age = 3 Billion Years, Sea Level = Low, Resources = Strategic Balance
+	PreGame.SetMapOption(1, 1);
+	PreGame.SetMapOption(4, 1);
+	PreGame.SetMapOption(5, 5);
+
+	-- Default Victory Types: Time off
+	PreGame.SetVictory(GameInfo.Victories["VICTORY_TIME"].ID, false);
+
+	-- Default Turn Timer value (relative %, see GAMEOPTION_RELATIVE_TURN_TIMER)
+	PreGame.SetPitbossTurnTime(80);
+
+	-- Default Host Private Game
+	PreGame.SetPrivateGame(true);
+
 	-- Default Game Options
 	if (PreGame.IsHotSeatGame()) then
 		PreGame.SetGameOption("GAMEOPTION_DYNAMIC_TURNS", false);
