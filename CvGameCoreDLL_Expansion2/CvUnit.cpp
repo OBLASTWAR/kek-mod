@@ -6967,6 +6967,9 @@ bool CvUnit::pillage()
 				if(iPillageGold > 0)
 				{
 					GET_PLAYER(getOwner()).GetTreasury()->ChangeGold(iPillageGold);
+#ifdef EG_REPLAYDATASET_GOLDFROMPILLAGING
+					GET_PLAYER(getOwner()).ChangeNumGoldFromPillage(iPillageGold);
+#endif
 
 					if(getOwner() == GC.getGame().getActivePlayer())
 					{
@@ -9965,6 +9968,9 @@ CvUnit* CvUnit::DoUpgrade()
 
 	// Gold Cost
 	int iUpgradeCost = upgradePrice(eUnitType);
+#ifdef EG_REPLAYDATASET_NUMGOLDONUPGRADES
+	GET_PLAYER(getOwner()).ChangeNumGoldSpentOnUgrades(iUpgradeCost);
+#endif
 	CvPlayerAI& thisPlayer = GET_PLAYER(getOwner());
 	thisPlayer.GetTreasury()->LogExpenditure(getUnitInfo().GetText(), iUpgradeCost, 3);
 	thisPlayer.GetTreasury()->ChangeGold(-iUpgradeCost);

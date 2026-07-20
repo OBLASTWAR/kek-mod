@@ -1,5 +1,5 @@
 /*	-------------------------------------------------------------------------------------------------------
-	© 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
+	ï¿½ 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
 	Sid Meier's Civilization V, Civ, Civilization, 2K Games, Firaxis Games, Take-Two Interactive Software 
 	and their respective logos are all trademarks of Take-Two interactive Software, Inc.  
 	All other marks and trademarks are the property of their respective owners.  
@@ -658,6 +658,16 @@ void CvPlayerEspionage::ProcessSpy(uint uiSpyIndex)
 					pNotifications->Add(NOTIFICATION_SPY_WAS_KILLED, strNotification.toUTF8(), strSummary.toUTF8(), -1, -1, -1);
 
 				}
+
+#ifdef EG_REPLAYDATASET_DIEDSPIES
+				m_pPlayer->ChangeNumDiedSpies(1);
+#endif
+#ifdef EG_REPLAYDATASET_KILLEDSPIES
+				if (!GET_PLAYER(eCityOwner).isMinorCiv())
+				{
+					GET_PLAYER(eCityOwner).ChangeNumKilledSpies(1);
+				}
+#endif
 
 				CvEspionageAI* pEspionageAI = m_pPlayer->GetEspionageAI();
 				CvAssertMsg(pEspionageAI, "pEspionageAI is null");
