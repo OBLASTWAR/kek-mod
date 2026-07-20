@@ -30,6 +30,12 @@ Desktop.ini
 # Distribution zips (package.sh)
 dist/
 
+# Installer background track -- large binary asset, kept local only.
+installer/beat.mp3
+
+# Internal-only installer build, not for public distribution.
+installer/KekModInstaller.Internal.exe
+
 # Development plans/notes -- not for public repo. (Deliberately NOT *.md,
 # so a README.md/CHANGELOG.md can live at the repo root.)
 plan/
