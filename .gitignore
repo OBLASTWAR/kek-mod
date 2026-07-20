@@ -39,3 +39,11 @@ installer/KekModInstaller.Internal.exe
 # Development plans/notes -- not for public repo. (Deliberately NOT *.md,
 # so a README.md/CHANGELOG.md can live at the repo root.)
 plan/
+
+# Local build/deploy/release tooling -- dev-machine paths and internal
+# rationale (dev vs. prod telemetry host split, etc.), not for public repo.
+deploy.sh
+deploy-package.sh
+package.sh
+publish.sh
+stage.sh
