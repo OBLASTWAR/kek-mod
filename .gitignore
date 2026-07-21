@@ -33,6 +33,12 @@ dist/
 # Installer background track -- large binary asset, kept local only.
 installer/beat.mp3
 
+# Bundled EUI content -- large binary assets, kept local only. No reliable
+# versioned/API source exists for EUI, so it's embedded from a local copy at
+# build time instead (see build.bat, EuiExtra.cs) rather than fetched.
+installer/UI_bc1.zip
+installer/UI_bc1_xits.zip
+
 # Internal-only installer build, not for public distribution.
 installer/KekModInstaller.Internal.exe
 
