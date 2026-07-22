@@ -6135,7 +6135,12 @@ void CvGame::setWinner(TeamTypes eNewWinner, VictoryTypes eNewVictory)
 
 			const char* szVictoryTextKey = pkVictoryInfo->GetTextKey();
 
-			if(getWinner() != NO_TEAM)
+			// kekmod: scrap votes hijack SetWinner() to end the game (each client
+			// reports its own team, see CvHttpUtils.cpp), so the generic "has won
+			// the game" broadcast is misleading here and gets skipped. EndGameMenu.lua
+			// already shows its own scrap-specific message.
+			VictoryTypes eScrapVictory = (VictoryTypes) GC.getInfoTypeForString("VICTORY_SCRAP", true);
+			if(getWinner() != NO_TEAM && getVictory() != eScrapVictory)
 			{
 				const PlayerTypes winningTeamLeaderID = GET_TEAM(getWinner()).getLeaderID();
 				CvPlayerAI& kWinningTeamLeader = GET_PLAYER(winningTeamLeaderID);
