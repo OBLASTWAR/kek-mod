@@ -80,6 +80,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CvCrashReporter.cpp" />
+    <ClCompile Include="CvHttpUtils.cpp" />
     <ClCompile Include="CvCityManager.cpp" />
     <ClCompile Include="CvTargeting.cpp" />
     <ClCompile Include="_precompile.cpp">
@@ -264,6 +266,8 @@
     <ClInclude Include="CvCityAI.h" />
     <ClInclude Include="CvCityCitizens.h" />
     <ClInclude Include="CvCityConnections.h" />
+    <ClInclude Include="CvCrashReporter.h" />
+    <ClInclude Include="CvHttpUtils.h" />
     <ClInclude Include="CvCityManager.h" />
     <ClInclude Include="CvCitySpecializationAI.h" />
     <ClInclude Include="CvCityStrategyAI.h" />

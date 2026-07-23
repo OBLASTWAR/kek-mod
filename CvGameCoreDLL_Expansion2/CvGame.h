@@ -470,6 +470,8 @@ public:
 	void addReplayEvent(int eType, PlayerTypes ePlayer, std::vector<int> vNumArgs, CvString strArg = "");
 	uint getNumReplayEvents() const;
 	const CvReplayEvent* getReplayEvent(uint i) const;
+#endif
+#ifdef REPLAY_EVENTS_SQLITE_EXPORT
 	void exportReplayEvents();
 #endif
 
@@ -962,6 +964,15 @@ enum ReplayEventTypes
 	REPLAYEVENT_MPProposalResult,
 	REPLAYEVENT_PlotNewCityName,  // Special event to track city name changes
 	REPLAYEVENT_EnterCityScreen,
+
+	// Map events
+	REPLAYEVENT_AddTerrain,
+	REPLAYEVENT_BuildProgress,
+	REPLAYEVENT_FeatureChanged,
+	REPLAYEVENT_ResourceChanged,
+	REPLAYEVENT_RouteChanged,
+	REPLAYEVENT_TileOwnerChanged,
+	REPLAYEVENT_YieldChanged,
 
 	NUM_REPLAYEVENTS
 };

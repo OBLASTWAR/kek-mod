@@ -47,6 +47,8 @@
 #include "FAutoVariableBase.h"
 #include "CvStringUtils.h"
 #include "CvBarbarians.h"
+#include "CvHttpUtils.h"
+#include "CvCrashReporter.h"
 #include "CvGoodyHuts.h"
 
 #include <sstream>
@@ -60,7 +62,7 @@
 #include "CvInfosSerializationHelper.h"
 #include "CvCityManager.h"
 
-#if defined (DEV_RECORDING_STATISTICS) || defined (REPLAY_EVENTS)
+#if defined (DEV_RECORDING_STATISTICS) || defined (REPLAY_EVENTS_SQLITE_EXPORT)
 # include <winsqlite3.h>
 # pragma comment(lib, "winsqlite3.lib")
 #endif
@@ -1483,6 +1485,12 @@ void CvGame::assignStartingPlots()
 //	---------------------------------------------------------------------------
 void CvGame::update()
 {
+	// Hang watchdog heartbeat (plan/CRASH_REPORTER_PLAN.md Phase 2).
+	KekCrashReporter_Heartbeat();
+
+	// Dev builds only: crash-test trigger file poll (no-op in prod).
+	KekCrashReporter_CheckTestTrigger();
+
 	if(IsWaitingForBlockingInput())
 	{
 		if(!GC.GetEngineUserInterface()->isDiploActive())
@@ -1637,6 +1645,7 @@ void CvGame::CheckPlayerTurnDeactivate()
 						if (iI == iFirstAlivePlayer)  // save just before first player deactivation
 						{
 							gDLL->AutoSave(false, true);
+							CvHttp_OnTurnAutoSave();   // kekmod 1.5: upload save + turn JSON (single-uploader gated)
 						}
 #endif
 						kPlayer.setTurnActive(false);
@@ -3577,23 +3586,27 @@ void CvGame::doControl(ControlTypes eControl)
 
 	case CONTROL_NEXTUNIT:
 	{
+#ifndef REMOVE_CONTROL_CYCLE_PLOT_UNITS
 		auto_ptr<ICvPlot1> pSelectionPlot(GC.GetEngineUserInterface()->getSelectionPlot());
 		CvPlot* pkSelectionPlot = GC.UnwrapPlotPointer(pSelectionPlot.get());
 		if(pkSelectionPlot != NULL)
 		{
 			cyclePlotUnits(pkSelectionPlot);
 		}
+#endif
 		break;
 	}
 
 	case CONTROL_PREVUNIT:
 	{
+#ifndef REMOVE_CONTROL_CYCLE_PLOT_UNITS
 		auto_ptr<ICvPlot1> pSelectionPlot(GC.GetEngineUserInterface()->getSelectionPlot());
 		CvPlot* pkSelectionPlot = GC.UnwrapPlotPointer(pSelectionPlot.get());
 		if(pkSelectionPlot != NULL)
 		{
 			cyclePlotUnits(pkSelectionPlot, false);
 		}
+#endif
 		break;
 	}
 
@@ -6106,6 +6119,13 @@ void CvGame::setWinner(TeamTypes eNewWinner, VictoryTypes eNewVictory)
 		// Reset UN countdown if necessary
 		SetUnitedNationsCountdown(0);
 
+		// kekmod 1.5: no end-of-turn autosave follows a game end, so flush the
+		// final turn JSON (winner block + buffered vote/capture events) now.
+		if (eNewVictory != NO_VICTORY)
+		{
+			CvHttp_OnGameEnd();
+		}
+
 		if(getVictory() != NO_VICTORY && !IsStaticTutorialActive())
 		{
 			CvVictoryInfo* pkVictoryInfo = GC.getVictoryInfo(getVictory());
@@ -6115,7 +6135,12 @@ void CvGame::setWinner(TeamTypes eNewWinner, VictoryTypes eNewVictory)
 
 			const char* szVictoryTextKey = pkVictoryInfo->GetTextKey();
 
-			if(getWinner() != NO_TEAM)
+			// kekmod: scrap votes hijack SetWinner() to end the game (each client
+			// reports its own team, see CvHttpUtils.cpp), so the generic "has won
+			// the game" broadcast is misleading here and gets skipped. EndGameMenu.lua
+			// already shows its own scrap-specific message.
+			VictoryTypes eScrapVictory = (VictoryTypes) GC.getInfoTypeForString("VICTORY_SCRAP", true);
+			if(getWinner() != NO_TEAM && getVictory() != eScrapVictory)
 			{
 				const PlayerTypes winningTeamLeaderID = GET_TEAM(getWinner()).getLeaderID();
 				CvPlayerAI& kWinningTeamLeader = GET_PLAYER(winningTeamLeaderID);
@@ -7273,12 +7298,36 @@ void CvGame::setGameState(GameStateTypes eNewValue)
 				}
 			}
 
+#ifdef REVEAL_MAP_GAME_OVER
+			for (int iI = 0; iI < MAX_CIV_TEAMS; iI++)
+			{
+				TeamTypes eLoopTeam = (TeamTypes)iI;
+				GC.getMap().setRevealedPlots(eLoopTeam, true, true);
+				GC.getMap().updateDeferredFog();
+
+				for (int iJ = 0; iJ < GC.getMap().numPlots(); iJ++)
+				{
+					CvPlot* pLoopPlot = GC.getMap().plotByIndexUnchecked(iJ);
+					ResourceTypes eResource = pLoopPlot->getResourceType();
+
+					if (eResource != NO_RESOURCE)
+					{
+						pLoopPlot->updateYield();
+						if (pLoopPlot->isRevealed(eLoopTeam))
+						{
+							pLoopPlot->setLayoutDirty(true);
+						}
+					}
+				}
+			}
+#endif
+
 			saveReplay();
 			showEndGameSequence();
 #ifdef DEV_RECORDING_STATISTICS
 			generateReplayKeys(); // Recreates key tables with up-to-date xml data; may be called just once and then commented out to increase performance
 			exportReplayDatasets();
-# ifdef REPLAY_EVENTS
+# ifdef REPLAY_EVENTS_SQLITE_EXPORT
 			exportReplayEvents();
 # endif
 #endif
@@ -10004,7 +10053,7 @@ void CvGame::generateReplayKeys()
 	}
 }
 #endif
-#ifdef REPLAY_EVENTS
+#ifdef REPLAY_EVENTS_SQLITE_EXPORT
 
 //	--------------------------------------------------------------------------------
 void CvGame::exportReplayEvents()

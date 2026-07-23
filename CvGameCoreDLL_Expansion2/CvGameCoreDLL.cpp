@@ -1,5 +1,5 @@
 /*	-------------------------------------------------------------------------------------------------------
-	© 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
+	ï¿½ 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
 	Sid Meier's Civilization V, Civ, Civilization, 2K Games, Firaxis Games, Take-Two Interactive Software 
 	and their respective logos are all trademarks of Take-Two interactive Software, Inc.  
 	All other marks and trademarks are the property of their respective owners.  
@@ -10,6 +10,7 @@
 #include "ICvDLLUserInterface.h"
 #include "Win32/FDebugHelper.h"
 #include "CvDllContext.h"
+#include "CvCrashReporter.h"
 
 // must be included after all other headers
 #include "LintFree.h"
@@ -46,6 +47,7 @@ BOOL APIENTRY DllMain(HANDLE hModule,
 		break;
 	case DLL_PROCESS_DETACH:
 		OutputDebugString("DLL_PROCESS_DETACH\n");
+		KekCrashReporter_Shutdown();
 		timeEndPeriod(1);
 		CvDllGameContext::DestroySingleton();
 		GC.setDLLIFace(NULL);

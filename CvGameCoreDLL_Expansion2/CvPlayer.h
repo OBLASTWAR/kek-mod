@@ -1,5 +1,5 @@
 /*	-------------------------------------------------------------------------------------------------------
-	© 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
+	ï¿½ 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
 	Sid Meier's Civilization V, Civ, Civilization, 2K Games, Firaxis Games, Take-Two Interactive Software 
 	and their respective logos are all trademarks of Take-Two interactive Software, Inc.  
 	All other marks and trademarks are the property of their respective owners.  
@@ -414,6 +414,71 @@ public:
 #endif
 #ifdef EG_REPLAYDATASET_HAPPINESSFROMTRADEDEALS
 	int GetNumHappinessFromTradeDeals() const;
+#endif
+	/// Third + Fourth Bunch of Enhanced Graphs
+#ifdef EG_REPLAYDATASET_DIEDSPIES
+	int GetNumDiedSpies() const;
+	void ChangeNumDiedSpies(int iChange);
+#endif
+#ifdef EG_REPLAYDATASET_KILLEDSPIES
+	int GetNumKilledSpies() const;
+	void ChangeNumKilledSpies(int iChange);
+#endif
+#ifdef EG_REPLAYDATASET_FOODFROMCS
+	int GetFoodFromMinorsTimes100() const;
+	void ChangeFoodFromMinorsTimes100(int iChange);
+#endif
+#ifdef EG_REPLAYDATASET_PRODUCTIONFROMCS
+	int GetProductionFromMinorsTimes100() const;
+	void ChangeProductionFromMinorsTimes100(int iChange);
+#endif
+#ifdef EG_REPLAYDATASET_UNITSFROMCS
+	int GetNumUnitsFromMinors() const;
+	void ChangeNumUnitsFromMinors(int iChange);
+#endif
+#ifdef EG_REPLAYDATASET_NUMCREATEDWORLDWONDERS
+	int GetNumCreatedWorldWonders() const;
+	void ChangeNumCreatedWorldWonders(int iChange);
+#endif
+#ifdef EG_REPLAYDATASET_NUMGOLDONBUILDINGBUYS
+	int GetNumGoldSpentOnBuildingBuys() const;
+	void ChangeNumGoldSpentOnBuildingBuys(int iChange);
+#endif
+#ifdef EG_REPLAYDATASET_NUMGOLDONUNITBUYS
+	int GetNumGoldSpentOnUnitBuys() const;
+	void ChangeNumGoldSpentOnUnitBuys(int iChange);
+#endif
+#ifdef EG_REPLAYDATASET_NUMGOLDONUPGRADES
+	int GetNumGoldSpentOnUgrades() const;
+	void ChangeNumGoldSpentOnUgrades(int iChange);
+#endif
+#ifdef EG_REPLAYDATASET_GOLDEFROMKILLS
+	int GetGoldFromKills() const;
+	void ChangeGoldFromKills(int iChange);
+#endif
+#ifdef EG_REPLAYDATASET_CULTUREFROMKILLS
+	int GetCultureFromKills() const;
+	void ChangeCultureFromKills(int iChange);
+#endif
+#ifdef EG_REPLAYDATASET_NUMGOLDONGREATPEOPLEBUYS
+	int GetNumGoldSpentOnGPBuys() const;
+	void ChangeNumGoldSpentOnGPBuys(int iChange);
+#endif
+#ifdef EG_REPLAYDATASET_NUMGOLDONTILESBUYS
+	int GetNumGoldSpentOnTilesBuys() const;
+	void ChangeNumGoldSpentOnTilesBuys(int iChange);
+#endif
+#ifdef EG_REPLAYDATASET_GOLDFROMPILLAGING
+	int GetNumGoldFromPillage() const;
+	void ChangeNumGoldFromPillage(int iChange);
+#endif
+#ifdef EG_REPLAYDATASET_GOLDFROMPLUNDERING
+	int GetNumGoldFromPlunder() const;
+	void ChangeNumGoldFromPlunder(int iChange);
+#endif
+#ifdef EG_REPLAYDATASET_NUMFAITHONMILITARYUNITS
+	int GetNumFaithSpentOnMilitaryUnits() const;
+	void ChangeNumFaithSpentOnMilitaryUnits(int iChange);
 #endif
 
 	int GetNumUnitsOutOfSupply() const;
@@ -1922,6 +1987,54 @@ protected:
 #endif
 #ifdef EG_REPLAYDATASET_TIMESENTEREDCITYSCREEN
 	int m_iTimesEnteredCityScreen;
+#endif
+#ifdef EG_REPLAYDATASET_DIEDSPIES
+	int m_iNumDiedSpies;
+#endif
+#ifdef EG_REPLAYDATASET_KILLEDSPIES
+	int m_iNumKilledSpies;
+#endif
+#ifdef EG_REPLAYDATASET_FOODFROMCS
+	int m_iFoodFromMinorsTimes100;
+#endif
+#ifdef EG_REPLAYDATASET_PRODUCTIONFROMCS
+	int m_iProductionFromMinorsTimes100;
+#endif
+#ifdef EG_REPLAYDATASET_UNITSFROMCS
+	int m_iNumUnitsFromMinors;
+#endif
+#ifdef EG_REPLAYDATASET_NUMCREATEDWORLDWONDERS
+	int m_iNumCreatedWorldWonders;
+#endif
+#ifdef EG_REPLAYDATASET_NUMGOLDONBUILDINGBUYS
+	int m_iNumGoldSpentOnBuildingBuys;
+#endif
+#ifdef EG_REPLAYDATASET_NUMGOLDONUNITBUYS
+	int m_iNumGoldSpentOnUnitBuys;
+#endif
+#ifdef EG_REPLAYDATASET_NUMGOLDONUPGRADES
+	int m_iNumGoldSpentOnUgrades;
+#endif
+#ifdef EG_REPLAYDATASET_GOLDEFROMKILLS
+	int m_iGoldFromKills;
+#endif
+#ifdef EG_REPLAYDATASET_CULTUREFROMKILLS
+	int m_iCultureFromKills;
+#endif
+#ifdef EG_REPLAYDATASET_NUMGOLDONGREATPEOPLEBUYS
+	int m_iNumGoldSpentOnGPBuys;
+#endif
+#ifdef EG_REPLAYDATASET_NUMGOLDONTILESBUYS
+	int m_iNumGoldSpentOnTilesBuys;
+#endif
+#ifdef EG_REPLAYDATASET_GOLDFROMPILLAGING
+	int m_iNumGoldFromPillage;
+#endif
+#ifdef EG_REPLAYDATASET_GOLDFROMPLUNDERING
+	int m_iNumGoldFromPlunder;
+#endif
+#ifdef EG_REPLAYDATASET_NUMFAITHONMILITARYUNITS
+	int m_iNumFaithSpentOnMilitaryUnits;
 #endif
 	int m_iExtraLeagueVotes;
 	FAutoVariable<int, CvPlayer> m_iAdvancedStartPoints;

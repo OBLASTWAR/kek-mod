@@ -1,5 +1,5 @@
 /*	-------------------------------------------------------------------------------------------------------
-	© 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
+	ï¿½ 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
 	Sid Meier's Civilization V, Civ, Civilization, 2K Games, Firaxis Games, Take-Two Interactive Software 
 	and their respective logos are all trademarks of Take-Two interactive Software, Inc.  
 	All other marks and trademarks are the property of their respective owners.  
@@ -11891,6 +11891,9 @@ void CvCity::BuyPlot(int iPlotX, int iPlotY)
 	CvPlayer& thisPlayer = GET_PLAYER(getOwner());
 	thisPlayer.GetTreasury()->LogExpenditure("", iCost, 1);
 	thisPlayer.GetTreasury()->ChangeGold(-iCost);
+#ifdef EG_REPLAYDATASET_NUMGOLDONTILESBUYS
+	thisPlayer.ChangeNumGoldSpentOnTilesBuys(iCost);
+#endif
 	thisPlayer.ChangeNumPlotsBought(1);
 
 	// See if there's anyone else nearby that could get upset by this action
@@ -13610,6 +13613,9 @@ void CvCity::Purchase(UnitTypes eUnitType, BuildingTypes eBuildingType, ProjectT
 			{
 				kPlayer.GetTreasury()->LogExpenditure((CvString)pGameUnit->GetText(), iGoldCost, 2);
 			}
+#ifdef EG_REPLAYDATASET_NUMGOLDONUNITBUYS
+			kPlayer.ChangeNumGoldSpentOnUnitBuys(iGoldCost);
+#endif
 		// Building
 		}else if(eBuildingType != NO_BUILDING){
 			iGoldCost = GetPurchaseCost(eBuildingType);
@@ -13618,6 +13624,9 @@ void CvCity::Purchase(UnitTypes eUnitType, BuildingTypes eBuildingType, ProjectT
 			{
 				kPlayer.GetTreasury()->LogExpenditure((CvString)pGameBuilding->GetText(), iGoldCost, 2);
 			}
+#ifdef EG_REPLAYDATASET_NUMGOLDONBUILDINGBUYS
+			kPlayer.ChangeNumGoldSpentOnBuildingBuys(iGoldCost);
+#endif
 		// Project
 		} else if(eProjectType != NO_PROJECT){
 			iGoldCost = GetPurchaseCost(eProjectType);
@@ -13792,6 +13801,12 @@ void CvCity::Purchase(UnitTypes eUnitType, BuildingTypes eBuildingType, ProjectT
 #endif
 
 			kPlayer.ChangeFaith(-iFaithCost);
+#ifdef EG_REPLAYDATASET_NUMFAITHONMILITARYUNITS
+			if (pUnit->getUnitInfo().GetCombat() > 0 || pUnit->getUnitInfo().GetRangedCombat() > 0)
+			{
+				kPlayer.ChangeNumFaithSpentOnMilitaryUnits(iFaithCost);
+			}
+#endif
 
 			UnitClassTypes eUnitClass = pUnit->getUnitClassType();
 			if (eUnitClass == GC.getInfoTypeForString("UNITCLASS_WRITER"))

@@ -1,5 +1,5 @@
 /*	-------------------------------------------------------------------------------------------------------
-	© 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
+	ï¿½ 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
 	Sid Meier's Civilization V, Civ, Civilization, 2K Games, Firaxis Games, Take-Two Interactive Software 
 	and their respective logos are all trademarks of Take-Two interactive Software, Inc.  
 	All other marks and trademarks are the property of their respective owners.  
@@ -2695,6 +2695,12 @@ void CvCityBuildings::SetNumRealBuildingTimed(BuildingTypes eIndex, int iNewValu
 			if(isWorldWonderClass(kBuildingClassInfo))
 			{
 				m_pCity->changeNumWorldWonders(iChangeNumRealBuilding);
+#ifdef EG_REPLAYDATASET_NUMCREATEDWORLDWONDERS
+				if (eOriginalOwner == m_pCity->getOwner() && iChangeNumRealBuilding > 0 && GetBuildingOriginalTime(eIndex) == iOriginalTime)
+				{
+					GET_PLAYER(m_pCity->getOwner()).ChangeNumCreatedWorldWonders(iChangeNumRealBuilding);
+				}
+#endif
 				pPlayer->ChangeNumWonders(iChangeNumRealBuilding);
 			}
 			else if(isTeamWonderClass(kBuildingClassInfo))

@@ -21,10 +21,14 @@
 // Technical Improvements
 /// New GUID for NQMod
 #define MYMOD_GUID
-/*
-/// Enables Minidump Generation (originally for Civ4 by terkhen, ported to Civ5 by ls612)
+
+/// Enables Minidump Generation (originally for Civ4 by terkhen, ported to Civ5 by ls612).
+/// Pulled out of the disabled block below -- CvCrashReporter.cpp (plan/CRASH_REPORTER_PLAN.md)
+/// gates its entire real implementation on this flag; left commented out, the whole file
+/// compiled down to two empty stub functions with nobody noticing until the acceptance test.
 #define NQM_MINIDUMPS
 
+/*
 /// Can cache doubles from XML (Delnar: DatabaseUtility actually supports double-type, don't know why Firaxis didn't bother putting this in for good measure)
 #define NQM_CACHE_DOUBLE
 /// Enables const for functions, variables, and parameters that both allow it and are intended to be const
@@ -820,6 +824,8 @@
 // #define REMOVE_DOF
 ///
 // #define CREATE_APOLLO_PROGRAM_WITH_CAP_FOUND
+///
+#define REVEAL_MAP_GAME_OVER
 // Maintain backwards compatibility with older versions
 // Starting from v7.0
 #define SAVE_BACKWARDS_COMPATIBILITY
@@ -846,8 +852,13 @@
 // 1000: v7.0  (initial)
 // 1001: v7.2  (adds ENHANCED_GRAPHS)
 // 1002: v7.2a (adds maya boost GP counters)
-// 1003: v8.1b (adds secsond bunch of ENHANCED_GRAPHS)
-# define BUMP_SAVE_VERSION_PLAYER 1003
+// 1003: v8.1b (adds second bunch of ENHANCED_GRAPHS -- flagged in but
+//       ENHANCED_GRAPHS stayed undef'd from here through every kek release,
+//       so no save on disk has ever actually carried these bytes)
+// 1004: kek 1.5 (ENHANCED_GRAPHS actually enabled: bunch 1+2 (always present
+//       in the source but never compiled) plus third+fourth bunch, ported
+//       from upstream ImmoSS/Civ5-Patch)
+# define BUMP_SAVE_VERSION_PLAYER 1004
 // 1000: v7.0 (initial)
 # define BUMP_SAVE_VERSION_POLICIES 1000
 // 1000: v7.0 (initial)
@@ -868,7 +879,7 @@
 # define BUMP_SAVE_VERSION_REPLAYEVENT 1000
 #endif
 ///
-// #define ENHANCED_GRAPHS
+#define ENHANCED_GRAPHS
 ///
 #ifdef ENHANCED_GRAPHS
 /// First Bunch of Enhanced Graphs
@@ -963,10 +974,65 @@
 #define EG_REPLAYDATASET_TOTALSPECIALISTCITIZENS
 #define EG_REPLAYDATASET_PERCENTSPECIALISTCITIZENS // TODO: Fix aesthetics
 ///
+///
+#define EG_REPLAYDATASET_EFFECTIVESCIENCEPERTURN
+///
+/// Third Bunch of Enhanced Graphs
+///
+#define EG_REPLAYDATASET_DIEDSPIES
+#define EG_REPLAYDATASET_KILLEDSPIES
+///
+#define EG_REPLAYDATASET_FOODFROMCS
+#define EG_REPLAYDATASET_PRODUCTIONFROMCS
+#define EG_REPLAYDATASET_CULTUREFROMCS
+#define EG_REPLAYDATASET_SCIENCEFROMCS
+#define EG_REPLAYDATASET_FAITHFROMCS
+#define EG_REPLAYDATASET_HAPPINESSFROMCS
+#define EG_REPLAYDATASET_UNITSFROMCS
+///
+#define EG_REPLAYDATASET_TOURISMPERTURN
+#define EG_REPLAYDATASET_NUMGREATWORKSANDARTIFACTS
+///
+#define EG_REPLAYDATASET_NUMLUXURY
+///
+#define EG_REPLAYDATASET_NUMWORLDWONDERS
+#define EG_REPLAYDATASET_NUMCREATEDWORLDWONDERS
+///
+#define EG_REPLAYDATASET_NUMGPIMPROVEMENT
+///
+#define EG_REPLAYDATASET_NUMGOLDONBUILDINGBUYS
+#define EG_REPLAYDATASET_NUMGOLDONUNITBUYS
+#define EG_REPLAYDATASET_NUMGOLDONUPGRADES
+///
+/// Fourth Bunch of Enhanced Graphs
+///
+#define EG_REPLAYDATASET_GOLDEFROMKILLS
+#define EG_REPLAYDATASET_CULTUREFROMKILLS
+///
+#define EG_REPLAYDATASET_EFFECTIVECULTUREPERTURN
+///
+#define EG_REPLAYDATASET_NUMGOLDONGREATPEOPLEBUYS
+#define EG_REPLAYDATASET_NUMGOLDONTILESBUYS
+///
+#define EG_REPLAYDATASET_GOLDFROMPILLAGING
+#define EG_REPLAYDATASET_GOLDFROMPLUNDERING
+///
+#define EG_REPLAYDATASET_NUMFAITHONMILITARYUNITS
+///
+#define EG_REPLAYDATASET_FOODFROMTRADEROUTES_TIMES100
+#define EG_REPLAYDATASET_PRODUCTIONFROMTRADEROUTES_TIMES100
+///
+#define EG_REPLAYDATASET_ANARCHYTURNS
+///
 #endif
 ///
 // A more flexible alternative to Replay Messages; primarily for statistics purposes
 #define REPLAY_EVENTS
+// Dev-only: dumps finished games to an external SQLite file (Civ5FinishedGameDatabase.db)
+// for cross-game analytics. Separate from REPLAY_EVENTS because this is the only piece
+// that actually needs winsqlite3.h from the Windows 10 SDK (10.0.15063+); the in-game
+// Events log only needs the in-memory event list, which REPLAY_EVENTS alone provides.
+// #define REPLAY_EVENTS_SQLITE_EXPORT  // disabled: requires winsqlite3.h from the Windows 10 SDK
 
 // Adds timestamp for replay messages, saves chat messages
 #define REPLAY_MESSAGE_EXTENDED
@@ -1611,5 +1677,20 @@
 // Adjacent Mod (PROMOTION_ADJACENT_BONUS) now requires same combat type
 #define NQ_ADJACENT_MOD_REQUIRES_SAME_COMBAT_TYPE
 */
+// Disable Ctrl+Period/Comma cycling between units stacked on the same tile,
+// matching immos's upstream balance change (kekmod had never merged it).
+#define REMOVE_CONTROL_CYCLE_PLOT_UNITS
+
+// Compile out the three religion-path Lua accumulator callouts
+// (GetReligionToFound / GetFounderBenefitsReligion / GetReligionToSpread).
+// No Lua in the kek modpack registers any of them, so they can never change
+// a result -- but GetFounderBenefitsReligion fires on EVERY treasury gold
+// recalculation during CvGame::doTurn and calls into the engine's script
+// system, which can deadlock against the UI thread (observed 2026-07-17:
+// MP turn rollover froze with gamecore blocked in LuaSupport::CallAccumulator
+// while the UI thread processed a popup; confirmed via minidump + PDB).
+// The Community Patch removed the founder-benefits callout from gamecore
+// entirely and gated the others behind listener-checked GameEvents.
+#define REMOVE_UNUSED_RELIGION_LUA_HOOKS
 
 #endif

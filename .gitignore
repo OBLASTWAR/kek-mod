@@ -1,0 +1,55 @@
+# Build output
+*.dll
+*.pdb
+*.obj
+*.lib
+*.exp
+CvGameCoreDLL_Expansion2/BuildOutput/
+CvGameCoreDLL_Expansion2/BuildTemp/
+
+# Visual Studio
+*.user
+*.suo
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.opendb
+.vs/
+ipch/
+x64/
+Debug/
+Release/
+
+# JetBrains IDEs
+.idea/
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Distribution zips (package.sh)
+dist/
+
+# Installer background track -- large binary asset, kept local only.
+installer/beat.mp3
+
+# Bundled EUI content -- large binary assets, kept local only. No reliable
+# versioned/API source exists for EUI, so it's embedded from a local copy at
+# build time instead (see build.bat, EuiExtra.cs) rather than fetched.
+installer/UI_bc1.zip
+installer/UI_bc1_xits.zip
+
+# Development plans/notes -- not for public repo. (Deliberately NOT *.md,
+# so a README.md/CHANGELOG.md can live at the repo root.)
+plan/
+
+# Local build/deploy/release tooling -- dev-machine paths and internal
+# rationale (dev vs. prod telemetry host split, etc.), not for public repo.
+deploy.sh
+deploy-package.sh
+package.sh
+publish.sh
+stage.sh
+
+# Real API key -- see KekSecrets.h.example for setup. Not for public repo.
+CvGameCoreDLL_Expansion2/KekSecrets.h

@@ -1,5 +1,5 @@
 /*	-------------------------------------------------------------------------------------------------------
-	© 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
+	ï¿½ 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
 	Sid Meier's Civilization V, Civ, Civilization, 2K Games, Firaxis Games, Take-Two Interactive Software 
 	and their respective logos are all trademarks of Take-Two interactive Software, Inc.  
 	All other marks and trademarks are the property of their respective owners.  
@@ -8111,6 +8111,9 @@ void CvMinorCivAI::DoSpawnUnit(PlayerTypes eMajor)
 				strSummary << GetPlayer()->getNameKey();
 
 				AddNotification(strMessage.toUTF8(), strSummary.toUTF8(), eMajor, pNewUnit->getX(), pNewUnit->getY());
+#ifdef EG_REPLAYDATASET_UNITSFROMCS
+				GET_PLAYER(eMajor).ChangeNumUnitsFromMinors(1);
+#endif
 			}
 			else
 				pNewUnit->kill(false);	// Could not find a spot!
