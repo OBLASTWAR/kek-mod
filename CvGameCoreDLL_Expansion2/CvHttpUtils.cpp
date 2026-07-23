@@ -75,8 +75,8 @@
 // control anyway to stay off GitHub's diff/secret scanners. "" = header
 // omitted. See KekSecrets.h.example for setup.
 #include "KekSecrets.h"
-#define KEKMOD_MOD_VERSION      "2.0-beta2"
-#define KEKMOD_MOD_VERSION_W    L"2.0-beta2"
+#define KEKMOD_MOD_VERSION      "2.0"
+#define KEKMOD_MOD_VERSION_W    L"2.0"
 #define KEKMOD_JSON_SCHEMA      8
 #define KEKMOD_HTTP_LOG         "kekmod_http.log"
 
