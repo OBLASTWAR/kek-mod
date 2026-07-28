@@ -53,3 +53,7 @@ stage.sh
 
 # Real API key -- see KekSecrets.h.example for setup. Not for public repo.
 CvGameCoreDLL_Expansion2/KekSecrets.h
+
+# dump_syms.exe (rust-minidump) used by package.sh to symbolicate crash
+# reports -- downloaded binary, not source, not for public repo.
+tools/

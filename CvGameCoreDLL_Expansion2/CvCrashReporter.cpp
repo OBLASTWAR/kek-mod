@@ -389,10 +389,19 @@ static void CollectMemStats(KekMemStats* pStats)
 // Dump + sidecar writing
 // ---------------------------------------------------------------------------
 
+// Set once from KekCrashReporter_Heartbeat(), which only the game thread
+// ever calls. Hang dumps pass pep == NULL to MiniDumpWriteDump, so no thread
+// is marked "requesting" -- without this, server-side symbolication has no
+// way to know which of the dump's full thread list is the frozen one.
+// Embedded alongside the crash-path's real exception thread too, so a crash
+// on a background thread can still be told apart from the game thread.
+static volatile DWORD g_dwGameThreadId = 0;
+
 // kind is "crash" now; Phase 2's watchdog will pass "hang" (pep == NULL).
 // On success fills pszDumpPathOut (full path) and returns true.
 static bool WriteMiniDumpFile(EXCEPTION_POINTERS* pep, const char* pszKind,
                               const KekCrashContext* pCtx, const char* pszOs,
+                              DWORD dwGameThreadId,
                               char* pszDumpPathOut, size_t nDumpPathOut)
 {
     pszDumpPathOut[0] = '\0';
@@ -453,10 +462,12 @@ static bool WriteMiniDumpFile(EXCEPTION_POINTERS* pep, const char* pszKind,
                 "os: %s\n"
                 "turn: %d\nnetworkMP: %d\nnumHumans: %d\n"
                 "gameId: %s\nmapScript: %s\n"
+                "gameThreadId: %lu\n"
                 "dbghelp: %s\n",
                 pszKind, CvHttp_GetModVersion(), pszOs,
                 pCtx->iTurn, pCtx->iNetworkMP, pCtx->iNumHumans,
                 pCtx->szGameId, pCtx->szMapScript,
+                (unsigned long)dwGameThreadId,
                 g_szDbgHelpPath[0] ? g_szDbgHelpPath : "(not loaded)");
 
     MINIDUMP_USER_STREAM userStream;
@@ -493,7 +504,8 @@ static void WriteSidecarJson(const char* pszDumpPath, const char* pszKind,
                              DWORD dwExceptionCode, const char* pszModule,
                              DWORD dwOffset, DWORD dwStallMs,
                              const KekCrashContext* pCtx,
-                             const char* pszOs, const KekMemStats* pMem)
+                             const char* pszOs, const KekMemStats* pMem,
+                             DWORD dwGameThreadId)
 {
     if (pszDumpPath[0] == '\0')
         return;
@@ -527,14 +539,16 @@ static void WriteSidecarJson(const char* pszDumpPath, const char* pszKind,
         "\"memCommittedKB\":%u,"
         "\"memCommittedLowKB\":%u,"
         "\"memLargestFreeKB\":%u,"
-        "\"memLargestFreeLowKB\":%u"
+        "\"memLargestFreeLowKB\":%u,"
+        "\"gameThreadId\":%u"
         "}\n",
         pszKind, CvHttp_GetModVersion(), (unsigned)dwExceptionCode,
         szModuleClean, (unsigned)dwOffset, (unsigned)dwStallMs, pszOs,
         pCtx->iTurn, pCtx->iNetworkMP, pCtx->iNumHumans,
         pCtx->szGameId, pCtx->szMapScript, pCtx->szSteamId,
         (unsigned)pMem->committedKB, (unsigned)pMem->committedLowKB,
-        (unsigned)pMem->largestFreeKB, (unsigned)pMem->largestFreeLowKB);
+        (unsigned)pMem->largestFreeKB, (unsigned)pMem->largestFreeLowKB,
+        (unsigned)dwGameThreadId);
 
     HANDLE hFile = CreateFileA(szJsonPath, GENERIC_WRITE, 0, NULL,
                                CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -652,10 +666,11 @@ static LONG WINAPI KekCrashFilter(EXCEPTION_POINTERS* pExceptionInfo)
 
     static char s_szDumpPath[MAX_PATH];
     bool bDumpOk = WriteMiniDumpFile(pExceptionInfo, "crash", &s_ctx, s_szOs,
+                                     g_dwGameThreadId,
                                      s_szDumpPath, sizeof(s_szDumpPath));
 
     WriteSidecarJson(s_szDumpPath, "crash", exceptionCode, szCrashModule,
-                     dwOffset, 0, &s_ctx, s_szOs, &s_mem);
+                     dwOffset, 0, &s_ctx, s_szOs, &s_mem, g_dwGameThreadId);
 
     // Dialog. Two flavors like CP: our DLL (actionable bug report) vs
     // elsewhere in the process (often 32-bit address exhaustion).
@@ -785,10 +800,11 @@ static void WriteHangDump(DWORD dwStallMs)
     CollectMemStats(&s_mem);
 
     static char s_szDumpPath[MAX_PATH];
-    WriteMiniDumpFile(NULL, "hang", &s_ctx, s_szOs, s_szDumpPath, sizeof(s_szDumpPath));
+    WriteMiniDumpFile(NULL, "hang", &s_ctx, s_szOs, g_dwGameThreadId,
+                      s_szDumpPath, sizeof(s_szDumpPath));
 
     WriteSidecarJson(s_szDumpPath, "hang", 0, "", 0, dwStallMs,
-                     &s_ctx, s_szOs, &s_mem);
+                     &s_ctx, s_szOs, &s_mem, g_dwGameThreadId);
 
     char szLog[160];
     _snprintf_s(szLog, sizeof(szLog), _TRUNCATE,
@@ -849,6 +865,8 @@ static DWORD WINAPI KekWatchdogThreadProc(LPVOID)
 void KekCrashReporter_Heartbeat()
 {
     g_dwLastHeartbeatTick = GetTickCount();
+    if (!g_dwGameThreadId)
+        g_dwGameThreadId = GetCurrentThreadId();   // only the game thread calls this
     if (!g_lArmed)
         InterlockedExchange(&g_lArmed, 1);
 }
