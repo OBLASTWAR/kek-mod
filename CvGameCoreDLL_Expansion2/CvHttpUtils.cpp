@@ -1932,13 +1932,15 @@ static int CountAliveHumanPlayers()
     return iCount;
 }
 
-// Telemetry is for real multiplayer sessions only. Bail out for single
-// player / hotseat / PBEM entirely (isGameMultiPlayer() false), and for a
-// networked MP game that has degenerated to one remaining human (everyone
-// else quit to AI) -- both are solo sessions and neither should phone home.
+// Telemetry is for real networked multiplayer sessions only. Bail out for
+// single player / hotseat / PBEM entirely -- isGameMultiPlayer() is true
+// for hotseat and PBEM too, so isNetworkMultiPlayer() is the one that
+// actually excludes them -- and for a networked MP game that has
+// degenerated to one remaining human (everyone else quit to AI); both are
+// solo sessions and neither should phone home.
 static bool ShouldSendTelemetry()
 {
-    if (!GC.getGame().isGameMultiPlayer())
+    if (!GC.getGame().isNetworkMultiPlayer())
         return false;
     return CountAliveHumanPlayers() > 1;
 }
