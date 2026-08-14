@@ -56,7 +56,10 @@
 // ---------------------------------------------------------------------------
 #define KEKMOD_HTTP_HOST_PROD   L"saves.ww3.cx"                // Cloudflare edge
 #define KEKMOD_HTTP_PORT_PROD   443
-#define KEKMOD_HTTP_HOST_DEV    L"192.168.2.61"                // GDR dev box, LAN
+// Dev box moved 2026-08-14: CT 113 @ .61 (Debian 11) -> CT 114 @ .129 (Ubuntu 24.04).
+// Because the host is baked in, DEV DLLs built before that date still point at .61
+// and must be rebuilt to talk to the new box.
+#define KEKMOD_HTTP_HOST_DEV    L"192.168.2.129"               // GDR dev box, LAN
 #define KEKMOD_HTTP_PORT_DEV    8080
 
 // The VS2008-era SDK's winhttp.h predates these; values match the Win8+ SDK.
