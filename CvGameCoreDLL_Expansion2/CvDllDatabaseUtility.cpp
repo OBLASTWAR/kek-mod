@@ -1,5 +1,5 @@
 /*	-------------------------------------------------------------------------------------------------------
-	© 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
+	ï¿½ 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
 	Sid Meier's Civilization V, Civ, Civilization, 2K Games, Firaxis Games, Take-Two Interactive Software 
 	and their respective logos are all trademarks of Take-Two interactive Software, Inc.  
 	All other marks and trademarks are the property of their respective owners.  
@@ -577,7 +577,7 @@ bool CvDllDatabaseUtility::ValidateGameDatabase()
 
 
 #define ValidateCount(func) if(func() <= 0){bError = true, LogMsg("ERROR: %s <= 0", #func);}
-#define ValidateVectorSize(vec) ValidateCount(gc.##vec);
+#define ValidateVectorSize(vec) ValidateCount(gc.vec);
 bool CvDllDatabaseUtility::ValidatePrefetchProcess()
 {
 	bool bError = false;

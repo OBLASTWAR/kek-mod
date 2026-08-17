@@ -1,5 +1,5 @@
 /*	-------------------------------------------------------------------------------------------------------
-	© 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
+	ï¿½ 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
 	Sid Meier's Civilization V, Civ, Civilization, 2K Games, Firaxis Games, Take-Two Interactive Software 
 	and their respective logos are all trademarks of Take-Two interactive Software, Inc.  
 	All other marks and trademarks are the property of their respective owners.  
@@ -39,7 +39,7 @@ public:
 
 	//!Allocates an array to Count(szTableName) and zero's memory.
 	template<typename T>
-void InitializeArray(T*& pArray, const char* szTableName, T default = (T)0);
+void InitializeArray(T*& pArray, const char* szTableName, T defaultVal = (T)0);
 
 	bool Initialize2DArray(int**& pArray, const char* szTable1Name, const char* szTable2Name, int iDefault = 0);
 	static void SafeDelete2DArray(int**& pArray);
@@ -153,7 +153,7 @@ inline void CvDatabaseUtility::InitializeArray(float*& pArray, const size_t coun
 }
 //------------------------------------------------------------------------------
 template<typename T>
-inline void CvDatabaseUtility::InitializeArray(T*& pArray, const char* szTableName, T default)
+inline void CvDatabaseUtility::InitializeArray(T*& pArray, const char* szTableName, T defaultVal)
 {
 	size_t count = MaxRows(szTableName);
 
@@ -166,7 +166,7 @@ inline void CvDatabaseUtility::InitializeArray(T*& pArray, const char* szTableNa
 	if(count == 0)
 		count = 1;
 
-	InitializeArray(pArray, count, default);
+	InitializeArray(pArray, count, defaultVal);
 }
 
 #endif //CVDATABASEUTILITY_H

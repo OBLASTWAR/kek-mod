@@ -1,5 +1,5 @@
 /*	-------------------------------------------------------------------------------------------------------
-	© 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
+	ï¿½ 1991-2012 Take-Two Interactive Software and its subsidiaries.  Developed by Firaxis Games.  
 	Sid Meier's Civilization V, Civ, Civilization, 2K Games, Firaxis Games, Take-Two Interactive Software 
 	and their respective logos are all trademarks of Take-Two interactive Software, Inc.  
 	All other marks and trademarks are the property of their respective owners.  
@@ -53,6 +53,9 @@
 #include <tchar.h>
 #include <assert.h>
 #include <map>
+#ifndef _SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS
+#define _SILENCE_STDEXT_HASH_DEPRECATION_WARNINGS
+#endif
 #include <hash_map>
 #include <limits>
 #include <unordered_set>
@@ -84,6 +87,7 @@ typedef wchar_t          wchar;
 
 #include <FireWorks/FDefNew.h>
 #include <FireWorks/FFireTypes.h>
+#include <FireWorks/FMemHooks.h>
 #include <FireWorks/FAssert.h>
 #include <Fireworks/FILogFile.h>
 #include <Fireworks/FFreeListArrayBase.h>

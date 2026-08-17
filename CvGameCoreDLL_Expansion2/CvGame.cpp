@@ -61,7 +61,7 @@
 #include "CvCityManager.h"
 
 #if defined (DEV_RECORDING_STATISTICS) || defined (REPLAY_EVENTS)
-# include <winsqlite3.h>
+# include <winsqlite/winsqlite3.h>
 # pragma comment(lib, "winsqlite3.lib")
 #endif
 
@@ -896,6 +896,8 @@ void CvGame::regenerateMap()
 	GC.GetEngineUserInterface()->setCycleSelectionCounter(1);
 
 	gDLL->AutoSave(true);
+
+
 }
 
 

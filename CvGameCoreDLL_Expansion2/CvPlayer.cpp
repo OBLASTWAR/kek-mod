@@ -12387,7 +12387,7 @@ void CvPlayer::DoResetCityRevoltCounter()
 		CvNotifications* pNotifications = GetNotifications();
 		if(pNotifications && isHuman())
 		{
-			Localization::String strMessage = GetLocalizedText("TXT_KEY_NOTIFICATION_POSSIBLE_CITY_REVOLT", iTurns, pMostUnhappyCity->getName(), GET_PLAYER(eRecipient).getCivilizationShortDescription());
+			Localization::String strMessage = GetLocalizedText("TXT_KEY_NOTIFICATION_POSSIBLE_CITY_REVOLT", iTurns, pMostUnhappyCity->getName(), GET_PLAYER(eRecipient).getCivilizationShortDescription()).GetCString();
 			Localization::String strSummary = Localization::Lookup("TXT_KEY_NOTIFICATION_POSSIBLE_CITY_REVOLT_SUMMARY");
 			pNotifications->Add(NOTIFICATION_CITY_REVOLT_POSSIBLE, strMessage.toUTF8(), strSummary.toUTF8(), pMostUnhappyCity->getX(), pMostUnhappyCity->getY(), -1);
 		}
