@@ -53,3 +53,7 @@ stage.sh
 
 # Real API key -- see KekSecrets.h.example for setup. Not for public repo.
 CvGameCoreDLL_Expansion2/KekSecrets.h
+
+# Crash-dump tooling (dump_syms.exe, minidump-stackwalk) -- 24 MB of
+# prebuilt binaries, kept local only like the other build/deploy helpers.
+tools/
