@@ -18,8 +18,9 @@
 #
 # Steps: find the game -> install EUI into Assets/DLC/UI_bc1 (unless an EUI
 # variant is already there) -> replace any "KEK Mod v*" folder with the chosen
-# release -> run ui_check.sh (the Linux port of ui_check.bat) -> clear the
-# game's cache inside the Proton prefix.
+# release -> run ui_check.sh (the Linux port of ui_check.bat) -> add Fish Map
+# Script to Assets/Maps if missing -> clear the game's cache inside the
+# Proton prefix.
 #
 # EUI has no stable download URL (see installer/EuiExtra.cs), so it is never
 # fetched: an existing Assets/DLC/UI_bc1 is kept, else the zip comes from
@@ -203,7 +204,29 @@ bash "$UI_CHECK" "$DLC/$KEK_FOLDER" >"$WORK/ui_check.log" 2>&1 \
     || { cat "$WORK/ui_check.log" >&2; die "ui_check.sh failed"; }
 tail -n 1 "$WORK/ui_check.log"
 
-# ── 6. Cache ──────────────────────────────────────────────────────────────────
+# ── 6. Fish Map Script ───────────────────────────────────────────────────────
+# Same as installer/MapScriptExtra.cs: a best-effort bonus from its own repo,
+# newest release, skipped if the folder already exists. Failures only warn.
+FISH_DIR="$CIV_DIR/Assets/Maps/Fish Map Script"
+install_fish_map() {
+    local url
+    curl -fsSL -H "Accept: application/vnd.github+json" -o "$WORK/fish.json" \
+        "https://api.github.com/repos/OBLASTWAR/pangea-stratbal/releases?per_page=1" || return 1
+    url="$(python3 -c 'import json,sys; print(json.load(open(sys.argv[1]))[0]["assets"][0]["browser_download_url"])' \
+        "$WORK/fish.json")" || return 1
+    curl -fsSL -o "$WORK/fish.zip" "$url" || return 1
+    extract_zip "$WORK/fish.zip" "$CIV_DIR/Assets/Maps" || return 1
+    [[ -d "$FISH_DIR" ]]
+}
+if [[ -d "$FISH_DIR" ]]; then
+    echo "[MAP] Fish Map Script already installed, skipping"
+elif install_fish_map; then
+    echo "[MAP] Fish Map Script installed"
+else
+    echo "[MAP] WARNING: couldn't install Fish Map Script (continuing)" >&2
+fi
+
+# ── 7. Cache ──────────────────────────────────────────────────────────────────
 if [[ -d "$PREFIX_DOCS/cache" ]]; then
     rm -rf "${PREFIX_DOCS:?}/cache/"*
     echo "[CACHE] cleared"
@@ -212,4 +235,4 @@ else
 fi
 
 echo ""
-echo "Done: $KEK_FOLDER$( [[ "$WANT_EUI" == 1 ]] && echo " + EUI" ). Launch Civ V from Steam (DX9 or DX11)."
+echo "Done: $KEK_FOLDER$( [[ "$WANT_EUI" == 1 ]] && echo " + EUI" )$( [[ -d "$FISH_DIR" ]] && echo " + Fish Map Script" ). Launch Civ V from Steam (DX9 or DX11)."
