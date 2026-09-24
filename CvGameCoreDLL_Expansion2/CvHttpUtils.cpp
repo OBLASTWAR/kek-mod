@@ -34,6 +34,7 @@
 // WinHTTP is a Windows-inbox library -- no extra install needed.
 #include <winhttp.h>
 #pragma comment(lib, "winhttp.lib")
+#pragma comment(lib, "advapi32.lib")   // RegOpenKeyExA/RegQueryValueExA (GetDocumentsPath)
 
 #include <algorithm>
 #include <deque>
@@ -167,18 +168,59 @@ static DWORD          HttpFlags() { return WINHTTP_FLAG_SECURE; }
 #endif
 
 
+// Resolves the user's real "My Documents" folder via the same registry value
+// Explorer itself keeps current (Shell Folders\Personal) -- unlike
+// %USERPROFILE%\Documents, this follows OneDrive Known Folder Move or a
+// manual Documents relocation. Falls back to the %USERPROFILE%\Documents
+// guess only if the registry read fails outright (e.g. locked-down HKCU).
+// CvGame::CopyModDataToMPMP (Community Patch heritage) resolves the MODS
+// folder the same way -- see plan notes for why this is the trusted method.
+static bool GetDocumentsPath(char* pszOut, size_t nLen)
+{
+    HKEY hKey = NULL;
+    if (RegOpenKeyExA(HKEY_CURRENT_USER,
+                       "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders",
+                       0, KEY_READ, &hKey) == ERROR_SUCCESS)
+    {
+        char szValue[MAX_PATH] = {0};
+        DWORD dwType = REG_SZ;
+        DWORD dwSize = sizeof(szValue);
+        LONG lResult = RegQueryValueExA(hKey, "Personal", NULL, &dwType,
+                                        (LPBYTE)szValue, &dwSize);
+        RegCloseKey(hKey);
+        if (lResult == ERROR_SUCCESS && szValue[0] && dwType == REG_EXPAND_SZ)
+        {
+            char szExpanded[MAX_PATH] = {0};
+            if (ExpandEnvironmentStringsA(szValue, szExpanded, sizeof(szExpanded)))
+                strncpy_s(szValue, sizeof(szValue), szExpanded, _TRUNCATE);
+        }
+        if (lResult == ERROR_SUCCESS && szValue[0] &&
+            (dwType == REG_SZ || dwType == REG_EXPAND_SZ))
+        {
+            _snprintf_s(pszOut, nLen, _TRUNCATE, "%s", szValue);
+            return true;
+        }
+    }
+
+    char szProfile[MAX_PATH] = {0};
+    if (!GetEnvironmentVariableA("USERPROFILE", szProfile, sizeof(szProfile)))
+        return false;
+    _snprintf_s(pszOut, nLen, _TRUNCATE, "%s\\Documents", szProfile);
+    return true;
+}
+
 // Returns true and fills pszPathOut + pWriteTimeOut for the most recently
 // written .Civ5Save in the configured saves directory.
 static bool FindMostRecentSave(char* pszPathOut, size_t nPathLen,
                                FILETIME* pWriteTimeOut)
 {
-    char szProfile[MAX_PATH] = {0};
-    if (!GetEnvironmentVariableA("USERPROFILE", szProfile, sizeof(szProfile)))
+    char szDocuments[MAX_PATH] = {0};
+    if (!GetDocumentsPath(szDocuments, sizeof(szDocuments)))
         return false;
 
     char szDir[MAX_PATH]     = {0};
     char szPattern[MAX_PATH] = {0};
-    _snprintf_s(szDir,     sizeof(szDir),     _TRUNCATE, "%s\\Documents%s", szProfile, KEKMOD_SAVES_SUBPATH);
+    _snprintf_s(szDir,     sizeof(szDir),     _TRUNCATE, "%s%s", szDocuments, KEKMOD_SAVES_SUBPATH);
     _snprintf_s(szPattern, sizeof(szPattern), _TRUNCATE, "%s\\*.Civ5Save",  szDir);
 
     WIN32_FIND_DATAA fd;
