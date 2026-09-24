@@ -1,2 +1,6 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Shell scripts must stay LF even on Windows checkouts: ui_check.sh and
+# install-linux.sh ship to Linux players, where CRLF breaks bash.
+*.sh text eol=lf
