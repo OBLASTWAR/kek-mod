@@ -1962,8 +1962,36 @@ static bool LocalPlayerIsUploader(PlayerTypes eActive)
     return false;
 }
 
+static int CountAliveHumanPlayers()
+{
+    int iCount = 0;
+    for (int iJ = 0; iJ < MAX_PLAYERS; iJ++)
+    {
+        CvPlayer& kItPlayer = GET_PLAYER((PlayerTypes)iJ);
+        if (kItPlayer.isAlive() && kItPlayer.isHuman())
+            iCount++;
+    }
+    return iCount;
+}
+
+// Telemetry is for real networked multiplayer sessions only. Bail out for
+// single player / hotseat / PBEM entirely -- isGameMultiPlayer() is true
+// for hotseat and PBEM too, so isNetworkMultiPlayer() is the one that
+// actually excludes them -- and for a networked MP game that has
+// degenerated to one remaining human (everyone else quit to AI); both are
+// solo sessions and neither should phone home.
+static bool ShouldSendTelemetry()
+{
+    if (!GC.getGame().isNetworkMultiPlayer())
+        return false;
+    return CountAliveHumanPlayers() > 1;
+}
+
 void CvHttp_OnTurnAutoSave()
 {
+    if (!ShouldSendTelemetry())
+        return;
+
     PlayerTypes eActive = GC.getGame().getActivePlayer();
     if (eActive == NO_PLAYER)
         return;
@@ -2022,6 +2050,9 @@ void CvHttp_OnTurnAutoSave()
 
 void CvHttp_OnGameEnd()
 {
+    if (!ShouldSendTelemetry())
+        return;
+
     // setWinner runs on every client; every client buffers the final payload,
     // only the uploader flushes it (with backoff -- no later turn heals a
     // game-end payload).
@@ -2053,6 +2084,9 @@ void CvHttp_OnGameEnd()
 
 void CvHttp_OnProposalResolved()
 {
+    if (!ShouldSendTelemetry())
+        return;
+
     // Same rationale as CvHttp_OnGameEnd: a resolved proposal (IRR kicking a
     // leaver, in particular) may be the last thing that happens in a session
     // that never reaches another end-of-turn autosave, so flush now rather
