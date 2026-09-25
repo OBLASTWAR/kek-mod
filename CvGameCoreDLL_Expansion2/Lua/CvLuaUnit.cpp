@@ -26,6 +26,36 @@ void CvLuaUnit::HandleMissingInstance(lua_State* L)
 	luaL_error(L, "Instance no longer exists.");
 }
 //------------------------------------------------------------------------------
+// KEKMOD: A Lua Unit table stores a raw CvUnit*. UI scripts (e.g. EUI's unit
+// flags) can keep that table after the unit is killed, and calling a method on
+// it then reads freed memory (crash in CvUnit::IsGarrisoned during MP turn
+// processing). Record owner/ID at push time and re-resolve them on every call.
+void CvLuaUnit::PushInstanceTags(lua_State* L, int t, CvUnit* pkUnit)
+{
+	lua_pushinteger(L, pkUnit->getOwner());
+	lua_setfield(L, t, "__owner");
+	lua_pushinteger(L, pkUnit->GetID());
+	lua_setfield(L, t, "__id");
+}
+//------------------------------------------------------------------------------
+bool CvLuaUnit::IsInstanceTagCurrent(lua_State* L, int t, CvUnit* pkUnit)
+{
+	lua_getfield(L, t, "__owner");
+	lua_getfield(L, t, "__id");
+	const bool bTagged = lua_isnumber(L, -2) && lua_isnumber(L, -1);
+	const int iOwner = lua_tointeger(L, -2);
+	const int iID = lua_tointeger(L, -1);
+	lua_pop(L, 2);
+
+	if(!bTagged)
+		return true;
+
+	if(iOwner < 0 || iOwner >= MAX_PLAYERS)
+		return false;
+
+	return GET_PLAYER((PlayerTypes)iOwner).getUnit(iID) == pkUnit;
+}
+//------------------------------------------------------------------------------
 void CvLuaUnit::PushMethods(lua_State* L, int t)
 {
 	Method(IsNone);

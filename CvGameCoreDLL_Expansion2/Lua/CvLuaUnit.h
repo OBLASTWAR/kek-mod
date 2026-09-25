@@ -21,6 +21,10 @@ public:
 	//! Error handle for missing instances
 	static void HandleMissingInstance(lua_State* L);
 
+	//! KEKMOD: Tag unit tables with owner/ID so stale units error instead of crashing
+	static void PushInstanceTags(lua_State* L, int t, CvUnit* pkUnit);
+	static bool IsInstanceTagCurrent(lua_State* L, int t, CvUnit* pkUnit);
+
 	//! Gets the type name
 	static const char* GetTypeName();
 
