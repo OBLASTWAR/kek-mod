@@ -153,8 +153,29 @@ static bool EnsureCrashlogsDir()
 // Game context, captured SEH-guarded
 // ---------------------------------------------------------------------------
 
+// Written by KekCrashReporter_SetPhase() on the game thread, read by the
+// crash filter and the watchdog thread -- plain aligned 32-bit volatiles.
+static volatile LONG  g_lPhase       = KEK_PHASE_FRONTEND;
+static volatile DWORD g_dwPhaseTick  = 0;   // GetTickCount() when g_lPhase last changed
+
+// Sidecar wire values -- part of the X-Crash-Meta contract, don't rename.
+static const char* GetPhaseName(LONG lPhase)
+{
+    switch (lPhase)
+    {
+    case KEK_PHASE_FRONTEND: return "frontend";
+    case KEK_PHASE_LOADING:  return "loading";
+    case KEK_PHASE_INGAME:   return "ingame";
+    case KEK_PHASE_TURN:     return "turn";
+    case KEK_PHASE_SHUTDOWN: return "shutdown";
+    default:                 return "unknown";
+    }
+}
+
 struct KekCrashContext
 {
+    const char* pszPhase;   // GetPhaseName() literal, never NULL
+    DWORD dwPhaseMs;        // time spent in that phase so far
     int  iTurn;             // -1 = unknown / no game
     int  iNetworkMP;        // -1 unknown, else 0/1
     int  iNumHumans;        // -1 unknown
@@ -237,6 +258,10 @@ static void ReadContextUnsafe(KekCrashContext* p)
 static void CaptureGameContext(KekCrashContext* p)
 {
     memset(p, 0, sizeof(*p));
+    // Phase first and outside the __try: it's our own static state, so it
+    // survives even when every game-state read below faults.
+    p->pszPhase  = GetPhaseName(g_lPhase);
+    p->dwPhaseMs = GetTickCount() - g_dwPhaseTick;   // unsigned: wrap-safe
     p->iTurn = -1;
     p->iNetworkMP = -1;
     p->iNumHumans = -1;
@@ -460,11 +485,13 @@ static bool WriteMiniDumpFile(EXCEPTION_POINTERS* pep, const char* pszKind,
                 "kek-mod %s report\n"
                 "modVersion: %s\n"
                 "os: %s\n"
+                "phase: %s (%lu ms)\n"
                 "turn: %d\nnetworkMP: %d\nnumHumans: %d\n"
                 "gameId: %s\nmapScript: %s\n"
                 "gameThreadId: %lu\n"
                 "dbghelp: %s\n",
                 pszKind, CvHttp_GetModVersion(), pszOs,
+                pCtx->pszPhase, (unsigned long)pCtx->dwPhaseMs,
                 pCtx->iTurn, pCtx->iNetworkMP, pCtx->iNumHumans,
                 pCtx->szGameId, pCtx->szMapScript,
                 (unsigned long)dwGameThreadId,
@@ -525,6 +552,8 @@ static void WriteSidecarJson(const char* pszDumpPath, const char* pszKind,
         "{"
         "\"kind\":\"%s\","
         "\"modVersion\":\"%s\","
+        "\"phase\":\"%s\","
+        "\"phaseMs\":%u,"
         "\"exceptionCode\":\"0x%08X\","
         "\"module\":\"%s\","
         "\"offset\":\"0x%08X\","
@@ -542,7 +571,9 @@ static void WriteSidecarJson(const char* pszDumpPath, const char* pszKind,
         "\"memLargestFreeLowKB\":%u,"
         "\"gameThreadId\":%u"
         "}\n",
-        pszKind, CvHttp_GetModVersion(), (unsigned)dwExceptionCode,
+        pszKind, CvHttp_GetModVersion(),
+        pCtx->pszPhase, (unsigned)pCtx->dwPhaseMs,
+        (unsigned)dwExceptionCode,
         szModuleClean, (unsigned)dwOffset, (unsigned)dwStallMs, pszOs,
         pCtx->iTurn, pCtx->iNetworkMP, pCtx->iNumHumans,
         pCtx->szGameId, pCtx->szMapScript, pCtx->szSteamId,
@@ -684,7 +715,7 @@ static LONG WINAPI KekCrashFilter(EXCEPTION_POINTERS* pExceptionInfo)
         "--Crash details--\n"
         "kek-mod version: %s\n"
         "Exception: 0x%08X (%s) in %s+0x%08X\n"
-        "Turn: %d   MP: %d   Humans: %d\n"
+        "Phase: %s   Turn: %d   MP: %d   Humans: %d\n"
         "OS: %s\n"
         "Memory (sub-2GB): %u MB committed, largest free block %u MB\n"
         "\n"
@@ -705,7 +736,7 @@ static LONG WINAPI KekCrashFilter(EXCEPTION_POINTERS* pExceptionInfo)
         CvHttp_GetModVersion(),
         (unsigned)exceptionCode, GetExceptionDescription(exceptionCode),
         GetOnlyFilename(szCrashModule), (unsigned)dwOffset,
-        s_ctx.iTurn, s_ctx.iNetworkMP, s_ctx.iNumHumans,
+        s_ctx.pszPhase, s_ctx.iTurn, s_ctx.iNetworkMP, s_ctx.iNumHumans,
         s_szOs,
         (unsigned)(s_mem.committedLowKB >> 10),
         (unsigned)(s_mem.largestFreeLowKB >> 10),
@@ -726,12 +757,16 @@ static LONG WINAPI KekCrashFilter(EXCEPTION_POINTERS* pExceptionInfo)
 // stale past the threshold, dump the live process (all thread stacks, same
 // writer as the crash path) and disarm for the rest of the session. Never
 // kills the process -- it may still recover.
+//
+// Armed only while the phase is INGAME/TURN. 2.0 armed on the first
+// heartbeat and never disarmed, so every menu or load-screen stall after
+// the first game was reported as a hang: 71 of the 86 hangs 2.0 uploaded
+// were at turn 0 with no game-logic frames on any thread.
 // ---------------------------------------------------------------------------
 
 static const DWORD KEK_HANG_THRESHOLD_MS = 90000;
 
 static volatile DWORD g_dwLastHeartbeatTick = 0;   // written by the game thread
-static volatile LONG  g_lArmed              = 0;   // set on the first heartbeat
 static volatile LONG  g_lHangDumped         = 0;   // one hang dump per session
 static HANDLE         g_hWatchdogShutdownEvent = NULL;
 static HANDLE         g_hWatchdogThread         = NULL;
@@ -829,8 +864,14 @@ static DWORD WINAPI KekWatchdogThreadProc(LPVOID)
 
         if (g_lHangDumped)
             continue;                  // already reported once this session
-        if (!g_lArmed)
-            continue;                  // no game yet (menus/loading)
+        LONG lPhase = g_lPhase;
+        if (lPhase != KEK_PHASE_INGAME && lPhase != KEK_PHASE_TURN)
+        {
+            // Menus/loading/teardown: update() legitimately isn't ticking.
+            // Forget any stall in progress so re-entering a game starts clean.
+            bHaveSeenHeartbeat = false;
+            continue;
+        }
         if (IsDebuggerPresent())
             continue;                  // paused under a debugger looks like a hang
 
@@ -862,13 +903,23 @@ static DWORD WINAPI KekWatchdogThreadProc(LPVOID)
     }
 }
 
+void KekCrashReporter_SetPhase(KekCrashPhase ePhase)
+{
+    if (g_lPhase == (LONG)ePhase)
+        return;
+    g_dwPhaseTick = GetTickCount();
+    InterlockedExchange(&g_lPhase, (LONG)ePhase);
+}
+
 void KekCrashReporter_Heartbeat()
 {
+    // Tick before phase: the watchdog must never see INGAME paired with a
+    // heartbeat left over from the previous game.
     g_dwLastHeartbeatTick = GetTickCount();
     if (!g_dwGameThreadId)
         g_dwGameThreadId = GetCurrentThreadId();   // only the game thread calls this
-    if (!g_lArmed)
-        InterlockedExchange(&g_lArmed, 1);
+    if (g_lPhase != KEK_PHASE_TURN)
+        KekCrashReporter_SetPhase(KEK_PHASE_INGAME);
 }
 
 void KekCrashReporter_Shutdown()
@@ -989,7 +1040,7 @@ struct KekPendingReport
     char szDumpPath[MAX_PATH];
     char szJsonPath[MAX_PATH];
     char szKind[16];       // "crash" | "hang" | "unknown"
-    char szMetaJson[600];  // sidecar contents, trimmed -- the upload's X-Crash-Meta
+    char szMetaJson[1024]; // sidecar contents, trimmed -- the upload's X-Crash-Meta
     DWORD dwDumpSizeBytes;
     DWORD dwJsonSizeBytes;
 };
@@ -1243,6 +1294,7 @@ void KekCrashReporter_Install()
 void KekCrashReporter_Install() {}
 void KekCrashReporter_Shutdown() {}
 void KekCrashReporter_Heartbeat() {}
+void KekCrashReporter_SetPhase(KekCrashPhase) {}
 void KekCrashReporter_CheckTestTrigger() {}
 
 #endif

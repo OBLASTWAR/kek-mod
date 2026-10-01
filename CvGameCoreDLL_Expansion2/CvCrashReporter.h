@@ -30,8 +30,26 @@ void KekCrashReporter_Shutdown();
 
 // Call from the top of CvGame::update() (game thread), every tick. One
 // volatile write -- zero sync cost, zero desync surface. The watchdog thread
-// polls the age of this heartbeat to detect a stalled game thread.
+// polls the age of this heartbeat to detect a stalled game thread. Also
+// moves the phase to KEK_PHASE_INGAME (unless a turn is mid-process).
 void KekCrashReporter_Heartbeat();
+
+// What the game was doing, stamped into every report ("phase" + "phaseMs"
+// in the sidecar, so the server can tell a lobby crash from a mid-game one
+// -- turn/numHumans alone can't: both read 0 in the lobby AND while loading).
+// The hang watchdog only runs in INGAME/TURN: CvGame::update() doesn't tick
+// in menus or while loading, so a stale heartbeat there is not a hang.
+enum KekCrashPhase
+{
+	KEK_PHASE_FRONTEND = 0,	// no game: boot, menus, lobby, after exit to menu
+	KEK_PHASE_LOADING,		// CvGame::init / CvGame::Read until the first update tick
+	KEK_PHASE_INGAME,		// CvGame::update() ticking
+	KEK_PHASE_TURN,			// inside CvGame::doTurn() (turn rollover)
+	KEK_PHASE_SHUTDOWN		// CvGlobals::uninit -- DLL being torn down
+};
+
+// Game thread only. Cheap (two volatile writes); safe to call every frame.
+void KekCrashReporter_SetPhase(KekCrashPhase ePhase);
 
 // DEV BUILDS ONLY (KEKMOD_BUILD_DEV; compiled to a no-op in prod).
 // Polled from CvGame::update(): if crashlogs\crashtest.txt exists, the
