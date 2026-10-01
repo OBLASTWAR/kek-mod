@@ -492,6 +492,35 @@ void CvLuaCity::HandleMissingInstance(lua_State* L)
 	DefaultHandleMissingInstance(L);
 }
 //------------------------------------------------------------------------------
+// KEKMOD: Same problem as CvLuaUnit. A captured or razed city is deleted (capture
+// builds a new CvCity), but UI scripts (e.g. EUI's CityBannerManager) can keep the
+// old Lua City table. Record owner/ID at push time and re-resolve them on every call.
+void CvLuaCity::PushInstanceTags(lua_State* L, int t, CvCity* pkCity)
+{
+	lua_pushinteger(L, pkCity->getOwner());
+	lua_setfield(L, t, "__owner");
+	lua_pushinteger(L, pkCity->GetID());
+	lua_setfield(L, t, "__id");
+}
+//------------------------------------------------------------------------------
+bool CvLuaCity::IsInstanceTagCurrent(lua_State* L, int t, CvCity* pkCity)
+{
+	lua_getfield(L, t, "__owner");
+	lua_getfield(L, t, "__id");
+	const bool bTagged = lua_isnumber(L, -2) && lua_isnumber(L, -1);
+	const int iOwner = lua_tointeger(L, -2);
+	const int iID = lua_tointeger(L, -1);
+	lua_pop(L, 2);
+
+	if(!bTagged)
+		return true;
+
+	if(iOwner < 0 || iOwner >= MAX_PLAYERS)
+		return false;
+
+	return GET_PLAYER((PlayerTypes)iOwner).getCity(iID) == pkCity;
+}
+//------------------------------------------------------------------------------
 const char* CvLuaCity::GetTypeName()
 {
 	return "City";

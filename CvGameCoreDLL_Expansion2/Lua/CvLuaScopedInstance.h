@@ -25,6 +25,16 @@ public:
 	//! Used by CvLuaMethodWrapper to know where first argument is.
 	static const int GetStartingArgIndex();
 
+	//! KEKMOD: Hooks for Derived to tag instance table t and later verify the tag.
+	//! Lua holds raw pointers, so a table kept past its object's deletion points at
+	//! freed memory. Derived classes whose objects can die mid-game (CvLuaUnit)
+	//! override these so GetInstance rejects stale tables instead of crashing.
+	static void PushInstanceTags(lua_State* L, int t, InstanceType* pkType) {}
+	static bool IsInstanceTagCurrent(lua_State* L, int t, InstanceType* pkType)
+	{
+		return true;
+	}
+
 protected:
 	static void DefaultHandleMissingInstance(lua_State* L);
 };
@@ -88,6 +98,14 @@ void CvLuaScopedInstance<Derived, InstanceType>::Push(lua_State* L, InstanceType
 
 		lua_rawget(L, -2);					//retrieve type.__instances[pkType]
 
+		//KEKMOD: A cached table for this address may belong to a deleted object whose
+		//memory was reused. Replace it so old references stay stale.
+		if(!lua_isnil(L, -1) && !Derived::IsInstanceTagCurrent(L, lua_gettop(L), pkType))
+		{
+			lua_pop(L, 1);
+			lua_pushnil(L);
+		}
+
 		if(lua_isnil(L, -1))
 		{
 			lua_pop(L, 1);
@@ -96,6 +114,7 @@ void CvLuaScopedInstance<Derived, InstanceType>::Push(lua_State* L, InstanceType
 			lua_createtable(L, 0, 1);
 			lua_pushlightuserdata(L, pkType);
 			lua_setfield(L, -2, "__instance");
+			Derived::PushInstanceTags(L, lua_gettop(L), pkType);
 
 			lua_createtable(L, 0, 1);			// create mt
 			lua_pushstring(L, "__index");
@@ -127,6 +146,11 @@ InstanceType* CvLuaScopedInstance<Derived, InstanceType>::GetInstance(lua_State*
 {
 	const int stack_size = lua_gettop(L);
 	bool bFail = true;
+	bool bStale = false;
+
+	//KEKMOD: Make idx absolute; IsInstanceTagCurrent pushes onto the stack.
+	if(idx < 0 && idx > LUA_REGISTRYINDEX)
+		idx = stack_size + idx + 1;
 
 	InstanceType* pkInstance = NULL;
 	if(lua_type(L, idx) == LUA_TTABLE)
@@ -137,14 +161,27 @@ InstanceType* CvLuaScopedInstance<Derived, InstanceType>::GetInstance(lua_State*
 			pkInstance = static_cast<InstanceType*>(lua_touserdata(L, -1));
 			if(pkInstance)
 			{
-				bFail = false;
+				//KEKMOD: Object was deleted after this table was handed to Lua.
+				if(!Derived::IsInstanceTagCurrent(L, idx, pkInstance))
+				{
+					pkInstance = NULL;
+					bStale = true;
+				}
+				else
+				{
+					bFail = false;
+				}
 			}
 		}
 	}
 
 	lua_settop(L, stack_size);
 
-	if(bFail && bErrorOnFail)
+	if(bStale && bErrorOnFail)
+	{
+		Derived::HandleMissingInstance(L);
+	}
+	else if(bFail && bErrorOnFail)
 	{
 		if(idx == 1)
 			luaL_error(L, "Not a valid instance.  Either the instance is NULL or you used '.' instead of ':'.");
