@@ -183,6 +183,8 @@ void CvGame::init(HandicapTypes eHandicap)
 	//--------------------------------
 	// Init saved data
 	reset(eHandicap);
+	// After reset(): its uninit() just set FRONTEND. Until the first update() tick.
+	KekCrashReporter_SetPhase(KEK_PHASE_LOADING);
 
 	//--------------------------------
 	// Init containers
@@ -945,6 +947,10 @@ void CvGame::DoGameStarted()
 //	--------------------------------------------------------------------------------
 void CvGame::uninit()
 {
+	// Game torn down (exit to menu, or the reset() at the top of init/Read):
+	// stops the hang watchdog until the next game's first update() tick.
+	KekCrashReporter_SetPhase(KEK_PHASE_FRONTEND);
+
 	CvGoodyHuts::Uninit();
 	CvBarbarians::Uninit();
 
@@ -1545,7 +1551,11 @@ void CvGame::update()
 			if(getNumGameTurnActive() == 0)
 			{
 				if(gDLL->CanAdvanceTurn())
+				{
+					KekCrashReporter_SetPhase(KEK_PHASE_TURN);
 					doTurn();
+					KekCrashReporter_SetPhase(KEK_PHASE_INGAME);
+				}
 			}
 
 			if(!isPaused())	// Check for paused again, the doTurn call might have called something that paused the game and we don't want an update to sneak through
@@ -10186,6 +10196,8 @@ void CvGame::Read(FDataStream& kStream)
 	int iI;
 
 	reset(NO_HANDICAP);
+	// After reset(): its uninit() just set FRONTEND. Until the first update() tick.
+	KekCrashReporter_SetPhase(KEK_PHASE_LOADING);
 
 	// Version number to maintain backwards compatibility
 	uint uiVersion;

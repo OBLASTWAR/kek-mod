@@ -2015,6 +2015,8 @@ void CvGlobals::init()
 //
 void CvGlobals::uninit()
 {
+	KekCrashReporter_SetPhase(KEK_PHASE_SHUTDOWN);
+
 	CvPlayerAI::freeStatics();
 	CvTeam::freeStatics();
 
