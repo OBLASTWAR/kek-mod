@@ -3209,7 +3209,8 @@ int CvLuaPlayer::lGetNumInternationalTradeRoutesAvailable(lua_State* L)
 int CvLuaPlayer::lGetPotentialInternationalTradeRouteDestinations(lua_State* L)
 {
 	CvPlayerAI* pkPlayer = GetInstance(L);
-	CvUnit* pkUnit = CvLuaUnit::GetInstance(L, 2, false);
+	//KEKMOD: Required, not optional -- pkUnit is dereferenced below, so a nil or deleted unit must raise a Lua error rather than crash.
+	CvUnit* pkUnit = CvLuaUnit::GetInstance(L, 2);
 	CvPlot* pkUnitPlot = pkUnit->plot();
 
 	CvPlayerTrade* pPlayerTrade = pkPlayer->GetTrade();
@@ -3623,7 +3624,8 @@ int CvLuaPlayer::lGetInternationalTradeRouteScience(lua_State* L)
 int CvLuaPlayer::lGetPotentialTradeUnitNewHomeCity(lua_State* L)
 {
 	CvPlayerAI* pkPlayer = GetInstance(L);
-	CvUnit* pkUnit = CvLuaUnit::GetInstance(L, 2, false);
+	//KEKMOD: Required, not optional -- pkUnit is dereferenced below, so a nil or deleted unit must raise a Lua error rather than crash.
+	CvUnit* pkUnit = CvLuaUnit::GetInstance(L, 2);
 	CvPlot* pkUnitPlot = pkUnit->plot();
 
 	lua_createtable(L, 0, 0);
@@ -3664,7 +3666,8 @@ int CvLuaPlayer::lGetPotentialTradeUnitNewHomeCity(lua_State* L)
 int CvLuaPlayer::lGetPotentialAdmiralNewPort(lua_State* L)
 {
 	CvPlayerAI* pkPlayer = GetInstance(L);
-	CvUnit* pkUnit = CvLuaUnit::GetInstance(L, 2, false);
+	//KEKMOD: Required, not optional -- pkUnit is dereferenced below, so a nil or deleted unit must raise a Lua error rather than crash.
+	CvUnit* pkUnit = CvLuaUnit::GetInstance(L, 2);
 	CvPlot* pkUnitPlot = pkUnit->plot();
 
 	lua_createtable(L, 0, 0);
