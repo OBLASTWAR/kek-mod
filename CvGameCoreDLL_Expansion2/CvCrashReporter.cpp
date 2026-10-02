@@ -719,15 +719,10 @@ static LONG WINAPI KekCrashFilter(EXCEPTION_POINTERS* pExceptionInfo)
         "OS: %s\n"
         "Memory (sub-2GB): %u MB committed, largest free block %u MB\n"
         "\n"
-        "%s\n"
-        "\n"
-        "Please post BOTH files (.dmp and .json) in the kek Discord along "
-        "with what was happening in game.",
+        "%s",
         bFromDLL
-            ? "The game crashed due to an error in the kek-mod DLL. A crash "
-              "report was saved -- posting it lets us fix this for everyone.\n"
-            : "The game crashed outside the kek-mod DLL. A crash report was "
-              "saved anyway -- it may still identify the cause.\n"
+            ? "The game crashed due to an error in the kek-mod DLL.\n"
+            : "The game crashed outside the kek-mod DLL.\n"
               "\n"
               "Civ 5 is a 32-bit program and commonly crashes when it runs "
               "out of address space. If this happens often: disable yield "
@@ -740,7 +735,12 @@ static LONG WINAPI KekCrashFilter(EXCEPTION_POINTERS* pExceptionInfo)
         s_szOs,
         (unsigned)(s_mem.committedLowKB >> 10),
         (unsigned)(s_mem.largestFreeLowKB >> 10),
-        bDumpOk ? s_szDumpPath : "(minidump creation FAILED -- report the details above as a screenshot)");
+        // The next launch's prompt (ShowPendingReportPrompt) sends the saved
+        // report; the player never has to report anything by hand.
+        bDumpOk
+            ? "A crash report was saved. The next time you start Civ 5 you'll "
+              "be asked to send it. Choose Yes so we can fix this."
+            : "The crash report could not be saved.");
 
     ShowCrashDialog(s_szMessage);
 
@@ -1030,9 +1030,10 @@ void KekCrashReporter_CheckTestTrigger() {}
 // ShowCrashDialog already uses successfully.
 //
 // Submit uploads each pending pair on a background thread reusing
-// CvHttpUtils' WinHTTP machinery. Declining moves the pair into
-// crashlogs\declined\ -- kept on disk (still hand-reportable) but invisible
-// to this scan, so a declined report never asks again.
+// CvHttpUtils' WinHTTP machinery. Every report is asked about exactly once:
+// declining deletes the pair, and so does submitting, whether or not the
+// upload succeeded -- a report that kept failing used to re-prompt on every
+// launch.
 // ---------------------------------------------------------------------------
 
 struct KekPendingReport
@@ -1153,26 +1154,28 @@ static void BuildPendingReportMessage(char* pszOut, size_t nOut)
         g_nPendingReports, g_nPendingReports == 1 ? "" : "s", szSize);
 }
 
-// Uploads every pending report in order; stops at the first failure so the
-// remainder (plus the failed one) stays queued for the next launch's prompt.
-// BACKGROUND THREAD -- never touches game state.
+static void DeletePendingReport(const KekPendingReport& r)
+{
+    DeleteFileA(r.szDumpPath);
+    DeleteFileA(r.szJsonPath);
+}
+
+// Uploads every pending report in order and deletes each one afterwards,
+// sent or not -- a failed upload is dropped rather than re-prompted next
+// launch. BACKGROUND THREAD -- never touches game state.
 static DWORD WINAPI SubmitPendingReportsThreadProc(LPVOID)
 {
-    int i = 0;
-    for (; i < g_nPendingReports; ++i)
+    for (int i = 0; i < g_nPendingReports; ++i)
     {
         KekPendingReport& r = g_pendingReports[i];
         DWORD dwStatus = 0;
         if (!CvHttp_PostCrashDump(r.szDumpPath, r.szKind, r.szMetaJson, &dwStatus))
         {
-            OutputDebugString("kek crash report: upload failed, remaining reports stay queued\n");
-            break;
+            OutputDebugString("kek crash report: upload failed, report dropped\n");
         }
-        DeleteFileA(r.szDumpPath);
-        DeleteFileA(r.szJsonPath);
+        DeletePendingReport(r);
     }
-    if (i == g_nPendingReports)
-        g_nPendingReports = 0;   // all sent -- nothing left pending this session
+    g_nPendingReports = 0;
     return 0;
 }
 
@@ -1183,28 +1186,11 @@ static void SubmitPendingReports()
         CloseHandle(hThread);
 }
 
-// "Not Now": move every pending pair into crashlogs\declined\ so it stays on
-// disk (still hand-reportable) but ScanPendingReports never sees it again.
+// "No": delete every pending pair so it is never offered again.
 static void DeclinePendingReports()
 {
-    char szDeclinedDir[MAX_PATH];
-    _snprintf_s(szDeclinedDir, sizeof(szDeclinedDir), _TRUNCATE,
-                "%s\\declined", g_szCrashlogsDir);
-    CreateDirectoryA(szDeclinedDir, NULL);
-
     for (int i = 0; i < g_nPendingReports; ++i)
-    {
-        KekPendingReport& r = g_pendingReports[i];
-        char szDest[MAX_PATH];
-
-        _snprintf_s(szDest, sizeof(szDest), _TRUNCATE, "%s\\%s",
-                    szDeclinedDir, GetOnlyFilename(r.szDumpPath));
-        MoveFileExA(r.szDumpPath, szDest, MOVEFILE_REPLACE_EXISTING);
-
-        _snprintf_s(szDest, sizeof(szDest), _TRUNCATE, "%s\\%s",
-                    szDeclinedDir, GetOnlyFilename(r.szJsonPath));
-        MoveFileExA(r.szJsonPath, szDest, MOVEFILE_REPLACE_EXISTING);
-    }
+        DeletePendingReport(g_pendingReports[i]);
     g_nPendingReports = 0;
 }
 
