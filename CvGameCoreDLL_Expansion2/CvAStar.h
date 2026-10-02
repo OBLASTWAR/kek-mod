@@ -46,6 +46,10 @@ typedef void(*CvAEnd)(const void*, CvAStar*);
 // Used for AI group attacks (??). Not really a pathfinder flag
 #define MISSION_MODIFIER_DIRECT_ATTACK		(0x00000040)
 #define MISSION_MODIFIER_NO_DEFENSIVE_SUPPORT (0x00000100)
+// Set by the issuing client on a paradrop sent in the second half of a timed
+// turn (TURN_TIMER_RULES_DETERMINISTIC), so every client applies the same
+// no-capture restriction instead of reading its own clock.
+#define MISSION_MODIFIER_LATE_IN_TIMED_TURN (0x00010000)
 
 #define MOVE_MAXIMIZE_EXPLORE				(0x00000080)
 //

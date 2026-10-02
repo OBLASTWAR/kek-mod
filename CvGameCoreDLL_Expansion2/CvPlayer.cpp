@@ -17676,6 +17676,42 @@ void CvPlayer::changeCitiesLost(int iChange)
 	m_iCitiesLost = (m_iCitiesLost + iChange);
 }
 
+#ifdef MIGHT_RECOMPUTED_AT_TURN_START
+//	--------------------------------------------------------------------------------
+// Refreshes the cached might for this turn. Called from CvGame::doTurn, which
+// runs at the same point on every client, so the synced cache is never written
+// from a UI read (see MIGHT_RECOMPUTED_AT_TURN_START in _Defines.h).
+void CvPlayer::UpdateMightCache()
+{
+	m_iTurnMightRecomputed = GC.getGame().getElapsedGameTurns();
+	m_iMilitaryMight = calculateMilitaryMight();
+	m_iEconomicMight = calculateEconomicMight();
+}
+
+//	--------------------------------------------------------------------------------
+int CvPlayer::getPower() const
+{
+	return GetMilitaryMight() + GetEconomicMight();
+}
+
+//	--------------------------------------------------------------------------------
+int CvPlayer::GetMilitaryMight() const
+{
+	// Before the first CvGame::doTurn the cache is stale; compute without storing.
+	if(m_iTurnMightRecomputed < GC.getGame().getElapsedGameTurns())
+		return calculateMilitaryMight();
+	return m_iMilitaryMight;
+}
+
+//	--------------------------------------------------------------------------------
+int CvPlayer::GetEconomicMight() const
+{
+	if(m_iTurnMightRecomputed < GC.getGame().getElapsedGameTurns())
+		return calculateEconomicMight();
+	return m_iEconomicMight;
+}
+
+#else
 //	--------------------------------------------------------------------------------
 int CvPlayer::getPower() const
 {
@@ -17714,6 +17750,8 @@ int CvPlayer::GetEconomicMight() const
 	}
 	return m_iEconomicMight;
 }
+
+#endif
 
 //	--------------------------------------------------------------------------------
 int CvPlayer::calculateMilitaryMight() const
