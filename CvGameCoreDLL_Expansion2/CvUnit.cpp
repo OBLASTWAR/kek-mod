@@ -4106,7 +4106,9 @@ bool CvUnit::canAirPatrol(const CvPlot* pPlot) const
 		return false;
 	}
 
-#ifdef CAN_SET_INTERCEPT_HALF_TIMER
+// TURN_TIMER_RULES_DETERMINISTIC moves this local-clock check to the issuing
+// side (CvGame::selectionListGameNetMessage / canHandleAction / Lua bindings).
+#if defined(CAN_SET_INTERCEPT_HALF_TIMER) && !defined(TURN_TIMER_RULES_DETERMINISTIC)
 	CvGame& kGame = GC.getGame();
 	if (kGame.isOption(GAMEOPTION_END_TURN_TIMER_ENABLED) && kGame.getElapsedGameTurns() > 0 && 
 #ifdef AUI_GAME_RELATIVE_TURN_TIMERS
@@ -5704,7 +5706,9 @@ bool CvUnit::canParadropAt(const CvPlot* pPlot, int iX, int iY) const
 		return false;
 	}
 
-#ifdef CAN_PARADROP_HALF_TIMER
+// TURN_TIMER_RULES_DETERMINISTIC moves this local-clock check to the issuing
+// side (CvGame::selectionListGameNetMessage / canHandleAction / Lua bindings).
+#if defined(CAN_PARADROP_HALF_TIMER) && !defined(TURN_TIMER_RULES_DETERMINISTIC)
 	CvGame& kGame = GC.getGame();
 	if (kGame.isOption(GAMEOPTION_END_TURN_TIMER_ENABLED) && kGame.getElapsedGameTurns() > 0 && 
 #ifdef AUI_GAME_RELATIVE_TURN_TIMERS
@@ -5744,7 +5748,11 @@ bool CvUnit::canParadropAt(const CvPlot* pPlot, int iX, int iY) const
 
 
 //	--------------------------------------------------------------------------------
+#ifdef TURN_TIMER_RULES_DETERMINISTIC
+bool CvUnit::paradrop(int iX, int iY, bool bLateInTimedTurn)
+#else
 bool CvUnit::paradrop(int iX, int iY)
+#endif
 {
 	VALIDATE_OBJECT
 	if(!canParadropAt(plot(), iX, iY))
@@ -5760,7 +5768,15 @@ bool CvUnit::paradrop(int iX, int iY)
 
 	changeMoves(-(GC.getMOVE_DENOMINATOR() / 2));
 	setMadeAttack(true);
-#ifdef CAPTURE_RESTRICTION_AFTER_PARADROPPING
+#if defined(CAPTURE_RESTRICTION_AFTER_PARADROPPING) && defined(TURN_TIMER_RULES_DETERMINISTIC)
+	// Decided by the issuing player's clock and carried in the mission flags,
+	// so every client applies the same restriction.
+	if (bLateInTimedTurn)
+	{
+		setMadeSecondHalfTimerParadrop(true);
+		setHasPromotion((PromotionTypes)GC.getInfoTypeForString("PROMOTION_NO_CAPTURE", true), true);
+	}
+#elif defined(CAPTURE_RESTRICTION_AFTER_PARADROPPING)
 	CvGame& kGame = GC.getGame();
 	if (kGame.isOption(GAMEOPTION_END_TURN_TIMER_ENABLED) && kGame.getElapsedGameTurns() > 0 &&
 #ifdef AUI_GAME_RELATIVE_TURN_TIMERS

@@ -1051,6 +1051,9 @@ bool CvTeam::canDeclareWar(TeamTypes eTeam) const
 					{
 						return false;
 					}
+#ifndef TURN_TIMER_RULES_DETERMINISTIC
+					// Local clock -- not checked under TURN_TIMER_RULES_DETERMINISTIC,
+					// where the ban is whole turns only.
 					if (GC.getGame().getGameTurn() == GET_PLAYER((PlayerTypes)iI).getTurnCSWarAllowing((PlayerTypes)jJ))
 					{
 						if (GC.getGame().getTimeElapsed() < GET_PLAYER((PlayerTypes)iI).getTimeCSWarAllowing((PlayerTypes)jJ))
@@ -1058,6 +1061,7 @@ bool CvTeam::canDeclareWar(TeamTypes eTeam) const
 							return false;
 						}
 					}
+#endif
 				}
 			}
 		}

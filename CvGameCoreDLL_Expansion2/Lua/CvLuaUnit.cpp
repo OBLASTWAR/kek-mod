@@ -877,7 +877,12 @@ int CvLuaUnit::lCanAirPatrol(lua_State* L)
 {
 	CvUnit* pkUnit = GetInstance(L);
 	CvPlot* pkPlot = CvLuaPlot::GetInstance(L, 2);
-	const bool bResult = pkUnit->canAirPatrol(pkPlot);
+	bool bResult = pkUnit->canAirPatrol(pkPlot);
+#ifdef TURN_TIMER_RULES_DETERMINISTIC
+	// UI-only binding: apply the local-clock rule here, not in canAirPatrol.
+	if (bResult && GC.getGame().IsLocalClockInSecondHalfOfTimedTurn())
+		bResult = false;
+#endif
 
 	lua_pushboolean(L, bResult);
 	return 1;
@@ -1113,7 +1118,12 @@ int CvLuaUnit::lCanParadropAt(lua_State* L)
 	CvPlot* pkPlot = CvLuaPlot::GetInstance(L, 2);
 	const int x = lua_tointeger(L, 3);
 	const int y = lua_tointeger(L, 4);
-	const bool bResult = pkUnit->canParadropAt(pkPlot, x, y);
+	bool bResult = pkUnit->canParadropAt(pkPlot, x, y);
+#ifdef TURN_TIMER_RULES_DETERMINISTIC
+	// UI-only binding: apply the local-clock rule here, not in canParadropAt.
+	if (bResult && !GC.getGame().CanParadropAtByLocalClock(pkUnit, x, y))
+		bResult = false;
+#endif
 
 	lua_pushboolean(L, bResult);
 	return 1;

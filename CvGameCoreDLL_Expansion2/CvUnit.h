@@ -268,7 +268,11 @@ public:
 
 	bool canParadrop(const CvPlot* pPlot, bool bOnlyTestVisibility) const;
 	bool canParadropAt(const CvPlot* pPlot, int iX, int iY) const;
+#ifdef TURN_TIMER_RULES_DETERMINISTIC
+	bool paradrop(int iX, int iY, bool bLateInTimedTurn = false);
+#else
 	bool paradrop(int iX, int iY);
+#endif
 
 	bool canMakeTradeRoute(const CvPlot* pPlot) const;
 	bool canMakeTradeRouteAt(const CvPlot* pPlot, int iX, int iY, TradeConnectionType eConnectionType) const;

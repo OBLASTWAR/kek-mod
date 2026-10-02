@@ -5909,6 +5909,12 @@ void CvMinorCivAI::SetAlly(PlayerTypes eNewAlly)
 			if (GET_PLAYER(eOldAlly).isHuman() && GET_PLAYER(eNewAlly).isHuman() && GET_PLAYER(eOldAlly).getTeam() != GET_PLAYER(eNewAlly).getTeam())
 			{
 				CvGame& kGame = GC.getGame();
+#ifdef TURN_TIMER_RULES_DETERMINISTIC
+				// setAlly runs on every client, so the ban cannot be measured in local
+				// seconds: it lasts until the end of the current turn instead.
+				GET_PLAYER(eNewAlly).setTurnCSWarAllowing(eOldAlly, kGame.getGameTurn() + 1);
+				GET_PLAYER(eNewAlly).setTimeCSWarAllowing(eOldAlly, 0.f);
+#else
 				float fGameTurnEnd = kGame.getPreviousTurnLen();
 				float fTimeElapsed = kGame.getTimeElapsed();
 				if (fGameTurnEnd - fTimeElapsed > CS_ALLYING_WAR_RESCTRICTION_TIMER)
@@ -5921,6 +5927,7 @@ void CvMinorCivAI::SetAlly(PlayerTypes eNewAlly)
 					GET_PLAYER(eNewAlly).setTurnCSWarAllowing(eOldAlly, kGame.getGameTurn() + 1);
 					GET_PLAYER(eNewAlly).setTimeCSWarAllowing(eOldAlly, CS_ALLYING_WAR_RESCTRICTION_TIMER - (fGameTurnEnd - fTimeElapsed));
 				}
+#endif
 				GET_PLAYER(eOldAlly).setTurnCSWarAllowing(eNewAlly, -1);
 				GET_PLAYER(eOldAlly).setTimeCSWarAllowing(eNewAlly, 0.f);
 			}

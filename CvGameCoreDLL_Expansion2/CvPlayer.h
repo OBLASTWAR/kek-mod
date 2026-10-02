@@ -1149,6 +1149,9 @@ public:
 	int getCitiesLost() const;
 	void changeCitiesLost(int iChange);
 
+#ifdef MIGHT_RECOMPUTED_AT_TURN_START
+	void UpdateMightCache();
+#endif
 	int getPower() const;
 	int GetMilitaryMight() const;
 	int GetEconomicMight() const;
