@@ -719,15 +719,10 @@ static LONG WINAPI KekCrashFilter(EXCEPTION_POINTERS* pExceptionInfo)
         "OS: %s\n"
         "Memory (sub-2GB): %u MB committed, largest free block %u MB\n"
         "\n"
-        "%s\n"
-        "\n"
-        "Please post BOTH files (.dmp and .json) in the kek Discord along "
-        "with what was happening in game.",
+        "%s",
         bFromDLL
-            ? "The game crashed due to an error in the kek-mod DLL. A crash "
-              "report was saved -- posting it lets us fix this for everyone.\n"
-            : "The game crashed outside the kek-mod DLL. A crash report was "
-              "saved anyway -- it may still identify the cause.\n"
+            ? "The game crashed due to an error in the kek-mod DLL.\n"
+            : "The game crashed outside the kek-mod DLL.\n"
               "\n"
               "Civ 5 is a 32-bit program and commonly crashes when it runs "
               "out of address space. If this happens often: disable yield "
@@ -740,7 +735,12 @@ static LONG WINAPI KekCrashFilter(EXCEPTION_POINTERS* pExceptionInfo)
         s_szOs,
         (unsigned)(s_mem.committedLowKB >> 10),
         (unsigned)(s_mem.largestFreeLowKB >> 10),
-        bDumpOk ? s_szDumpPath : "(minidump creation FAILED -- report the details above as a screenshot)");
+        // The next launch's prompt (ShowPendingReportPrompt) sends the saved
+        // report; the player never has to report anything by hand.
+        bDumpOk
+            ? "A crash report was saved. The next time you start Civ 5 you'll "
+              "be asked to send it. Choose Yes so we can fix this."
+            : "The crash report could not be saved.");
 
     ShowCrashDialog(s_szMessage);
 
