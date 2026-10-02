@@ -21,6 +21,10 @@ public:
 	//! Required by CvLuaScopedInstance.
 	static void HandleMissingInstance(lua_State* L);
 
+	//! KEKMOD: Tag city tables with owner/ID so stale cities error instead of crashing
+	static void PushInstanceTags(lua_State* L, int t, CvCity* pkCity);
+	static bool IsInstanceTagCurrent(lua_State* L, int t, CvCity* pkCity);
+
 	//! Required by CvLuaScopedInstance.
 	static const char* GetTypeName();
 

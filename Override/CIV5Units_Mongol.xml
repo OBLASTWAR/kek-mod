@@ -144232,19 +144232,19 @@ The ship has weather'd every rack; the prize we sought is won."
 				В городе есть [ICON_RAIL_CONNECTED] ЖД путь в [ICON_CAPITAL] столицу!
 			</Text>
 		</Replace>
-		<Replace Tag="TXT_KEY_MULTIPLAYER_STAGING_ROOM"> 
+		<Replace Tag="TXT_KEY_MULTIPLAYER_STAGING_ROOM">
 			<Text>
-				[COLOR_POSITIVE_TEXT]KEK мод v1.4[ENDCOLOR]
+				[COLOR_POSITIVE_TEXT]KEK мод v@KEKMOD_VERSION@[ENDCOLOR]
 			</Text>
 		</Replace>
-		<Replace Tag="TXT_KEY_AD_SETUP_ADVANCED_OPTIONS"> 
+		<Replace Tag="TXT_KEY_AD_SETUP_ADVANCED_OPTIONS">
 			<Text>
-				[COLOR_POSITIVE_TEXT]KEK мод v1.4[ENDCOLOR]
+				[COLOR_POSITIVE_TEXT]KEK мод v@KEKMOD_VERSION@[ENDCOLOR]
 			</Text>
 		</Replace>
-		<Replace Tag="TXT_KEY_GAME_SELECTION_SCREEN"> 
+		<Replace Tag="TXT_KEY_GAME_SELECTION_SCREEN">
 			<Text>
-				[COLOR_POSITIVE_TEXT]KEK мод v1.4[ENDCOLOR]
+				[COLOR_POSITIVE_TEXT]KEK мод v@KEKMOD_VERSION@[ENDCOLOR]
 			</Text>
 		</Replace>
 		<Row Tag="TXT_KEY_REPLAY_DATA_WORKERSFROMBULLING"> 

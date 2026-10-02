@@ -34,6 +34,7 @@
 // WinHTTP is a Windows-inbox library -- no extra install needed.
 #include <winhttp.h>
 #pragma comment(lib, "winhttp.lib")
+#pragma comment(lib, "advapi32.lib")   // RegOpenKeyExA/RegQueryValueExA (GetDocumentsPath)
 
 #include <algorithm>
 #include <deque>
@@ -56,7 +57,10 @@
 // ---------------------------------------------------------------------------
 #define KEKMOD_HTTP_HOST_PROD   L"saves.ww3.cx"                // Cloudflare edge
 #define KEKMOD_HTTP_PORT_PROD   443
-#define KEKMOD_HTTP_HOST_DEV    L"192.168.2.61"                // GDR dev box, LAN
+// Dev box moved 2026-08-14: CT 113 @ .61 (Debian 11) -> CT 114 @ .129 (Ubuntu 24.04).
+// Because the host is baked in, DEV DLLs built before that date still point at .61
+// and must be rebuilt to talk to the new box.
+#define KEKMOD_HTTP_HOST_DEV    L"192.168.2.129"               // GDR dev box, LAN
 #define KEKMOD_HTTP_PORT_DEV    8080
 
 // The VS2008-era SDK's winhttp.h predates these; values match the Win8+ SDK.
@@ -75,8 +79,8 @@
 // control anyway to stay off GitHub's diff/secret scanners. "" = header
 // omitted. See KekSecrets.h.example for setup.
 #include "KekSecrets.h"
-#define KEKMOD_MOD_VERSION      "2.0"
-#define KEKMOD_MOD_VERSION_W    L"2.0"
+#define KEKMOD_MOD_VERSION      "2.1"
+#define KEKMOD_MOD_VERSION_W    L"2.1"
 #define KEKMOD_JSON_SCHEMA      8
 #define KEKMOD_HTTP_LOG         "kekmod_http.log"
 
@@ -167,18 +171,59 @@ static DWORD          HttpFlags() { return WINHTTP_FLAG_SECURE; }
 #endif
 
 
+// Resolves the user's real "My Documents" folder via the same registry value
+// Explorer itself keeps current (Shell Folders\Personal) -- unlike
+// %USERPROFILE%\Documents, this follows OneDrive Known Folder Move or a
+// manual Documents relocation. Falls back to the %USERPROFILE%\Documents
+// guess only if the registry read fails outright (e.g. locked-down HKCU).
+// CvGame::CopyModDataToMPMP (Community Patch heritage) resolves the MODS
+// folder the same way -- see plan notes for why this is the trusted method.
+static bool GetDocumentsPath(char* pszOut, size_t nLen)
+{
+    HKEY hKey = NULL;
+    if (RegOpenKeyExA(HKEY_CURRENT_USER,
+                       "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders",
+                       0, KEY_READ, &hKey) == ERROR_SUCCESS)
+    {
+        char szValue[MAX_PATH] = {0};
+        DWORD dwType = REG_SZ;
+        DWORD dwSize = sizeof(szValue);
+        LONG lResult = RegQueryValueExA(hKey, "Personal", NULL, &dwType,
+                                        (LPBYTE)szValue, &dwSize);
+        RegCloseKey(hKey);
+        if (lResult == ERROR_SUCCESS && szValue[0] && dwType == REG_EXPAND_SZ)
+        {
+            char szExpanded[MAX_PATH] = {0};
+            if (ExpandEnvironmentStringsA(szValue, szExpanded, sizeof(szExpanded)))
+                strncpy_s(szValue, sizeof(szValue), szExpanded, _TRUNCATE);
+        }
+        if (lResult == ERROR_SUCCESS && szValue[0] &&
+            (dwType == REG_SZ || dwType == REG_EXPAND_SZ))
+        {
+            _snprintf_s(pszOut, nLen, _TRUNCATE, "%s", szValue);
+            return true;
+        }
+    }
+
+    char szProfile[MAX_PATH] = {0};
+    if (!GetEnvironmentVariableA("USERPROFILE", szProfile, sizeof(szProfile)))
+        return false;
+    _snprintf_s(pszOut, nLen, _TRUNCATE, "%s\\Documents", szProfile);
+    return true;
+}
+
 // Returns true and fills pszPathOut + pWriteTimeOut for the most recently
 // written .Civ5Save in the configured saves directory.
 static bool FindMostRecentSave(char* pszPathOut, size_t nPathLen,
                                FILETIME* pWriteTimeOut)
 {
-    char szProfile[MAX_PATH] = {0};
-    if (!GetEnvironmentVariableA("USERPROFILE", szProfile, sizeof(szProfile)))
+    char szDocuments[MAX_PATH] = {0};
+    if (!GetDocumentsPath(szDocuments, sizeof(szDocuments)))
         return false;
 
     char szDir[MAX_PATH]     = {0};
     char szPattern[MAX_PATH] = {0};
-    _snprintf_s(szDir,     sizeof(szDir),     _TRUNCATE, "%s\\Documents%s", szProfile, KEKMOD_SAVES_SUBPATH);
+    _snprintf_s(szDir,     sizeof(szDir),     _TRUNCATE, "%s%s", szDocuments, KEKMOD_SAVES_SUBPATH);
     _snprintf_s(szPattern, sizeof(szPattern), _TRUNCATE, "%s\\*.Civ5Save",  szDir);
 
     WIN32_FIND_DATAA fd;
@@ -1920,8 +1965,36 @@ static bool LocalPlayerIsUploader(PlayerTypes eActive)
     return false;
 }
 
+static int CountAliveHumanPlayers()
+{
+    int iCount = 0;
+    for (int iJ = 0; iJ < MAX_PLAYERS; iJ++)
+    {
+        CvPlayer& kItPlayer = GET_PLAYER((PlayerTypes)iJ);
+        if (kItPlayer.isAlive() && kItPlayer.isHuman())
+            iCount++;
+    }
+    return iCount;
+}
+
+// Telemetry is for real networked multiplayer sessions only. Bail out for
+// single player / hotseat / PBEM entirely -- isGameMultiPlayer() is true
+// for hotseat and PBEM too, so isNetworkMultiPlayer() is the one that
+// actually excludes them -- and for a networked MP game that has
+// degenerated to one remaining human (everyone else quit to AI); both are
+// solo sessions and neither should phone home.
+static bool ShouldSendTelemetry()
+{
+    if (!GC.getGame().isNetworkMultiPlayer())
+        return false;
+    return CountAliveHumanPlayers() > 1;
+}
+
 void CvHttp_OnTurnAutoSave()
 {
+    if (!ShouldSendTelemetry())
+        return;
+
     PlayerTypes eActive = GC.getGame().getActivePlayer();
     if (eActive == NO_PLAYER)
         return;
@@ -1980,6 +2053,9 @@ void CvHttp_OnTurnAutoSave()
 
 void CvHttp_OnGameEnd()
 {
+    if (!ShouldSendTelemetry())
+        return;
+
     // setWinner runs on every client; every client buffers the final payload,
     // only the uploader flushes it (with backoff -- no later turn heals a
     // game-end payload).
@@ -2011,6 +2087,9 @@ void CvHttp_OnGameEnd()
 
 void CvHttp_OnProposalResolved()
 {
+    if (!ShouldSendTelemetry())
+        return;
+
     // Same rationale as CvHttp_OnGameEnd: a resolved proposal (IRR kicking a
     // leaver, in particular) may be the last thing that happens in a session
     // that never reaches another end-of-turn autosave, so flush now rather

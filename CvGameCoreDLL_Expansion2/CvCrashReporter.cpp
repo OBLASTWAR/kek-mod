@@ -153,8 +153,29 @@ static bool EnsureCrashlogsDir()
 // Game context, captured SEH-guarded
 // ---------------------------------------------------------------------------
 
+// Written by KekCrashReporter_SetPhase() on the game thread, read by the
+// crash filter and the watchdog thread -- plain aligned 32-bit volatiles.
+static volatile LONG  g_lPhase       = KEK_PHASE_FRONTEND;
+static volatile DWORD g_dwPhaseTick  = 0;   // GetTickCount() when g_lPhase last changed
+
+// Sidecar wire values -- part of the X-Crash-Meta contract, don't rename.
+static const char* GetPhaseName(LONG lPhase)
+{
+    switch (lPhase)
+    {
+    case KEK_PHASE_FRONTEND: return "frontend";
+    case KEK_PHASE_LOADING:  return "loading";
+    case KEK_PHASE_INGAME:   return "ingame";
+    case KEK_PHASE_TURN:     return "turn";
+    case KEK_PHASE_SHUTDOWN: return "shutdown";
+    default:                 return "unknown";
+    }
+}
+
 struct KekCrashContext
 {
+    const char* pszPhase;   // GetPhaseName() literal, never NULL
+    DWORD dwPhaseMs;        // time spent in that phase so far
     int  iTurn;             // -1 = unknown / no game
     int  iNetworkMP;        // -1 unknown, else 0/1
     int  iNumHumans;        // -1 unknown
@@ -237,6 +258,10 @@ static void ReadContextUnsafe(KekCrashContext* p)
 static void CaptureGameContext(KekCrashContext* p)
 {
     memset(p, 0, sizeof(*p));
+    // Phase first and outside the __try: it's our own static state, so it
+    // survives even when every game-state read below faults.
+    p->pszPhase  = GetPhaseName(g_lPhase);
+    p->dwPhaseMs = GetTickCount() - g_dwPhaseTick;   // unsigned: wrap-safe
     p->iTurn = -1;
     p->iNetworkMP = -1;
     p->iNumHumans = -1;
@@ -389,10 +414,19 @@ static void CollectMemStats(KekMemStats* pStats)
 // Dump + sidecar writing
 // ---------------------------------------------------------------------------
 
+// Set once from KekCrashReporter_Heartbeat(), which only the game thread
+// ever calls. Hang dumps pass pep == NULL to MiniDumpWriteDump, so no thread
+// is marked "requesting" -- without this, server-side symbolication has no
+// way to know which of the dump's full thread list is the frozen one.
+// Embedded alongside the crash-path's real exception thread too, so a crash
+// on a background thread can still be told apart from the game thread.
+static volatile DWORD g_dwGameThreadId = 0;
+
 // kind is "crash" now; Phase 2's watchdog will pass "hang" (pep == NULL).
 // On success fills pszDumpPathOut (full path) and returns true.
 static bool WriteMiniDumpFile(EXCEPTION_POINTERS* pep, const char* pszKind,
                               const KekCrashContext* pCtx, const char* pszOs,
+                              DWORD dwGameThreadId,
                               char* pszDumpPathOut, size_t nDumpPathOut)
 {
     pszDumpPathOut[0] = '\0';
@@ -451,12 +485,16 @@ static bool WriteMiniDumpFile(EXCEPTION_POINTERS* pep, const char* pszKind,
                 "kek-mod %s report\n"
                 "modVersion: %s\n"
                 "os: %s\n"
+                "phase: %s (%lu ms)\n"
                 "turn: %d\nnetworkMP: %d\nnumHumans: %d\n"
                 "gameId: %s\nmapScript: %s\n"
+                "gameThreadId: %lu\n"
                 "dbghelp: %s\n",
                 pszKind, CvHttp_GetModVersion(), pszOs,
+                pCtx->pszPhase, (unsigned long)pCtx->dwPhaseMs,
                 pCtx->iTurn, pCtx->iNetworkMP, pCtx->iNumHumans,
                 pCtx->szGameId, pCtx->szMapScript,
+                (unsigned long)dwGameThreadId,
                 g_szDbgHelpPath[0] ? g_szDbgHelpPath : "(not loaded)");
 
     MINIDUMP_USER_STREAM userStream;
@@ -493,7 +531,8 @@ static void WriteSidecarJson(const char* pszDumpPath, const char* pszKind,
                              DWORD dwExceptionCode, const char* pszModule,
                              DWORD dwOffset, DWORD dwStallMs,
                              const KekCrashContext* pCtx,
-                             const char* pszOs, const KekMemStats* pMem)
+                             const char* pszOs, const KekMemStats* pMem,
+                             DWORD dwGameThreadId)
 {
     if (pszDumpPath[0] == '\0')
         return;
@@ -513,6 +552,8 @@ static void WriteSidecarJson(const char* pszDumpPath, const char* pszKind,
         "{"
         "\"kind\":\"%s\","
         "\"modVersion\":\"%s\","
+        "\"phase\":\"%s\","
+        "\"phaseMs\":%u,"
         "\"exceptionCode\":\"0x%08X\","
         "\"module\":\"%s\","
         "\"offset\":\"0x%08X\","
@@ -527,14 +568,18 @@ static void WriteSidecarJson(const char* pszDumpPath, const char* pszKind,
         "\"memCommittedKB\":%u,"
         "\"memCommittedLowKB\":%u,"
         "\"memLargestFreeKB\":%u,"
-        "\"memLargestFreeLowKB\":%u"
+        "\"memLargestFreeLowKB\":%u,"
+        "\"gameThreadId\":%u"
         "}\n",
-        pszKind, CvHttp_GetModVersion(), (unsigned)dwExceptionCode,
+        pszKind, CvHttp_GetModVersion(),
+        pCtx->pszPhase, (unsigned)pCtx->dwPhaseMs,
+        (unsigned)dwExceptionCode,
         szModuleClean, (unsigned)dwOffset, (unsigned)dwStallMs, pszOs,
         pCtx->iTurn, pCtx->iNetworkMP, pCtx->iNumHumans,
         pCtx->szGameId, pCtx->szMapScript, pCtx->szSteamId,
         (unsigned)pMem->committedKB, (unsigned)pMem->committedLowKB,
-        (unsigned)pMem->largestFreeKB, (unsigned)pMem->largestFreeLowKB);
+        (unsigned)pMem->largestFreeKB, (unsigned)pMem->largestFreeLowKB,
+        (unsigned)dwGameThreadId);
 
     HANDLE hFile = CreateFileA(szJsonPath, GENERIC_WRITE, 0, NULL,
                                CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -652,10 +697,11 @@ static LONG WINAPI KekCrashFilter(EXCEPTION_POINTERS* pExceptionInfo)
 
     static char s_szDumpPath[MAX_PATH];
     bool bDumpOk = WriteMiniDumpFile(pExceptionInfo, "crash", &s_ctx, s_szOs,
+                                     g_dwGameThreadId,
                                      s_szDumpPath, sizeof(s_szDumpPath));
 
     WriteSidecarJson(s_szDumpPath, "crash", exceptionCode, szCrashModule,
-                     dwOffset, 0, &s_ctx, s_szOs, &s_mem);
+                     dwOffset, 0, &s_ctx, s_szOs, &s_mem, g_dwGameThreadId);
 
     // Dialog. Two flavors like CP: our DLL (actionable bug report) vs
     // elsewhere in the process (often 32-bit address exhaustion).
@@ -669,19 +715,14 @@ static LONG WINAPI KekCrashFilter(EXCEPTION_POINTERS* pExceptionInfo)
         "--Crash details--\n"
         "kek-mod version: %s\n"
         "Exception: 0x%08X (%s) in %s+0x%08X\n"
-        "Turn: %d   MP: %d   Humans: %d\n"
+        "Phase: %s   Turn: %d   MP: %d   Humans: %d\n"
         "OS: %s\n"
         "Memory (sub-2GB): %u MB committed, largest free block %u MB\n"
         "\n"
-        "%s\n"
-        "\n"
-        "Please post BOTH files (.dmp and .json) in the kek Discord along "
-        "with what was happening in game.",
+        "%s",
         bFromDLL
-            ? "The game crashed due to an error in the kek-mod DLL. A crash "
-              "report was saved -- posting it lets us fix this for everyone.\n"
-            : "The game crashed outside the kek-mod DLL. A crash report was "
-              "saved anyway -- it may still identify the cause.\n"
+            ? "The game crashed due to an error in the kek-mod DLL.\n"
+            : "The game crashed outside the kek-mod DLL.\n"
               "\n"
               "Civ 5 is a 32-bit program and commonly crashes when it runs "
               "out of address space. If this happens often: disable yield "
@@ -690,11 +731,16 @@ static LONG WINAPI KekCrashFilter(EXCEPTION_POINTERS* pExceptionInfo)
         CvHttp_GetModVersion(),
         (unsigned)exceptionCode, GetExceptionDescription(exceptionCode),
         GetOnlyFilename(szCrashModule), (unsigned)dwOffset,
-        s_ctx.iTurn, s_ctx.iNetworkMP, s_ctx.iNumHumans,
+        s_ctx.pszPhase, s_ctx.iTurn, s_ctx.iNetworkMP, s_ctx.iNumHumans,
         s_szOs,
         (unsigned)(s_mem.committedLowKB >> 10),
         (unsigned)(s_mem.largestFreeLowKB >> 10),
-        bDumpOk ? s_szDumpPath : "(minidump creation FAILED -- report the details above as a screenshot)");
+        // The next launch's prompt (ShowPendingReportPrompt) sends the saved
+        // report; the player never has to report anything by hand.
+        bDumpOk
+            ? "A crash report was saved. The next time you start Civ 5 you'll "
+              "be asked to send it. Choose Yes so we can fix this."
+            : "The crash report could not be saved.");
 
     ShowCrashDialog(s_szMessage);
 
@@ -711,12 +757,16 @@ static LONG WINAPI KekCrashFilter(EXCEPTION_POINTERS* pExceptionInfo)
 // stale past the threshold, dump the live process (all thread stacks, same
 // writer as the crash path) and disarm for the rest of the session. Never
 // kills the process -- it may still recover.
+//
+// Armed only while the phase is INGAME/TURN. 2.0 armed on the first
+// heartbeat and never disarmed, so every menu or load-screen stall after
+// the first game was reported as a hang: 71 of the 86 hangs 2.0 uploaded
+// were at turn 0 with no game-logic frames on any thread.
 // ---------------------------------------------------------------------------
 
 static const DWORD KEK_HANG_THRESHOLD_MS = 90000;
 
 static volatile DWORD g_dwLastHeartbeatTick = 0;   // written by the game thread
-static volatile LONG  g_lArmed              = 0;   // set on the first heartbeat
 static volatile LONG  g_lHangDumped         = 0;   // one hang dump per session
 static HANDLE         g_hWatchdogShutdownEvent = NULL;
 static HANDLE         g_hWatchdogThread         = NULL;
@@ -785,10 +835,11 @@ static void WriteHangDump(DWORD dwStallMs)
     CollectMemStats(&s_mem);
 
     static char s_szDumpPath[MAX_PATH];
-    WriteMiniDumpFile(NULL, "hang", &s_ctx, s_szOs, s_szDumpPath, sizeof(s_szDumpPath));
+    WriteMiniDumpFile(NULL, "hang", &s_ctx, s_szOs, g_dwGameThreadId,
+                      s_szDumpPath, sizeof(s_szDumpPath));
 
     WriteSidecarJson(s_szDumpPath, "hang", 0, "", 0, dwStallMs,
-                     &s_ctx, s_szOs, &s_mem);
+                     &s_ctx, s_szOs, &s_mem, g_dwGameThreadId);
 
     char szLog[160];
     _snprintf_s(szLog, sizeof(szLog), _TRUNCATE,
@@ -813,8 +864,14 @@ static DWORD WINAPI KekWatchdogThreadProc(LPVOID)
 
         if (g_lHangDumped)
             continue;                  // already reported once this session
-        if (!g_lArmed)
-            continue;                  // no game yet (menus/loading)
+        LONG lPhase = g_lPhase;
+        if (lPhase != KEK_PHASE_INGAME && lPhase != KEK_PHASE_TURN)
+        {
+            // Menus/loading/teardown: update() legitimately isn't ticking.
+            // Forget any stall in progress so re-entering a game starts clean.
+            bHaveSeenHeartbeat = false;
+            continue;
+        }
         if (IsDebuggerPresent())
             continue;                  // paused under a debugger looks like a hang
 
@@ -846,11 +903,23 @@ static DWORD WINAPI KekWatchdogThreadProc(LPVOID)
     }
 }
 
+void KekCrashReporter_SetPhase(KekCrashPhase ePhase)
+{
+    if (g_lPhase == (LONG)ePhase)
+        return;
+    g_dwPhaseTick = GetTickCount();
+    InterlockedExchange(&g_lPhase, (LONG)ePhase);
+}
+
 void KekCrashReporter_Heartbeat()
 {
+    // Tick before phase: the watchdog must never see INGAME paired with a
+    // heartbeat left over from the previous game.
     g_dwLastHeartbeatTick = GetTickCount();
-    if (!g_lArmed)
-        InterlockedExchange(&g_lArmed, 1);
+    if (!g_dwGameThreadId)
+        g_dwGameThreadId = GetCurrentThreadId();   // only the game thread calls this
+    if (g_lPhase != KEK_PHASE_TURN)
+        KekCrashReporter_SetPhase(KEK_PHASE_INGAME);
 }
 
 void KekCrashReporter_Shutdown()
@@ -961,9 +1030,10 @@ void KekCrashReporter_CheckTestTrigger() {}
 // ShowCrashDialog already uses successfully.
 //
 // Submit uploads each pending pair on a background thread reusing
-// CvHttpUtils' WinHTTP machinery. Declining moves the pair into
-// crashlogs\declined\ -- kept on disk (still hand-reportable) but invisible
-// to this scan, so a declined report never asks again.
+// CvHttpUtils' WinHTTP machinery. Every report is asked about exactly once:
+// declining deletes the pair, and so does submitting, whether or not the
+// upload succeeded -- a report that kept failing used to re-prompt on every
+// launch.
 // ---------------------------------------------------------------------------
 
 struct KekPendingReport
@@ -971,7 +1041,7 @@ struct KekPendingReport
     char szDumpPath[MAX_PATH];
     char szJsonPath[MAX_PATH];
     char szKind[16];       // "crash" | "hang" | "unknown"
-    char szMetaJson[600];  // sidecar contents, trimmed -- the upload's X-Crash-Meta
+    char szMetaJson[1024]; // sidecar contents, trimmed -- the upload's X-Crash-Meta
     DWORD dwDumpSizeBytes;
     DWORD dwJsonSizeBytes;
 };
@@ -1084,26 +1154,28 @@ static void BuildPendingReportMessage(char* pszOut, size_t nOut)
         g_nPendingReports, g_nPendingReports == 1 ? "" : "s", szSize);
 }
 
-// Uploads every pending report in order; stops at the first failure so the
-// remainder (plus the failed one) stays queued for the next launch's prompt.
-// BACKGROUND THREAD -- never touches game state.
+static void DeletePendingReport(const KekPendingReport& r)
+{
+    DeleteFileA(r.szDumpPath);
+    DeleteFileA(r.szJsonPath);
+}
+
+// Uploads every pending report in order and deletes each one afterwards,
+// sent or not -- a failed upload is dropped rather than re-prompted next
+// launch. BACKGROUND THREAD -- never touches game state.
 static DWORD WINAPI SubmitPendingReportsThreadProc(LPVOID)
 {
-    int i = 0;
-    for (; i < g_nPendingReports; ++i)
+    for (int i = 0; i < g_nPendingReports; ++i)
     {
         KekPendingReport& r = g_pendingReports[i];
         DWORD dwStatus = 0;
         if (!CvHttp_PostCrashDump(r.szDumpPath, r.szKind, r.szMetaJson, &dwStatus))
         {
-            OutputDebugString("kek crash report: upload failed, remaining reports stay queued\n");
-            break;
+            OutputDebugString("kek crash report: upload failed, report dropped\n");
         }
-        DeleteFileA(r.szDumpPath);
-        DeleteFileA(r.szJsonPath);
+        DeletePendingReport(r);
     }
-    if (i == g_nPendingReports)
-        g_nPendingReports = 0;   // all sent -- nothing left pending this session
+    g_nPendingReports = 0;
     return 0;
 }
 
@@ -1114,28 +1186,11 @@ static void SubmitPendingReports()
         CloseHandle(hThread);
 }
 
-// "Not Now": move every pending pair into crashlogs\declined\ so it stays on
-// disk (still hand-reportable) but ScanPendingReports never sees it again.
+// "No": delete every pending pair so it is never offered again.
 static void DeclinePendingReports()
 {
-    char szDeclinedDir[MAX_PATH];
-    _snprintf_s(szDeclinedDir, sizeof(szDeclinedDir), _TRUNCATE,
-                "%s\\declined", g_szCrashlogsDir);
-    CreateDirectoryA(szDeclinedDir, NULL);
-
     for (int i = 0; i < g_nPendingReports; ++i)
-    {
-        KekPendingReport& r = g_pendingReports[i];
-        char szDest[MAX_PATH];
-
-        _snprintf_s(szDest, sizeof(szDest), _TRUNCATE, "%s\\%s",
-                    szDeclinedDir, GetOnlyFilename(r.szDumpPath));
-        MoveFileExA(r.szDumpPath, szDest, MOVEFILE_REPLACE_EXISTING);
-
-        _snprintf_s(szDest, sizeof(szDest), _TRUNCATE, "%s\\%s",
-                    szDeclinedDir, GetOnlyFilename(r.szJsonPath));
-        MoveFileExA(r.szJsonPath, szDest, MOVEFILE_REPLACE_EXISTING);
-    }
+        DeletePendingReport(g_pendingReports[i]);
     g_nPendingReports = 0;
 }
 
@@ -1225,6 +1280,7 @@ void KekCrashReporter_Install()
 void KekCrashReporter_Install() {}
 void KekCrashReporter_Shutdown() {}
 void KekCrashReporter_Heartbeat() {}
+void KekCrashReporter_SetPhase(KekCrashPhase) {}
 void KekCrashReporter_CheckTestTrigger() {}
 
 #endif
