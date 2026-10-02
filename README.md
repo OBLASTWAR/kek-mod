@@ -58,21 +58,21 @@ The installer only needs `python3`, which comes with almost every distro and
 with SteamOS. Install it with one line:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/OBLASTWAR/kek-mod/main/installer/linux/civ5-mod-installer | python3 - install-self
+curl -fsSL https://raw.githubusercontent.com/OBLASTWAR/kek-mod/main/installer/linux/civ5-mod | python3 - install-self
 ```
 
 After that, open **Civ V Mod Installer** from your app menu or run:
 
 ```bash
-civ5-mod-installer            # full-screen installer
-civ5-mod-installer status     # what's installed and whether updates exist
-civ5-mod-installer --help     # all commands
+civ5-mod            # full-screen installer
+civ5-mod status     # what's installed and whether updates exist
+civ5-mod --help     # all commands
 ```
 
 It finds Civ V in any of your Steam libraries, including Flatpak Steam. It
 installs KEK Mod and EUI, sets up the UI files and clears the game's cache.
 It also updates itself. To remove the installer, run
-`civ5-mod-installer uninstall-self`. Your installed mods are kept.
+`civ5-mod uninstall-self`. Your installed mods are kept.
 
 ### Manual
 
@@ -99,7 +99,7 @@ It also updates itself. To remove the installer, run
 ## Troubleshooting
 
 - **Black map or missing UI after an update:** clear the cache. On Linux, run
-  `civ5-mod-installer clear-cache`. On Windows, click **CLEAR GFX
+  `civ5-mod clear-cache`. On Windows, click **CLEAR GFX
   CACHE** in the installer.
 - **Mod not showing in game:** make sure there's only one `KEK Mod v*` folder
   in `Assets/DLC`, then re-run `ui_check`.
