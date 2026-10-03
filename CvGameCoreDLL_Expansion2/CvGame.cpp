@@ -48,6 +48,7 @@
 #include "CvStringUtils.h"
 #include "CvBarbarians.h"
 #include "CvHttpUtils.h"
+#include "CvSyncFingerprint.h"
 #include "CvCrashReporter.h"
 #include "CvGoodyHuts.h"
 
@@ -1585,6 +1586,11 @@ void CvGame::update()
 					CheckPlayerTurnDeactivate();
 
 					changeTurnSlice(1);
+
+#ifdef KEK_SYNC_FINGERPRINT
+					// Same point in the slice on every client (see CvSyncFingerprint.h).
+					KekSync_OnSliceEnd();
+#endif
 
 					gDLL->FlushTurnReminders();
 				}

@@ -73,6 +73,7 @@
 #define KEKMOD_SAVE_PATH        L"/api/saves"
 #define KEKMOD_TURNS_PATH       L"/api/turns"
 #define KEKMOD_CRASHES_PATH     L"/api/crashes"
+#define KEKMOD_DESYNCS_PATH     L"/api/desyncs"
 // Shared secret checked by GDR's KekApiKeyFilter (kek.api-key in its
 // application.yml -- keep the two in sync). It ships inside a public DLL,
 // so it's a spam/scanner barrier, not real secrecy -- kept out of source
@@ -2114,6 +2115,120 @@ void CvHttp_OnProposalResolved()
     EnqueueUpload(entry, bLocalIsUploader);
 }
 
+// ---------------------------------------------------------------------------
+// Desync reports (KEK_SYNC_FINGERPRINT, see CvSyncFingerprint.cpp)
+//
+// Unlike turn telemetry there is no single-uploader rule: the point is to get
+// BOTH sides' snapshot of the same slice, so every client that detects a
+// mismatch posts its own report. One report per out-of-sync episode per
+// remote player, fire-and-forget with a short retry; GDR pairs the reports
+// by gameId + slice.
+// ---------------------------------------------------------------------------
+
+struct PendingDesyncReport
+{
+    int         iTurn;
+    std::string strJson;
+    std::string strGameId;
+    std::string strSteamId;
+};
+
+static const DWORD s_adwDesyncRetryMs[] = { 5000, 15000, 45000 };
+
+static DWORD WINAPI DesyncReportWorkerProc(LPVOID pParam)
+{
+    PendingDesyncReport* pReport = (PendingDesyncReport*)pParam;
+
+    char szHeaders[1024];
+    _snprintf_s(szHeaders, sizeof(szHeaders), _TRUNCATE,
+                "Content-Type: application/json\r\n"
+                "X-Mod-Version: %s\r\n"
+                "X-Turn-Number: %d\r\n"
+                "X-Game-Id: %s\r\n"
+                "X-Uploader-Steam-Id: %s\r\n"
+                "%s%s%s",
+                KEKMOD_MOD_VERSION, pReport->iTurn,
+                pReport->strGameId.c_str(), pReport->strSteamId.c_str(),
+                KEKMOD_API_KEY[0] ? "X-Api-Key: " : "",
+                KEKMOD_API_KEY[0] ? KEKMOD_API_KEY : "",
+                KEKMOD_API_KEY[0] ? "\r\n" : "");
+    wchar_t wszHeaders[1024];
+    swprintf_s(wszHeaders, _countof(wszHeaders), L"%hs", szHeaders);
+
+    for (int iAttempt = 0; ; iAttempt++)
+    {
+        HINTERNET hSession = NULL;
+        HINTERNET hConnect = NULL;
+        OpenConnection(&hSession, &hConnect);
+        DWORD dwStatus = 0;
+        bool bSent = hConnect && HttpPost(hConnect, KEKMOD_DESYNCS_PATH, wszHeaders,
+                                          pReport->strJson.c_str(),
+                                          (DWORD)pReport->strJson.size(), &dwStatus);
+        if (hConnect) WinHttpCloseHandle(hConnect);
+        if (hSession) WinHttpCloseHandle(hSession);
+
+        if (bSent && dwStatus >= 200 && dwStatus < 300)
+        {
+            WriteLog("[kekmod_http] desync report turn %d (%u bytes) -> status=%u",
+                     pReport->iTurn, (unsigned)pReport->strJson.size(), dwStatus);
+            break;
+        }
+        // A 4xx other than auth / rate limiting will not get better on retry.
+        bool bPermanent = bSent && dwStatus >= 400 && dwStatus < 500 &&
+                          dwStatus != 401 && dwStatus != 403 && dwStatus != 429;
+        if (bPermanent || iAttempt >= (int)_countof(s_adwDesyncRetryMs))
+        {
+            WriteLog("[kekmod_http] desync report turn %d not delivered (%s=%u); giving up",
+                     pReport->iTurn, bSent ? "status" : "WinHTTP error",
+                     bSent ? dwStatus : GetLastError());
+            break;
+        }
+        Sleep(s_adwDesyncRetryMs[iAttempt]);
+    }
+
+    delete pReport;
+    return 0;
+}
+
+void CvHttp_PostDesyncReport(int iTurn, int iSlice, PlayerTypes eLocal, PlayerTypes eRemote,
+                             const std::string& strReportJson)
+{
+    if (!ShouldSendTelemetry() || eLocal == NO_PLAYER || strReportJson.size() < 2)
+        return;
+
+    char szGuid[40];
+    FormatMapGuid(szGuid, sizeof(szGuid));
+
+    PendingDesyncReport* pReport = new PendingDesyncReport;
+    pReport->iTurn      = iTurn;
+    pReport->strGameId  = szGuid;
+    pReport->strSteamId = SteamIdFromNickname(CvPreGame::nickname(eLocal));
+
+    // Identity fields only this file can produce, spliced in front of the
+    // report body ("{...}" from CvSyncFingerprint.cpp).
+    std::string& out = pReport->strJson;
+    out = "{\"gameId\":\"";
+    JsonEscape(out, szGuid);
+    out += "\",\"modVersion\":\"" KEKMOD_MOD_VERSION "\",\"reporterSteamId\":\"";
+    out += pReport->strSteamId;
+    out += "\",\"remoteSteamId\":\"";
+    out += SteamIdFromNickname(CvPreGame::nickname(eRemote));
+    out += "\",";
+    out.append(strReportJson, 1, std::string::npos);
+
+    WriteLog("[kekmod_http] desync with slot %d detected at turn %d slice %d -- sending report",
+             (int)eRemote, iTurn, iSlice);
+
+    HANDLE hThread = CreateThread(NULL, 0, DesyncReportWorkerProc, pReport, 0, NULL);
+    if (hThread)
+        CloseHandle(hThread);
+    else
+    {
+        WriteLog("[kekmod_http] CreateThread for desync report failed: error=%u", GetLastError());
+        delete pReport;
+    }
+}
+
 #else // !_WIN32
 
 // ---------------------------------------------------------------------------
@@ -2126,5 +2241,6 @@ void CvHttp_RecordRuinEvent(const KekRuinEvent&) {}
 void CvHttp_RecordVoteEvent(const KekVoteEvent&) {}
 void CvHttp_RecordCityCaptureEvent(const KekCityCaptureEvent&) {}
 const char* CvHttp_GetModVersion() { return ""; }
+void CvHttp_PostDesyncReport(int, int, PlayerTypes, PlayerTypes, const std::string&) {}
 
 #endif // _WIN32

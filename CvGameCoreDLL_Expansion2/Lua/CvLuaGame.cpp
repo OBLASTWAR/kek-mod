@@ -26,6 +26,7 @@
 #include "../CvInternalGameCoreUtils.h"
 #include "../CvGameTextMgr.h"
 #include "../CvReplayMessage.h"
+#include "../CvSyncFingerprint.h"
 
 #define Method(func) RegisterMethod(L, l##func, #func);
 
@@ -412,6 +413,10 @@ void CvLuaGame::RegisterMembers(lua_State* L)
 #endif
 #ifdef LUAAPI_GET_TURN_TIME_ELAPSED
 	Method(GetTurnTimeElapsed);
+#endif
+#ifdef KEK_SYNC_FINGERPRINT
+	Method(KekSyncGetLatest);
+	Method(KekSyncCompare);
 #endif
 }
 //------------------------------------------------------------------------------
@@ -3226,6 +3231,37 @@ int CvLuaGame::lGetTurnTimeElapsed(lua_State* L)
 {
 	lua_pushinteger(L, static_cast<int>(GC.getGame().getTimeElapsed() * 1000));
 
+	return 1;
+}
+#endif
+#ifdef KEK_SYNC_FINGERPRINT
+//------------------------------------------------------------------------------
+// turn, slice, hashes = Game.KekSyncGetLatest() -- nothing until the first
+// fingerprint of this game exists. Used by KekSyncCheck.lua.
+int CvLuaGame::lKekSyncGetLatest(lua_State* L)
+{
+	int iTurn = 0;
+	int iSlice = 0;
+	CvString strHashes;
+	if (!KekSync_GetLatest(iTurn, iSlice, strHashes))
+		return 0;
+
+	lua_pushinteger(L, iTurn);
+	lua_pushinteger(L, iSlice);
+	lua_pushstring(L, strHashes.c_str());
+	return 3;
+}
+//------------------------------------------------------------------------------
+// result = Game.KekSyncCompare(iFromPlayer, iTurn, iSlice, strHashes)
+// 0 unknown slice, 1 match, 2 first mismatch (reported), 3 still mismatched.
+int CvLuaGame::lKekSyncCompare(lua_State* L)
+{
+	const PlayerTypes eRemote = (PlayerTypes)luaL_checkinteger(L, 1);
+	const int iTurn = luaL_checkinteger(L, 2);
+	const int iSlice = luaL_checkinteger(L, 3);
+	const char* szHashes = luaL_checkstring(L, 4);
+
+	lua_pushinteger(L, (int)KekSync_Compare(eRemote, iTurn, iSlice, szHashes));
 	return 1;
 }
 #endif

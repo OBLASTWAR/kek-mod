@@ -11,6 +11,7 @@
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 #include <string.h>
+#include <string>
 
 // Mod version string, e.g. "2.0-beta1". The KEKMOD_MOD_VERSION define lives
 // in CvHttpUtils.cpp and must stay there (the release scripts sed it by
@@ -117,3 +118,11 @@ void CvHttp_OnGameEnd();
 // come. Builds and POSTs the turn JSON immediately (JSON only -- no save
 // accompanies it), same single-uploader gate as the other hooks.
 void CvHttp_OnProposalResolved();
+
+// Posts one desync report (KEK_SYNC_FINGERPRINT) built by CvSyncFingerprint.cpp
+// to /api/desyncs. strReportJson is a complete JSON object; the game id, mod
+// version and both players' Steam ids are added here. Every client sends its
+// own report -- no single-uploader rule. Game thread; the POST runs on a
+// background thread with a short retry.
+void CvHttp_PostDesyncReport(int iTurn, int iSlice, PlayerTypes eLocal, PlayerTypes eRemote,
+                             const std::string& strReportJson);

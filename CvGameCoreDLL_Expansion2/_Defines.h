@@ -1724,4 +1724,14 @@
 // only one.
 #define ORDERS_NOT_DROPPED_AT_TURN_START
 
+// Live desync detection (CvSyncFingerprint.cpp, tmp/ui/KekSyncCheck.lua).
+// Every KEK_SYNC_SLICE_INTERVAL turn slices (~2 s) each client hashes its
+// synced state (game/RNG, players, units, cities) and broadcasts the hashes
+// over hidden chat; the first mismatch with a player writes the snapshot to
+// kek_desync.log and posts it to GDR /api/desyncs from every client involved,
+// so both sides' view of the same slice can be diffed. Read-only: no RNG, no
+// game messages, so it cannot cause a desync itself.
+#define KEK_SYNC_FINGERPRINT
+#define KEK_SYNC_SLICE_INTERVAL 20
+
 #endif
