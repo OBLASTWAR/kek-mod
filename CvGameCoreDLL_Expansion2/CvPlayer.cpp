@@ -4433,16 +4433,36 @@ void CvPlayer::doBarbarianRansom(int iOption, int iUnitID)
 }
 
 //	-----------------------------------------------------------------------------------------------
+// kekmod 2.1.1: getName() on a slot with no leader/minor civ info (empty or
+// closed slot, or a game not set up yet) used to dereference the NULL that
+// getLeaderInfo() hands back -- the msvcp90+0x506e crash. Those callers only
+// crashed before, so "" changes nothing for a working player.
+static const char* GetNamelessPlayerName(PlayerTypes ePlayer)
+{
+	CvString strMsg;
+	strMsg.Format("kekmod: getName() on player %d with no leader/minor civ info", (int)ePlayer);
+	GC.LogMessage(strMsg.c_str());
+	return "";
+}
+
+//	-----------------------------------------------------------------------------------------------
 const char* CvPlayer::getName() const
 {
 	if(isMinorCiv())
 	{
-		return GC.getMinorCivInfo(GetMinorCivAI()->GetMinorCivType())->GetDescription();
+		CvMinorCivInfo* pkMinorCivInfo = GC.getMinorCivInfo(GetMinorCivAI()->GetMinorCivType());
+		if(pkMinorCivInfo == NULL)
+			return GetNamelessPlayerName(GetID());
+		return pkMinorCivInfo->GetDescription();
 	}
+
+	CvLeaderHeadInfo* pkLeaderInfo = GC.getLeaderHeadInfo(getLeaderType());
 
 	if(GC.getGame().isMPOption(MPOPTION_ANONYMOUS) && isAlive() && GC.getGame().getGameState() == GAMESTATE_ON)
 	{
-		return getLeaderInfo().GetDescription();
+		if(pkLeaderInfo == NULL)
+			return GetNamelessPlayerName(GetID());
+		return pkLeaderInfo->GetDescription();
 	}
 
 	if(GC.getGame().isGameMultiPlayer() && isHuman())
@@ -4455,7 +4475,9 @@ const char* CvPlayer::getName() const
 	const CvString& szPlayerName = CvPreGame::leaderName(GetID());
 	if(szPlayerName.GetLength() == 0)
 	{
-		return getLeaderInfo().GetDescription();
+		if(pkLeaderInfo == NULL)
+			return GetNamelessPlayerName(GetID());
+		return pkLeaderInfo->GetDescription();
 	}
 
 	return szPlayerName.c_str();

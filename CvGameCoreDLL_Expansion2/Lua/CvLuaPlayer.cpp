@@ -1191,6 +1191,19 @@ int CvLuaPlayer::lIsBarbarian(lua_State* L)
 int CvLuaPlayer::lGetName(lua_State* L)
 {
 	CvPlayerAI* pkPlayer = GetInstance(L);
+	// kekmod 2.1.1: getName() now returns "" for a slot with no leader instead
+	// of crashing; log which script asked so the caller can be fixed.
+	if(!pkPlayer->isMinorCiv() && GC.getLeaderHeadInfo(pkPlayer->getLeaderType()) == NULL)
+	{
+		lua_Debug ar;
+		if(lua_getstack(L, 1, &ar) && lua_getinfo(L, "Sl", &ar))
+		{
+			CvString strMsg;
+			strMsg.Format("kekmod: Player(%d):GetName() with no leader, called from %s:%d",
+				(int)pkPlayer->GetID(), ar.source ? ar.source : "?", ar.currentline);
+			GC.LogMessage(strMsg.c_str());
+		}
+	}
 	const char* szName = pkPlayer->getName();
 
 	lua_pushstring(L, szName);
