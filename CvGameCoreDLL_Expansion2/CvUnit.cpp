@@ -7017,6 +7017,13 @@ bool CvUnit::pillage()
 		changeMoves(-GC.getMOVE_DENOMINATOR());
 	}
 
+#ifdef NO_PILLAGE_HEAL_ON_NEUTRAL_LAND
+	if (pPlot->getOwner() == NO_PLAYER)
+	{
+		bSuccessfulNonRoadPillage = false;
+	}
+#endif
+
 	if(bSuccessfulNonRoadPillage)
 	{
 		if (hasHealOnPillage())
