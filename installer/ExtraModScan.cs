@@ -124,7 +124,7 @@ namespace KekModInstaller
             // file, not a folder (see TournamentMapExtra), so the recognized
             // folders here are kek-mod's Fish Map Script, Lekmod's Lekmap and
             // SnowVe's Weevee Map ("Weevee-v<version>-Map-main").
-            return string.Equals(name, MapScriptExtra.FolderName, StringComparison.OrdinalIgnoreCase)
+            return MapScriptExtra.IsFishFolderName(name)
                 || string.Equals(name, LekmapExtra.FolderName, StringComparison.OrdinalIgnoreCase)
                 || Regex.IsMatch(name, "^" + Regex.Escape(WeeveeMapExtra.FolderGlob).Replace(@"\*", ".*") + "$", RegexOptions.IgnoreCase);
         }

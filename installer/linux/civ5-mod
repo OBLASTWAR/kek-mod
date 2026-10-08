@@ -72,7 +72,7 @@ import zipfile
 # Kept in step with the Windows build (InstallerCore.InstallerVersion in
 # installer/Installer.cs and installer/installer_version.txt): when one
 # bumps, bump this too.
-VERSION = "2.2"
+VERSION = "2.3"
 
 REPO_OWNER = "OBLASTWAR"
 REPO_NAME = "kek-mod"
@@ -645,22 +645,35 @@ class LekmodSource:
 # Windows extras: a failure is logged and never fails the mod install.
 
 class FishMapExtra:
+    """Installs into "Fish Map Script v<version>" (MapScriptExtra.cs); the
+    bare "Fish Map Script" of community installs is recognized too, renamed
+    when up to date, and only one copy is ever kept."""
     id = "fishmapscript"
     name = "Fish Map Script"
     folder = "Fish Map Script"
 
-    def _dir(self, game):
-        return ci_resolve(os.path.join(game.maps, self.folder))
+    @classmethod
+    def is_folder(cls, name):
+        n = name.lower()
+        return n == cls.folder.lower() or n.startswith(cls.folder.lower() + " v")
+
+    def _folders(self, game):
+        return [d for d in ci_dirs_with_prefix(game.maps, self.folder) if self.is_folder(os.path.basename(d))]
+
+    @staticmethod
+    def _version_of(d):
+        try:
+            for f in sorted(os.listdir(d)):
+                m = re.search(r"(\d+(?:\.\d+)*)\.modinfo$", f, re.I)
+                if m:
+                    return "v" + m.group(1)
+        except OSError:
+            pass
+        return ""
 
     def detect(self, game):
-        d = self._dir(game)
-        if not os.path.isdir(d):
-            return None
-        for f in sorted(os.listdir(d)):
-            m = re.search(r"(\d+(?:\.\d+)*)\.modinfo$", f, re.I)
-            if m:
-                return "v" + m.group(1)
-        return ""
+        dirs = self._folders(game)
+        return self._version_of(dirs[0]) if dirs else None
 
     @staticmethod
     def _newest():
@@ -673,33 +686,54 @@ class FishMapExtra:
         return self._newest()["tag_name"]
 
     def ensure(self, game, log):
-        """Newest release, replacing an existing copy unless it's that version."""
+        """Newest release in "Fish Map Script v<ver>", replacing an out-of-date
+        copy; leaves exactly one Fish Map Script folder."""
         try:
             rel = self._newest()
-            d = self._dir(game)
-            if os.path.isdir(d) and same_map_version(self.detect(game), rel["tag_name"]):
-                log("%s %s already installed." % (self.name, rel["tag_name"]))
-                return
-            if not rel.get("assets"):
-                log(self.name + ": no release asset found, skipping.")
-                return
-            log("Installing %s %s..." % (self.name, rel["tag_name"]))
-            with tempfile.TemporaryDirectory(prefix="kekmod-") as tmp:
-                zp = os.path.join(tmp, "fish.zip")
-                download_to(rel["assets"][0]["browser_download_url"], zp)
-                if os.path.isdir(d):
-                    remove_tree(d)  # older version
+            tag = rel["tag_name"]
+            target = os.path.join(game.maps, "%s v%s" % (self.folder, tag.lstrip("vV")))
+            current = next((d for d in self._folders(game) if same_map_version(self._version_of(d), tag)), None)
+            if current:
+                log("%s %s already installed." % (self.name, tag))
+                if os.path.basename(current).lower() != os.path.basename(target).lower() and not os.path.lexists(target):
+                    log("Renaming %s -> %s..." % (os.path.basename(current), os.path.basename(target)))
+                    os.rename(current, target)
+                    current = target
+            else:
+                if not rel.get("assets"):
+                    log(self.name + ": no release asset found, skipping.")
+                    return
+                log("Installing %s %s..." % (self.name, tag))
                 os.makedirs(game.maps, exist_ok=True)
-                extract_zip(zp, game.maps)
-            log("%s %s installed." % (self.name, rel["tag_name"]))
+                tmp = tempfile.mkdtemp(prefix=".kekmod-", dir=game.maps)
+                try:
+                    zp = os.path.join(tmp, "fish.zip")
+                    download_to(rel["assets"][0]["browser_download_url"], zp)
+                    out = os.path.join(tmp, "x")
+                    extract_zip(zp, out)
+                    # "Fish Map Script" (v1.0's original zip) or "Fish Map Script v<ver>".
+                    found = next((os.path.join(out, n) for n in sorted(os.listdir(out))
+                                  if self.is_folder(n) and os.path.isdir(os.path.join(out, n))), None)
+                    if found is None:
+                        raise InstallerError('no "%s" folder in the release zip' % self.folder)
+                    if os.path.lexists(target):
+                        remove_tree(target)  # same name, wrong contents
+                    os.rename(found, target)
+                finally:
+                    shutil.rmtree(tmp, ignore_errors=True)
+                current = target
+                log("%s %s installed." % (self.name, tag))
+            for d in self._folders(game):
+                if os.path.normcase(d) != os.path.normcase(current):
+                    log("Removing old " + os.path.basename(d) + "...")
+                    remove_tree(d)
         except Exception as e:
             log("%s: couldn't install (%s)" % (self.name, e))
 
     def remove(self, game, log):
         try:
-            d = self._dir(game)
-            if os.path.isdir(d):
-                log("Removing " + self.name + "...")
+            for d in self._folders(game):
+                log("Removing " + os.path.basename(d) + "...")
                 remove_tree(d)
         except Exception as e:
             log("%s: couldn't remove (%s)" % (self.name, e))
@@ -1809,7 +1843,7 @@ def scan_extra_folders(game):
     if os.path.isdir(game.maps):
         for name in sorted(os.listdir(game.maps)):
             p = os.path.join(game.maps, name)
-            if os.path.isdir(p) and name.lower() not in ("fish map script", "lekmap") \
+            if os.path.isdir(p) and name.lower() != "lekmap" and not FishMapExtra.is_folder(name) \
                     and not re.match(r"^Weevee-v.*-Map", name, re.I):
                 found.append(ExtraFolder(p, "Maps"))
     return found
