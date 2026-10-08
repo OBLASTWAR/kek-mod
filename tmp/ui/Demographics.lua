@@ -473,6 +473,10 @@ function ShowHideHandler( bIsHide, bIsInit )
             if( not m_bIsEndGame ) then
 	            UI.incTurnTimerSemaphore();
 	            Events.SerialEventGameMessagePopupShown(m_PopupInfo);
+	            -- -8: count this open (ResponseGiftUnit, synced on every client)
+	            if( not Players[Game.GetActivePlayer()]:IsObserver() ) then
+	                Network.SendGiftUnit(-1, -8);
+	            end
             end
         else
 			Events.SerialEventGameMessagePopupProcessed.CallImmediate(ButtonPopupTypes.BUTTONPOPUP_DEMOGRAPHICS, 0);

@@ -1374,12 +1374,13 @@ static void BuildTurnJson(std::string& out, PlayerTypes eUploader)
     // upload since the cursor only advances as far as we actually serialized.
     //
     // NOTE: this reads THIS client's replay list, and only the uploader's
-    // payload is ever sent. Most event types fire from synchronized game
-    // state, so every client's list agrees on them -- but UI-driven types
-    // (REPLAYEVENT_EnterCityScreen, REPLAYEVENT_OpenDemoScreen, ...) are
-    // recorded only on the acting player's own client. Those events reach
-    // GDR only when the acting player IS the current uploader; every other
-    // player's UI events stay local to their machine and are never sent.
+    // payload is ever sent. That is fine as long as every event is added from
+    // synchronized code, so every client's list agrees. That includes the
+    // UI-driven types: REPLAYEVENT_OpenDemoScreen / REPLAYEVENT_EnterCityScreen
+    // are sent by the UI as Network.SendGiftUnit(-1, -8 / -9) and recorded in
+    // ResponseGiftUnit, which runs on every client, so the uploader sees every
+    // player's opens. Anything added from a local-only path (e.g. a Lua call
+    // straight into CvPlayer/CvGame) would stay on that one machine instead.
     out += ",\"replayEvents\":[";
     {
         uint uiTotal = kGame.getNumReplayEvents();
