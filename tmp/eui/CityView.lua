@@ -2283,6 +2283,11 @@ function()
 
 	LuaEvents.TryQueueTutorial("CITY_SCREEN", true)
 
+	-- -9: count this city screen open (ResponseGiftUnit, synced on every client)
+	if not Players[Game.GetActivePlayer()]:IsObserver() then
+		Network.SendGiftUnit(-1, -9)
+	end
+
 	g_queuedItemNumber = false
 	g_previousCity = false
 --TODO other scroll panels
