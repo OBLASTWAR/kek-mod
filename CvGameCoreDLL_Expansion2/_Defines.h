@@ -1085,6 +1085,8 @@
 /*TOURNAMENT MODE STUFF START*/
 /// IRR/CC/SCRAP proposal conditional restrictions for tournament
 #define TOURNAMENT_VOTING_SYSTEM_CHANGES
+/// Pillaging a tile nobody owns gives no heal (Tournament Patch 12.2a), closes plunder/repair loops in no-man's-land
+#define NO_PILLAGE_HEAL_ON_NEUTRAL_LAND
 /*TOURNAMENT MODE STUFF END*/
 
 
