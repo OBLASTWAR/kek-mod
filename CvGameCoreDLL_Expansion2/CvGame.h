@@ -974,6 +974,9 @@ enum ReplayEventTypes
 	REPLAYEVENT_TileOwnerChanged,
 	REPLAYEVENT_YieldChanged,
 
+	// Deal events
+	REPLAYEVENT_DealGoldItem,
+
 	NUM_REPLAYEVENTS
 };
 #endif

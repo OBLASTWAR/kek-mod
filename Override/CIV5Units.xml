@@ -219585,6 +219585,13 @@
 			<Type>REPLAYEVENT_YieldChanged</Type> 
 			<Description>YieldChanged</Description> 
 		</Row> 
+		<Row> 
+			<ID>110</ID> 
+			<Type>REPLAYEVENT_DealGoldItem</Type> 
+			<Description>DealGoldItem</Description> 
+			<Num1Type>15</Num1Type> 
+			<Num2Type>15</Num2Type> 
+		</Row> 
 	</ReplayEvents>
 	<Table name="ReplayEventCategories">
 		<Column name="ID" type="integer" primarykey="true" autoincrement="true" />
