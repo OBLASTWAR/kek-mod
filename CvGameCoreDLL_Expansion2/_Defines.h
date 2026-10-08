@@ -858,7 +858,9 @@
 // 1004: kek 1.5 (ENHANCED_GRAPHS actually enabled: bunch 1+2 (always present
 //       in the source but never compiled) plus third+fourth bunch, ported
 //       from upstream ImmoSS/Civ5-Patch)
-# define BUMP_SAVE_VERSION_PLAYER 1004
+// 1005: kek 2.2 (adds gold gifted to city-states, gold / GPT given and
+//       received in deals, and the current deal GPT rates)
+# define BUMP_SAVE_VERSION_PLAYER 1005
 // 1000: v7.0 (initial)
 # define BUMP_SAVE_VERSION_POLICIES 1000
 // 1000: v7.0 (initial)
@@ -1023,6 +1025,14 @@
 #define EG_REPLAYDATASET_PRODUCTIONFROMTRADEROUTES_TIMES100
 ///
 #define EG_REPLAYDATASET_ANARCHYTURNS
+///
+/// kekmod: gold given away
+///
+#define EG_REPLAYDATASET_GOLDGIFTEDTOCS
+#define EG_REPLAYDATASET_GOLDGIVENINDEALS
+#define EG_REPLAYDATASET_GOLDRECEIVEDINDEALS
+#define EG_REPLAYDATASET_GPTGIVENINDEALS
+#define EG_REPLAYDATASET_GPTRECEIVEDINDEALS
 ///
 #endif
 ///

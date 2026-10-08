@@ -480,6 +480,32 @@ public:
 	int GetNumFaithSpentOnMilitaryUnits() const;
 	void ChangeNumFaithSpentOnMilitaryUnits(int iChange);
 #endif
+#ifdef EG_REPLAYDATASET_GOLDGIFTEDTOCS
+	int GetGoldGiftedToMinors() const;
+	void ChangeGoldGiftedToMinors(int iChange);
+#endif
+#ifdef EG_REPLAYDATASET_GOLDGIVENINDEALS
+	int GetGoldGivenInDeals() const;
+	void ChangeGoldGivenInDeals(int iChange);
+#endif
+#ifdef EG_REPLAYDATASET_GOLDRECEIVEDINDEALS
+	int GetGoldReceivedInDeals() const;
+	void ChangeGoldReceivedInDeals(int iChange);
+#endif
+	// GPT totals are summed in CvTreasury::DoGold from the current deal GPT
+	// rates, which CvDealClasses changes together with GoldPerTurnFromDiplomacy
+#ifdef EG_REPLAYDATASET_GPTGIVENINDEALS
+	int GetGPTGivenInDeals() const;
+	void ChangeGPTGivenInDeals(int iChange);
+	int GetGPTGivenInDealsRate() const;
+	void ChangeGPTGivenInDealsRate(int iChange);
+#endif
+#ifdef EG_REPLAYDATASET_GPTRECEIVEDINDEALS
+	int GetGPTReceivedInDeals() const;
+	void ChangeGPTReceivedInDeals(int iChange);
+	int GetGPTReceivedInDealsRate() const;
+	void ChangeGPTReceivedInDealsRate(int iChange);
+#endif
 
 	int GetNumUnitsOutOfSupply() const;
 
@@ -2035,6 +2061,23 @@ protected:
 #endif
 #ifdef EG_REPLAYDATASET_NUMFAITHONMILITARYUNITS
 	int m_iNumFaithSpentOnMilitaryUnits;
+#endif
+#ifdef EG_REPLAYDATASET_GOLDGIFTEDTOCS
+	int m_iGoldGiftedToMinors;
+#endif
+#ifdef EG_REPLAYDATASET_GOLDGIVENINDEALS
+	int m_iGoldGivenInDeals;
+#endif
+#ifdef EG_REPLAYDATASET_GOLDRECEIVEDINDEALS
+	int m_iGoldReceivedInDeals;
+#endif
+#ifdef EG_REPLAYDATASET_GPTGIVENINDEALS
+	int m_iGPTGivenInDeals;
+	int m_iGPTGivenInDealsRate;
+#endif
+#ifdef EG_REPLAYDATASET_GPTRECEIVEDINDEALS
+	int m_iGPTReceivedInDeals;
+	int m_iGPTReceivedInDealsRate;
 #endif
 	int m_iExtraLeagueVotes;
 	FAutoVariable<int, CvPlayer> m_iAdvancedStartPoints;

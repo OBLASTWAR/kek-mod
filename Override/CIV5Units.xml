@@ -149657,6 +149657,31 @@
 				<Type>REPLAYDATASET_ANARCHYTURNS</Type> 
 				<Description>TXT_KEY_REPLAY_DATA_ANARCHYTURNS</Description> 
 			</Row>
+			<Row> 
+				<ID>117</ID> 
+				<Type>REPLAYDATASET_GOLDGIFTEDTOCS</Type> 
+				<Description>TXT_KEY_REPLAY_DATA_GOLDGIFTEDTOCS</Description> 
+			</Row>
+			<Row> 
+				<ID>118</ID> 
+				<Type>REPLAYDATASET_GOLDGIVENINDEALS</Type> 
+				<Description>TXT_KEY_REPLAY_DATA_GOLDGIVENINDEALS</Description> 
+			</Row>
+			<Row> 
+				<ID>119</ID> 
+				<Type>REPLAYDATASET_GOLDRECEIVEDINDEALS</Type> 
+				<Description>TXT_KEY_REPLAY_DATA_GOLDRECEIVEDINDEALS</Description> 
+			</Row>
+			<Row> 
+				<ID>120</ID> 
+				<Type>REPLAYDATASET_GPTGIVENINDEALS</Type> 
+				<Description>TXT_KEY_REPLAY_DATA_GPTGIVENINDEALS</Description> 
+			</Row>
+			<Row> 
+				<ID>121</ID> 
+				<Type>REPLAYDATASET_GPTRECEIVEDINDEALS</Type> 
+				<Description>TXT_KEY_REPLAY_DATA_GPTRECEIVEDINDEALS</Description> 
+			</Row>
 	</ReplayDataSets> 
 
 	<Table name="ResolutionDecisions">

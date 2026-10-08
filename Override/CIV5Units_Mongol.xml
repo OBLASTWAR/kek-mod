@@ -126534,6 +126534,31 @@ The ship has weather'd every rack; the prize we sought is won."
 				Turns Spent in Anarchy
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDGIFTEDTOCS"> 
+			<Text>
+				Gold Gifted to City-States
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDGIVENINDEALS"> 
+			<Text>
+				Gold Given in Deals
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDRECEIVEDINDEALS"> 
+			<Text>
+				Gold Received in Deals
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GPTGIVENINDEALS"> 
+			<Text>
+				Gold per Turn Paid in Deals (Total)
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GPTRECEIVEDINDEALS"> 
+			<Text>
+				Gold per Turn Received in Deals (Total)
+			</Text>
+		</Row>
 			<!-- kek: Keyboard-menu Help tooltips that vanilla references but never defines (in any language) -->
 			<Replace Tag="TXT_KEY_ACTION_AUTOMOVES_HELP">
 				<Text>
@@ -128760,6 +128785,31 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_REPLAY_DATA_ANARCHYTURNS"> 
 			<Text>
 				Turns Spent in Anarchy
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDGIFTEDTOCS"> 
+			<Text>
+				Gold Gifted to City-States
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDGIVENINDEALS"> 
+			<Text>
+				Gold Given in Deals
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDRECEIVEDINDEALS"> 
+			<Text>
+				Gold Received in Deals
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GPTGIVENINDEALS"> 
+			<Text>
+				Gold per Turn Paid in Deals (Total)
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GPTRECEIVEDINDEALS"> 
+			<Text>
+				Gold per Turn Received in Deals (Total)
 			</Text>
 		</Row>
 			<!-- kek: Keyboard-menu Help tooltips that vanilla references but never defines (in any language) -->
@@ -130990,6 +131040,31 @@ The ship has weather'd every rack; the prize we sought is won."
 				Turns Spent in Anarchy
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDGIFTEDTOCS"> 
+			<Text>
+				Gold Gifted to City-States
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDGIVENINDEALS"> 
+			<Text>
+				Gold Given in Deals
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDRECEIVEDINDEALS"> 
+			<Text>
+				Gold Received in Deals
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GPTGIVENINDEALS"> 
+			<Text>
+				Gold per Turn Paid in Deals (Total)
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GPTRECEIVEDINDEALS"> 
+			<Text>
+				Gold per Turn Received in Deals (Total)
+			</Text>
+		</Row>
 			<!-- kek: Keyboard-menu Help tooltips that vanilla references but never defines (in any language) -->
 			<Replace Tag="TXT_KEY_ACTION_AUTOMOVES_HELP">
 				<Text>
@@ -133216,6 +133291,31 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_REPLAY_DATA_ANARCHYTURNS"> 
 			<Text>
 				Turns Spent in Anarchy
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDGIFTEDTOCS"> 
+			<Text>
+				Gold Gifted to City-States
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDGIVENINDEALS"> 
+			<Text>
+				Gold Given in Deals
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDRECEIVEDINDEALS"> 
+			<Text>
+				Gold Received in Deals
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GPTGIVENINDEALS"> 
+			<Text>
+				Gold per Turn Paid in Deals (Total)
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GPTRECEIVEDINDEALS"> 
+			<Text>
+				Gold per Turn Received in Deals (Total)
 			</Text>
 		</Row>
 			<!-- kek: Keyboard-menu Help tooltips that vanilla references but never defines (in any language) -->
@@ -135446,6 +135546,31 @@ The ship has weather'd every rack; the prize we sought is won."
 				Turns Spent in Anarchy
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDGIFTEDTOCS"> 
+			<Text>
+				Gold Gifted to City-States
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDGIVENINDEALS"> 
+			<Text>
+				Gold Given in Deals
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDRECEIVEDINDEALS"> 
+			<Text>
+				Gold Received in Deals
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GPTGIVENINDEALS"> 
+			<Text>
+				Gold per Turn Paid in Deals (Total)
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GPTRECEIVEDINDEALS"> 
+			<Text>
+				Gold per Turn Received in Deals (Total)
+			</Text>
+		</Row>
 			<!-- kek: Keyboard-menu Help tooltips that vanilla references but never defines (in any language) -->
 			<Replace Tag="TXT_KEY_ACTION_AUTOMOVES_HELP">
 				<Text>
@@ -137672,6 +137797,31 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_REPLAY_DATA_ANARCHYTURNS"> 
 			<Text>
 				Turns Spent in Anarchy
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDGIFTEDTOCS"> 
+			<Text>
+				Gold Gifted to City-States
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDGIVENINDEALS"> 
+			<Text>
+				Gold Given in Deals
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDRECEIVEDINDEALS"> 
+			<Text>
+				Gold Received in Deals
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GPTGIVENINDEALS"> 
+			<Text>
+				Gold per Turn Paid in Deals (Total)
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GPTRECEIVEDINDEALS"> 
+			<Text>
+				Gold per Turn Received in Deals (Total)
 			</Text>
 		</Row>
 			<!-- kek: Keyboard-menu Help tooltips that vanilla references but never defines (in any language) -->
@@ -139902,6 +140052,31 @@ The ship has weather'd every rack; the prize we sought is won."
 				Turns Spent in Anarchy
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDGIFTEDTOCS"> 
+			<Text>
+				Gold Gifted to City-States
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDGIVENINDEALS"> 
+			<Text>
+				Gold Given in Deals
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDRECEIVEDINDEALS"> 
+			<Text>
+				Gold Received in Deals
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GPTGIVENINDEALS"> 
+			<Text>
+				Gold per Turn Paid in Deals (Total)
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GPTRECEIVEDINDEALS"> 
+			<Text>
+				Gold per Turn Received in Deals (Total)
+			</Text>
+		</Row>
 			<!-- kek: Keyboard-menu Help tooltips that vanilla references but never defines (in any language) -->
 			<Replace Tag="TXT_KEY_ACTION_AUTOMOVES_HELP">
 				<Text>
@@ -142128,6 +142303,31 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_REPLAY_DATA_ANARCHYTURNS"> 
 			<Text>
 				Turns Spent in Anarchy
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDGIFTEDTOCS"> 
+			<Text>
+				Gold Gifted to City-States
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDGIVENINDEALS"> 
+			<Text>
+				Gold Given in Deals
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDRECEIVEDINDEALS"> 
+			<Text>
+				Gold Received in Deals
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GPTGIVENINDEALS"> 
+			<Text>
+				Gold per Turn Paid in Deals (Total)
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GPTRECEIVEDINDEALS"> 
+			<Text>
+				Gold per Turn Received in Deals (Total)
 			</Text>
 		</Row>
 			<!-- kek: Keyboard-menu Help tooltips that vanilla references but never defines (in any language) -->
@@ -144407,6 +144607,31 @@ The ship has weather'd every rack; the prize we sought is won."
 				Turns Spent in Anarchy
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDGIFTEDTOCS"> 
+			<Text>
+				Gold Gifted to City-States
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDGIVENINDEALS"> 
+			<Text>
+				Gold Given in Deals
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDRECEIVEDINDEALS"> 
+			<Text>
+				Gold Received in Deals
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GPTGIVENINDEALS"> 
+			<Text>
+				Gold per Turn Paid in Deals (Total)
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GPTRECEIVEDINDEALS"> 
+			<Text>
+				Gold per Turn Received in Deals (Total)
+			</Text>
+		</Row>
 			<!-- kek: Keyboard-menu Help tooltips that vanilla references but never defines (in any language) -->
 			<Replace Tag="TXT_KEY_ACTION_AUTOMOVES_HELP">
 				<Text>
@@ -146633,6 +146858,31 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_REPLAY_DATA_ANARCHYTURNS"> 
 			<Text>
 				Turns Spent in Anarchy
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDGIFTEDTOCS"> 
+			<Text>
+				Gold Gifted to City-States
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDGIVENINDEALS"> 
+			<Text>
+				Gold Given in Deals
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GOLDRECEIVEDINDEALS"> 
+			<Text>
+				Gold Received in Deals
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GPTGIVENINDEALS"> 
+			<Text>
+				Gold per Turn Paid in Deals (Total)
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_REPLAY_DATA_GPTRECEIVEDINDEALS"> 
+			<Text>
+				Gold per Turn Received in Deals (Total)
 			</Text>
 		</Row>
 			<!-- kek: Keyboard-menu Help tooltips that vanilla references but never defines (in any language) -->
