@@ -2222,6 +2222,22 @@ bool CvGameDeals::FinalizeDeal(PlayerTypes eFromPlayer, PlayerTypes eToPlayer, b
 
 			for(it = kDeal.m_TradedItems.begin(); it != kDeal.m_TradedItems.end(); ++it)
 			{
+#ifdef REPLAY_EVENTS
+				// kekmod: record who gave how much gold / GPT to whom, one event per
+				// gold or GPT item. Renewed items are logged too (last arg = 1): they
+				// are not restarted below, but the renewal is a new GPT commitment.
+				if(it->m_eItemType == TRADE_ITEM_GOLD || it->m_eItemType == TRADE_ITEM_GOLD_PER_TURN)
+				{
+					std::vector<int> vArgs;
+					vArgs.push_back(it->m_eFromPlayer);
+					vArgs.push_back(kDeal.GetOtherPlayer(it->m_eFromPlayer));
+					vArgs.push_back(it->m_eItemType);
+					vArgs.push_back(it->m_iData1);
+					vArgs.push_back(it->m_iDuration);
+					vArgs.push_back(it->m_bToRenewed);
+					GC.getGame().addReplayEvent(REPLAYEVENT_DealGoldItem, it->m_eFromPlayer, vArgs);
+				}
+#endif
 				// if the deal is renewed do not start it up
 				if(it->m_bToRenewed)
 				{

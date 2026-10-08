@@ -475,6 +475,7 @@ static const char* const s_apszReplayEventTypeTokens[] =
     "REPLAYEVENT_RouteChanged",
     "REPLAYEVENT_TileOwnerChanged",
     "REPLAYEVENT_YieldChanged",
+    "REPLAYEVENT_DealGoldItem",
 };
 #define KEKMOD_NUM_REPLAY_EVENT_TOKENS \
     (sizeof(s_apszReplayEventTypeTokens) / sizeof(s_apszReplayEventTypeTokens[0]))
