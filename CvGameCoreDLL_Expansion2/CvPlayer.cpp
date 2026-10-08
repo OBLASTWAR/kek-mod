@@ -314,6 +314,23 @@ CvPlayer::CvPlayer() :
 #ifdef EG_REPLAYDATASET_NUMFAITHONMILITARYUNITS
 	, m_iNumFaithSpentOnMilitaryUnits(0)
 #endif
+#ifdef EG_REPLAYDATASET_GOLDGIFTEDTOCS
+	, m_iGoldGiftedToMinors(0)
+#endif
+#ifdef EG_REPLAYDATASET_GOLDGIVENINDEALS
+	, m_iGoldGivenInDeals(0)
+#endif
+#ifdef EG_REPLAYDATASET_GOLDRECEIVEDINDEALS
+	, m_iGoldReceivedInDeals(0)
+#endif
+#ifdef EG_REPLAYDATASET_GPTGIVENINDEALS
+	, m_iGPTGivenInDeals(0)
+	, m_iGPTGivenInDealsRate(0)
+#endif
+#ifdef EG_REPLAYDATASET_GPTRECEIVEDINDEALS
+	, m_iGPTReceivedInDeals(0)
+	, m_iGPTReceivedInDealsRate(0)
+#endif
 	, m_iExtraLeagueVotes(0)
 	, m_iSpecialPolicyBuildingHappiness("CvPlayer::m_iSpecialPolicyBuildingHappiness", m_syncArchive)
 	, m_iWoundedUnitDamageMod("CvPlayer::m_iWoundedUnitDamageMod", m_syncArchive)
@@ -1114,6 +1131,23 @@ void CvPlayer::uninit()
 #endif
 #ifdef EG_REPLAYDATASET_NUMFAITHONMILITARYUNITS
 	m_iNumFaithSpentOnMilitaryUnits = 0;
+#endif
+#ifdef EG_REPLAYDATASET_GOLDGIFTEDTOCS
+	m_iGoldGiftedToMinors = 0;
+#endif
+#ifdef EG_REPLAYDATASET_GOLDGIVENINDEALS
+	m_iGoldGivenInDeals = 0;
+#endif
+#ifdef EG_REPLAYDATASET_GOLDRECEIVEDINDEALS
+	m_iGoldReceivedInDeals = 0;
+#endif
+#ifdef EG_REPLAYDATASET_GPTGIVENINDEALS
+	m_iGPTGivenInDeals = 0;
+	m_iGPTGivenInDealsRate = 0;
+#endif
+#ifdef EG_REPLAYDATASET_GPTRECEIVEDINDEALS
+	m_iGPTReceivedInDeals = 0;
+	m_iGPTReceivedInDealsRate = 0;
 #endif
 	m_iExtraLeagueVotes = 0;
 	m_iSpecialPolicyBuildingHappiness = 0;
@@ -10563,6 +10597,76 @@ int CvPlayer::GetNumFaithSpentOnMilitaryUnits() const
 void CvPlayer::ChangeNumFaithSpentOnMilitaryUnits(int iChange)
 {
 	m_iNumFaithSpentOnMilitaryUnits = (m_iNumFaithSpentOnMilitaryUnits + iChange);
+}
+#endif
+#ifdef EG_REPLAYDATASET_GOLDGIFTEDTOCS
+int CvPlayer::GetGoldGiftedToMinors() const
+{
+	return m_iGoldGiftedToMinors;
+}
+void CvPlayer::ChangeGoldGiftedToMinors(int iChange)
+{
+	m_iGoldGiftedToMinors = (m_iGoldGiftedToMinors + iChange);
+}
+#endif
+#ifdef EG_REPLAYDATASET_GOLDGIVENINDEALS
+int CvPlayer::GetGoldGivenInDeals() const
+{
+	return m_iGoldGivenInDeals;
+}
+void CvPlayer::ChangeGoldGivenInDeals(int iChange)
+{
+	m_iGoldGivenInDeals = (m_iGoldGivenInDeals + iChange);
+}
+#endif
+#ifdef EG_REPLAYDATASET_GOLDRECEIVEDINDEALS
+int CvPlayer::GetGoldReceivedInDeals() const
+{
+	return m_iGoldReceivedInDeals;
+}
+void CvPlayer::ChangeGoldReceivedInDeals(int iChange)
+{
+	m_iGoldReceivedInDeals = (m_iGoldReceivedInDeals + iChange);
+}
+#endif
+#ifdef EG_REPLAYDATASET_GPTGIVENINDEALS
+int CvPlayer::GetGPTGivenInDeals() const
+{
+	return m_iGPTGivenInDeals;
+}
+void CvPlayer::ChangeGPTGivenInDeals(int iChange)
+{
+	m_iGPTGivenInDeals = (m_iGPTGivenInDeals + iChange);
+}
+int CvPlayer::GetGPTGivenInDealsRate() const
+{
+	return m_iGPTGivenInDealsRate;
+}
+void CvPlayer::ChangeGPTGivenInDealsRate(int iChange)
+{
+	// Never below 0: a game saved before these rates existed (version < 1005)
+	// loads with 0 even if a GPT deal is running, and that deal's end must not
+	// make the rate (and so the per-turn total) go negative
+	m_iGPTGivenInDealsRate = std::max(0, m_iGPTGivenInDealsRate + iChange);
+}
+#endif
+#ifdef EG_REPLAYDATASET_GPTRECEIVEDINDEALS
+int CvPlayer::GetGPTReceivedInDeals() const
+{
+	return m_iGPTReceivedInDeals;
+}
+void CvPlayer::ChangeGPTReceivedInDeals(int iChange)
+{
+	m_iGPTReceivedInDeals = (m_iGPTReceivedInDeals + iChange);
+}
+int CvPlayer::GetGPTReceivedInDealsRate() const
+{
+	return m_iGPTReceivedInDealsRate;
+}
+void CvPlayer::ChangeGPTReceivedInDealsRate(int iChange)
+{
+	// Never below 0, see ChangeGPTGivenInDealsRate
+	m_iGPTReceivedInDealsRate = std::max(0, m_iGPTReceivedInDealsRate + iChange);
 }
 #endif
 
@@ -25197,6 +25301,47 @@ void CvPlayer::Read(FDataStream& kStream)
 		m_iNumFaithSpentOnMilitaryUnits = 0;
 #endif
 	}
+	// kekmod: gold given away (1005). Older saves start these at 0.
+	if (uiVersion >= 1005)
+	{
+#ifdef EG_REPLAYDATASET_GOLDGIFTEDTOCS
+		kStream >> m_iGoldGiftedToMinors;
+#endif
+#ifdef EG_REPLAYDATASET_GOLDGIVENINDEALS
+		kStream >> m_iGoldGivenInDeals;
+#endif
+#ifdef EG_REPLAYDATASET_GOLDRECEIVEDINDEALS
+		kStream >> m_iGoldReceivedInDeals;
+#endif
+#ifdef EG_REPLAYDATASET_GPTGIVENINDEALS
+		kStream >> m_iGPTGivenInDeals;
+		kStream >> m_iGPTGivenInDealsRate;
+#endif
+#ifdef EG_REPLAYDATASET_GPTRECEIVEDINDEALS
+		kStream >> m_iGPTReceivedInDeals;
+		kStream >> m_iGPTReceivedInDealsRate;
+#endif
+	}
+	else
+	{
+#ifdef EG_REPLAYDATASET_GOLDGIFTEDTOCS
+		m_iGoldGiftedToMinors = 0;
+#endif
+#ifdef EG_REPLAYDATASET_GOLDGIVENINDEALS
+		m_iGoldGivenInDeals = 0;
+#endif
+#ifdef EG_REPLAYDATASET_GOLDRECEIVEDINDEALS
+		m_iGoldReceivedInDeals = 0;
+#endif
+#ifdef EG_REPLAYDATASET_GPTGIVENINDEALS
+		m_iGPTGivenInDeals = 0;
+		m_iGPTGivenInDealsRate = 0;
+#endif
+#ifdef EG_REPLAYDATASET_GPTRECEIVEDINDEALS
+		m_iGPTReceivedInDeals = 0;
+		m_iGPTReceivedInDealsRate = 0;
+#endif
+	}
 #endif
 	if (uiVersion >= 14)
 	{
@@ -26036,6 +26181,23 @@ void CvPlayer::Write(FDataStream& kStream) const
 #endif
 #ifdef EG_REPLAYDATASET_NUMFAITHONMILITARYUNITS
 	kStream << m_iNumFaithSpentOnMilitaryUnits;
+#endif
+#ifdef EG_REPLAYDATASET_GOLDGIFTEDTOCS
+	kStream << m_iGoldGiftedToMinors;
+#endif
+#ifdef EG_REPLAYDATASET_GOLDGIVENINDEALS
+	kStream << m_iGoldGivenInDeals;
+#endif
+#ifdef EG_REPLAYDATASET_GOLDRECEIVEDINDEALS
+	kStream << m_iGoldReceivedInDeals;
+#endif
+#ifdef EG_REPLAYDATASET_GPTGIVENINDEALS
+	kStream << m_iGPTGivenInDeals;
+	kStream << m_iGPTGivenInDealsRate;
+#endif
+#ifdef EG_REPLAYDATASET_GPTRECEIVEDINDEALS
+	kStream << m_iGPTReceivedInDeals;
+	kStream << m_iGPTReceivedInDealsRate;
 #endif
 	kStream << m_iExtraLeagueVotes;
 	kStream << m_iSpecialPolicyBuildingHappiness;
@@ -29158,6 +29320,21 @@ void CvPlayer::GatherPerTurnReplayStats(int iGameTurn)
 #endif
 #ifdef EG_REPLAYDATASET_ANARCHYTURNS
 		setReplayDataValue(getReplayDataSetIndex("REPLAYDATASET_ANARCHYTURNS"), iGameTurn, GetAnarchyNumTurns());
+#endif
+#ifdef EG_REPLAYDATASET_GOLDGIFTEDTOCS
+		setReplayDataValue(getReplayDataSetIndex("REPLAYDATASET_GOLDGIFTEDTOCS"), iGameTurn, GetGoldGiftedToMinors());
+#endif
+#ifdef EG_REPLAYDATASET_GOLDGIVENINDEALS
+		setReplayDataValue(getReplayDataSetIndex("REPLAYDATASET_GOLDGIVENINDEALS"), iGameTurn, GetGoldGivenInDeals());
+#endif
+#ifdef EG_REPLAYDATASET_GOLDRECEIVEDINDEALS
+		setReplayDataValue(getReplayDataSetIndex("REPLAYDATASET_GOLDRECEIVEDINDEALS"), iGameTurn, GetGoldReceivedInDeals());
+#endif
+#ifdef EG_REPLAYDATASET_GPTGIVENINDEALS
+		setReplayDataValue(getReplayDataSetIndex("REPLAYDATASET_GPTGIVENINDEALS"), iGameTurn, GetGPTGivenInDeals());
+#endif
+#ifdef EG_REPLAYDATASET_GPTRECEIVEDINDEALS
+		setReplayDataValue(getReplayDataSetIndex("REPLAYDATASET_GPTRECEIVEDINDEALS"), iGameTurn, GetGPTReceivedInDeals());
 #endif
 
 /*#ifdef ENHANCED_GRAPHS
