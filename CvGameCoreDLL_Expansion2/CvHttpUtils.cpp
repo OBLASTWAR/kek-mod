@@ -1248,7 +1248,7 @@ static void BuildTurnJson(std::string& out, PlayerTypes eUploader)
 #ifdef EG_REPLAYDATASET_NUMGOLDONUPGRADES
         JsonAppendFmt(out, ",\"goldSpentOnUnitUpgrades\":%d", kPlayer.getReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_NUMGOLDONUPGRADES"), kGame.getGameTurn()));
 #endif
-#ifdef EG_REPLAYDATASET_GOLDFROMKILLS
+#ifdef EG_REPLAYDATASET_GOLDEFROMKILLS
         JsonAppendFmt(out, ",\"goldFromKills\":%d", kPlayer.getReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_GOLDFROMKILLS"), kGame.getGameTurn()));
 #endif
 #ifdef EG_REPLAYDATASET_CULTUREFROMKILLS
