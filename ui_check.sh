@@ -36,6 +36,7 @@ then eui UnitFlagManager.xml; eui UnitFlagManager.lua; else ui UnitFlagManager.x
 
 [[ -f "$E/Improvements/SocialPolicyPopup.lua" ]] && eui SocialPolicyPopup.lua || ui SocialPolicyPopup.lua
 [[ -f "$E/NotificationPanel/DiploList.lua" ]] || ui DiploList.lua
+[[ -f "$E/FrontEnd/FrontEnd.lua" ]] && eui FrontEnd.lua || ui FrontEnd.lua
 [[ -f "$E/LeaderHead/TradeLogic.lua" ]] && eui TradeLogic.lua || ui TradeLogic.lua
 if [[ -f "$E/ToolTips/InfoTooltipInclude.lua" ]]; then eui EUI_tooltip_library.lua; eui EUI_unit_include.lua
 else ui InfoTooltipInclude.lua; fi

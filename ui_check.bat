@@ -76,6 +76,12 @@ IF NOT EXIST "%cd%\%euifolder%\NotificationPanel\DiploList.lua" (
   ECHO F | xcopy /s /y "%cd%\%patchfolder%\tmp\ui\DiploList.lua" "%cd%\%patchfolder%\UI\DiploList.lua"
 )
 REM -------------------------------------------------
+IF EXIST "%cd%\%euifolder%\FrontEnd\FrontEnd.lua" (
+  ECHO F | xcopy /s /y "%cd%\%patchfolder%\tmp\eui\FrontEnd.lua" "%cd%\%patchfolder%\UI\FrontEnd.lua"
+) ELSE (
+  ECHO F | xcopy /s /y "%cd%\%patchfolder%\tmp\ui\FrontEnd.lua" "%cd%\%patchfolder%\UI\FrontEnd.lua"
+)
+REM -------------------------------------------------
 IF EXIST "%cd%\%euifolder%\LeaderHead\TradeLogic.lua" (
   ECHO F | xcopy /s /y "%cd%\%patchfolder%\tmp\eui\TradeLogic.lua" "%cd%\%patchfolder%\UI\TradeLogic.lua"
 ) ELSE (
