@@ -243,6 +243,10 @@ public:
 	float getTimeElapsed();
 	void setTimeElapsed(float fNewValue);
 #endif
+#ifdef TURN_TIMER_RULES_DETERMINISTIC
+	bool IsLocalClockInSecondHalfOfTimedTurn();
+	bool CanParadropAtByLocalClock(const CvUnit* pUnit, int iX, int iY);
+#endif
 #ifdef GAME_ALLOW_ONLY_ONE_UNIT_MOVE_ON_TURN_LOADING
 	bool isMPOrderedMoveOnTurnLoading() const;
 	void setMPOrderedMoveOnTurnLoading(bool bNewValue);

@@ -1693,4 +1693,45 @@
 // entirely and gated the others behind listener-checked GameEvents.
 #define REMOVE_UNUSED_RELIGION_LUA_HOOKS
 
+// Multiplayer desync fixes found by studying the Nova modpack (2026-10), which
+// shares our ImmoSS upstream.
+//
+// getPower / GetMilitaryMight / GetEconomicMight cached their value lazily on
+// the first read of a turn and wrote it into synced player state. The UI reads
+// them too (Demographics.lua via Player:GetMilitaryMight), so the write landed
+// at a different moment on each client, and getPower feeds the sync checksum.
+// The cache is now refreshed in CvGame::doTurn on every client; the getters
+// only read.
+#define MIGHT_RECOMPUTED_AT_TURN_START
+
+// The half-turn timer rules (no air patrol, paradrop only into friendly
+// territory, no capture after a late paradrop) read the local clock inside
+// canAirPatrol / canParadropAt / paradrop, which also run when a mission
+// executes on every client and inside the AI. A client on the other side of
+// the halfway mark disagreed and desynced. The clock is now read only where
+// the local player issues the order (CvGame::selectionListGameNetMessage) and
+// in UI-only checks; a late paradrop carries MISSION_MODIFIER_LATE_IN_TIMED_TURN
+// so every client applies the same capture restriction. The city-state ally
+// war ban (CS_ALLYING_WAR_RESCTRICTION) stored a local-clock deadline in the
+// sync archive; it now lasts until the end of the current turn.
+#define TURN_TIMER_RULES_DETERMINISTIC
+
+// GAME_ALLOW_ONLY_ONE_UNIT_MOVE_ON_TURN_LOADING dropped every order after the
+// first one at the start of a turn until the first mission echoed back over
+// the network -- players clicking fast at turn start lost orders silently.
+// Once the local player's turn is active the turn-start case lets orders
+// through; the turn-loading and end-of-turn (everyone done) cases still allow
+// only one.
+#define ORDERS_NOT_DROPPED_AT_TURN_START
+
+// Live desync detection (CvSyncFingerprint.cpp, tmp/ui/KekSyncCheck.lua).
+// Every KEK_SYNC_SLICE_INTERVAL turn slices (~2 s) each client hashes its
+// synced state (game/RNG, players, units, cities) and broadcasts the hashes
+// over hidden chat; the first mismatch with a player writes the snapshot to
+// kek_desync.log and posts it to GDR /api/desyncs from every client involved,
+// so both sides' view of the same slice can be diffed. Read-only: no RNG, no
+// game messages, so it cannot cause a desync itself.
+#define KEK_SYNC_FINGERPRINT
+#define KEK_SYNC_SLICE_INTERVAL 20
+
 #endif

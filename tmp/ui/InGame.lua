@@ -1292,3 +1292,6 @@ for addin in Modding.GetActivatedModEntryPoints("InGameUIAddin") do
 	
 	table.insert(g_uiAddins, ContextPtr:LoadNewContext(path));
 end
+
+-- KEK Mod: live desync detection (broadcasts and checks state fingerprints).
+table.insert(g_uiAddins, ContextPtr:LoadNewContext("KekSyncCheck"));

@@ -159,6 +159,11 @@ Controls.ChatToggle:RegisterCallback( Mouse.eLClick, OnChatToggle );
 local bFlipper = false;
 function OnChat( fromPlayer, toPlayer, text, eTargetType, bSkipSound, iTurn, iTimestamp )
 
+    -- Hidden desync-check messages (KekSyncCheck.lua) never reach the panel.
+    if type(text) == "string" and text:sub(1, 5) == "~~KS|" then
+        return;
+    end
+
     local controlTable = {};
     ContextPtr:BuildInstanceForControl( "ChatEntry", controlTable, Controls.ChatStack );
   
