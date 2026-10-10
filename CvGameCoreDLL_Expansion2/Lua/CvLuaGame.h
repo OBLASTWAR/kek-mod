@@ -410,6 +410,10 @@ protected:
 #ifdef LUAAPI_GET_TURN_TIME_ELAPSED
 	static int lGetTurnTimeElapsed(lua_State* L);
 #endif
+#ifdef KEK_SYNC_FINGERPRINT
+	static int lKekSyncGetLatest(lua_State* L);
+	static int lKekSyncCompare(lua_State* L);
+#endif
 };
 
 #endif //CVLUAGAME_H

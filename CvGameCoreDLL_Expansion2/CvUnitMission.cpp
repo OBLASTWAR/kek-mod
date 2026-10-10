@@ -1419,7 +1419,11 @@ void CvUnitMission::StartMission(UnitHandle hUnit)
 
 			else if (pkQueueData->eMissionType == (MissionTypes)-2)
 			{
-				if (hUnit->paradrop(pkQueueData->iData1, pkQueueData->iData2))
+				if (hUnit->paradrop(pkQueueData->iData1, pkQueueData->iData2
+#ifdef TURN_TIMER_RULES_DETERMINISTIC
+					, (pkQueueData->iFlags & MISSION_MODIFIER_LATE_IN_TIMED_TURN) != 0
+#endif
+					))
 				{
 					bAction = true;
 				}
@@ -1428,7 +1432,11 @@ void CvUnitMission::StartMission(UnitHandle hUnit)
 
 			else if(pkQueueData->eMissionType == CvTypes::getMISSION_PARADROP())
 			{
-				if(hUnit->paradrop(pkQueueData->iData1, pkQueueData->iData2))
+				if(hUnit->paradrop(pkQueueData->iData1, pkQueueData->iData2
+#ifdef TURN_TIMER_RULES_DETERMINISTIC
+					, (pkQueueData->iFlags & MISSION_MODIFIER_LATE_IN_TIMED_TURN) != 0
+#endif
+					))
 				{
 					bAction = true;
 					// The Paradrop needs to have GameplayUnitMissionEnd, so if no mission timer will be started, do it now.

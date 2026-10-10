@@ -48,6 +48,7 @@
 #include "CvStringUtils.h"
 #include "CvBarbarians.h"
 #include "CvHttpUtils.h"
+#include "CvSyncFingerprint.h"
 #include "CvCrashReporter.h"
 #include "CvGoodyHuts.h"
 
@@ -1586,6 +1587,11 @@ void CvGame::update()
 
 					changeTurnSlice(1);
 
+#ifdef KEK_SYNC_FINGERPRINT
+					// Same point in the slice on every client (see CvSyncFingerprint.h).
+					KekSync_OnSliceEnd();
+#endif
+
 					gDLL->FlushTurnReminders();
 				}
 			}
@@ -2676,6 +2682,27 @@ void CvGame::selectionListGameNetMessage(int eMessage, int iData2, int iData3, i
 	{
 		if(pkSelectedUnit->getOwner() == getActivePlayer() && !pSelectedUnit->IsBusy())
 		{
+#ifdef TURN_TIMER_RULES_DETERMINISTIC
+			// The half-turn rules for air patrol and paradrop are decided here, by
+			// the issuing player's clock, and the outcome travels with the order.
+			// Checked before the turn-loading guard so a rejected order does not
+			// use up the one allowed turn-loading move.
+			if (eMessage == GAMEMESSAGE_PUSH_MISSION && IsLocalClockInSecondHalfOfTimedTurn())
+			{
+				if ((MissionTypes)iData2 == CvTypes::getMISSION_AIRPATROL())
+				{
+					return;
+				}
+				if ((MissionTypes)iData2 == CvTypes::getMISSION_PARADROP())
+				{
+					if (!CanParadropAtByLocalClock(pkSelectedUnit, iData3, iData4))
+					{
+						return;
+					}
+					iFlags |= MISSION_MODIFIER_LATE_IN_TIMED_TURN;
+				}
+			}
+#endif
 #ifdef GAME_ALLOW_ONLY_ONE_UNIT_MOVE_ON_TURN_LOADING
 			if (isGameMultiPlayer())
 			{
@@ -2695,7 +2722,14 @@ void CvGame::selectionListGameNetMessage(int eMessage, int iData2, int iData3, i
 
 				// both is true means turn is about to end
 				// both is false means turn just started
+#ifdef ORDERS_NOT_DROPPED_AT_TURN_START
+				// Once our turn is live, turn-start orders go through instead of being
+				// dropped until the first mission echoes back (see _Defines.h).
+				bool bTurnStartLive = !bAllComplete && getActivePlayer() != NO_PLAYER && GET_PLAYER(getActivePlayer()).isTurnActive();
+				if (bAllComplete == getHasReceivedFirstMission() && !bTurnStartLive) {
+#else
 				if (bAllComplete == getHasReceivedFirstMission()) {
+#endif
 					if (isMPOrderedMoveOnTurnLoading()) {
 						//SLOG("--- subsequent move order REJECTED %f %f", t1, t2);
 						//SLOG("HasReceivedTurnAllComplete %d bAllComplete %d getHasReceivedFirstMission %d", gDLL->HasReceivedTurnAllComplete(getActivePlayer()) ? 1 : 0, bAllComplete ? 1 : 0, getHasReceivedFirstMission() ? 1 : 0);
@@ -2788,7 +2822,14 @@ void CvGame::selectedCitiesGameNetMessage(int eMessage, int iData2, int iData3, 
 
 						// both is true means turn is about to end
 						// both is false means turn just started
+#ifdef ORDERS_NOT_DROPPED_AT_TURN_START
+						// Once our turn is live, turn-start orders go through instead of being
+						// dropped until the first mission echoes back (see _Defines.h).
+						bool bTurnStartLive = !bAllComplete && getActivePlayer() != NO_PLAYER && GET_PLAYER(getActivePlayer()).isTurnActive();
+						if (bAllComplete == getHasReceivedFirstMission() && !bTurnStartLive) {
+#else
 						if (bAllComplete == getHasReceivedFirstMission()) {
+#endif
 							if (isMPOrderedMoveOnTurnLoading()) {
 								SLOG("--- subsequent move order REJECTED %f %f", t1, t2);
 								//SLOG("HasReceivedTurnAllComplete %d bAllComplete %d getHasReceivedFirstMission %d", gDLL->HasReceivedTurnAllComplete(getActivePlayer()) ? 1 : 0, bAllComplete ? 1 : 0, getHasReceivedFirstMission() ? 1 : 0);
@@ -3146,6 +3187,10 @@ bool CvGame::canHandleAction(int iAction, CvPlot* pPlot, bool bTestVisible)
 						pMissionPlot = pkHeadSelectedUnit->plot();
 					}
 
+#ifdef TURN_TIMER_RULES_DETERMINISTIC
+					// UI-side half-turn rule for air patrol (no longer inside canAirPatrol).
+					if(!(pActionInfo->getMissionType() == CvTypes::getMISSION_AIRPATROL() && IsLocalClockInSecondHalfOfTimedTurn()))
+#endif
 					if(pkHeadSelectedUnit->CanStartMission(pActionInfo->getMissionType(), pActionInfo->getMissionData(), -1, pMissionPlot, bTestVisible))
 					{
 						return true;
@@ -5283,6 +5328,56 @@ float CvGame::getTimeElapsed()
 void CvGame::setTimeElapsed(float fNewValue)
 {
 	m_fTimeElapsed = fNewValue;
+}
+
+
+#endif
+#ifdef TURN_TIMER_RULES_DETERMINISTIC
+//	--------------------------------------------------------------------------------
+// True once this machine's turn timer is past the halfway mark of a timed turn.
+// This reads the LOCAL clock, which differs between clients: call it only where
+// the local player issues an order or the UI asks, never from code that runs on
+// every client (mission execution, AI, net message handlers).
+bool CvGame::IsLocalClockInSecondHalfOfTimedTurn()
+{
+	if (!isOption(GAMEOPTION_END_TURN_TIMER_ENABLED) || getElapsedGameTurns() <= 0)
+		return false;
+#ifdef AUI_GAME_RELATIVE_TURN_TIMERS
+	if (getPitbossTurnTime() != 0 && !isOption("GAMEOPTION_RELATIVE_TURN_TIMER"))
+		return false;
+#else
+	if (getPitbossTurnTime() != 0)
+		return false;
+#endif
+
+#ifdef GAME_UPDATE_TURN_TIMER_ONCE_PER_TURN
+	float fGameTurnEnd = getPreviousTurnLen();
+#else
+	float fGameTurnEnd = static_cast<float>(getMaxTurnLen());
+#endif
+
+#ifdef TURN_TIMER_PAUSE_BUTTON
+	float fTimeElapsed = getTimeElapsed();
+#else
+	//Time since the current player's turn started.  Used for measuring time for players in sequential turn mode.
+	float fTimeSinceCurrentTurnStart = m_curTurnTimer.Peek() + m_fCurrentTurnTimerPauseDelta;
+	//Time since the game (year) turn started.  Used for measuring time for players in simultaneous turn mode.
+	float fTimeSinceGameTurnStart = m_timeSinceGameTurnStart.Peek() + m_fCurrentTurnTimerPauseDelta;
+	float fTimeElapsed = (GET_PLAYER(getActivePlayer()).isSimultaneousTurns() ? fTimeSinceGameTurnStart : fTimeSinceCurrentTurnStart);
+#endif
+
+	return fTimeElapsed * 2 > fGameTurnEnd;
+}
+
+//	--------------------------------------------------------------------------------
+// Local-clock half of the paradrop rule: late in a timed turn, only drops into
+// friendly territory are allowed. Same caveat as above -- issuing side only.
+bool CvGame::CanParadropAtByLocalClock(const CvUnit* pUnit, int iX, int iY)
+{
+	if (!IsLocalClockInSecondHalfOfTimedTurn())
+		return true;
+	CvPlot* pTargetPlot = GC.getMap().plot(iX, iY);
+	return pTargetPlot != NULL && pTargetPlot->IsFriendlyTerritory(pUnit->getOwner());
 }
 
 
@@ -7989,6 +8084,17 @@ void CvGame::doTurn()
 
 	incrementGameTurn();
 	incrementElapsedGameTurns();
+
+#ifdef MIGHT_RECOMPUTED_AT_TURN_START
+	for(iI = 0; iI < MAX_PLAYERS; iI++)
+	{
+		CvPlayer& kMightPlayer = GET_PLAYER((PlayerTypes)iI);
+		if(kMightPlayer.isEverAlive())
+		{
+			kMightPlayer.UpdateMightCache();
+		}
+	}
+#endif
 
 	if(isOption(GAMEOPTION_DYNAMIC_TURNS))
 	{// update turn mode for dynamic turn mode.
