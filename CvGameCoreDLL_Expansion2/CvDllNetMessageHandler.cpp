@@ -1016,6 +1016,13 @@ void CvDllNetMessageHandler::ResponseChangeIdeology(PlayerTypes ePlayer)
 //------------------------------------------------------------------------------
 void CvDllNetMessageHandler::ResponseGiftUnit(PlayerTypes ePlayer, PlayerTypes eMinor, int iUnitID)
 {
+	// kekmod 2.1.1: drop the message when no game is set up here (main menu,
+	// mid-join). The timer/vote branches below name ePlayer via getName(),
+	// which crashed on the still-empty player. Every client in a running game
+	// is final-initialized, so this never skips a message there (no desync).
+	if (!GC.getGame().isFinalInitialized() || ePlayer < 0 || ePlayer >= MAX_PLAYERS)
+		return;
+
 #ifdef MP_PLAYERS_VOTING_SYSTEM
 	// -2 -- irr
 	// -3 -- cc
