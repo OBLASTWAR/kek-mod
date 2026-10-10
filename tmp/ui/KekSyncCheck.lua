@@ -35,7 +35,7 @@ function CompareFingerprint(fromPlayer, iTurn, iSlice, strHashes)
 	if iResult == KEKSYNC_MISMATCH_NEW then
 		local pPlayer = Players[fromPlayer];
 		local strName = (pPlayer ~= nil) and pPlayer:GetNickName() or tostring(fromPlayer);
-		Events.GameplayAlertMessage("Desync detected with " .. strName .. " (turn " .. iTurn .. "). A report was sent to the KEK Mod team.");
+		Events.GameplayAlertMessage("Desync detected with " .. strName .. " (turn " .. iTurn .. ").");
 	end
 	return iResult;
 end
