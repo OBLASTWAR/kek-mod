@@ -1725,7 +1725,12 @@
 // kek_desync.log and posts it to GDR /api/desyncs from every client involved,
 // so both sides' view of the same slice can be diffed. Read-only: no RNG, no
 // game messages, so it cannot cause a desync itself.
-#define KEK_SYNC_FINGERPRINT
+// OFF since 2.1.1's first live game (2026-10-11): MP clients don't advance turn
+// slices in lockstep and apply remote unit moves whenever they arrive, so slice-N
+// fingerprints differ on every unit move during a turn -- false alarms, not
+// desyncs. Needs to compare at a point all clients agree on (turn start) and a
+// game id shared by all clients (the map GUID differed per client) before re-enabling.
+//#define KEK_SYNC_FINGERPRINT
 #define KEK_SYNC_SLICE_INTERVAL 20
 
 #endif
