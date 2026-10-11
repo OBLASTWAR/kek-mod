@@ -2722,14 +2722,7 @@ void CvGame::selectionListGameNetMessage(int eMessage, int iData2, int iData3, i
 
 				// both is true means turn is about to end
 				// both is false means turn just started
-#ifdef ORDERS_NOT_DROPPED_AT_TURN_START
-				// Once our turn is live, turn-start orders go through instead of being
-				// dropped until the first mission echoes back (see _Defines.h).
-				bool bTurnStartLive = !bAllComplete && getActivePlayer() != NO_PLAYER && GET_PLAYER(getActivePlayer()).isTurnActive();
-				if (bAllComplete == getHasReceivedFirstMission() && !bTurnStartLive) {
-#else
 				if (bAllComplete == getHasReceivedFirstMission()) {
-#endif
 					if (isMPOrderedMoveOnTurnLoading()) {
 						//SLOG("--- subsequent move order REJECTED %f %f", t1, t2);
 						//SLOG("HasReceivedTurnAllComplete %d bAllComplete %d getHasReceivedFirstMission %d", gDLL->HasReceivedTurnAllComplete(getActivePlayer()) ? 1 : 0, bAllComplete ? 1 : 0, getHasReceivedFirstMission() ? 1 : 0);
@@ -2822,14 +2815,7 @@ void CvGame::selectedCitiesGameNetMessage(int eMessage, int iData2, int iData3, 
 
 						// both is true means turn is about to end
 						// both is false means turn just started
-#ifdef ORDERS_NOT_DROPPED_AT_TURN_START
-						// Once our turn is live, turn-start orders go through instead of being
-						// dropped until the first mission echoes back (see _Defines.h).
-						bool bTurnStartLive = !bAllComplete && getActivePlayer() != NO_PLAYER && GET_PLAYER(getActivePlayer()).isTurnActive();
-						if (bAllComplete == getHasReceivedFirstMission() && !bTurnStartLive) {
-#else
 						if (bAllComplete == getHasReceivedFirstMission()) {
-#endif
 							if (isMPOrderedMoveOnTurnLoading()) {
 								SLOG("--- subsequent move order REJECTED %f %f", t1, t2);
 								//SLOG("HasReceivedTurnAllComplete %d bAllComplete %d getHasReceivedFirstMission %d", gDLL->HasReceivedTurnAllComplete(getActivePlayer()) ? 1 : 0, bAllComplete ? 1 : 0, getHasReceivedFirstMission() ? 1 : 0);

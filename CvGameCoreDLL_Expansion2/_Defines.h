@@ -716,7 +716,9 @@
 #define TURN_TIMER_PAUSE_BUTTON
 /// Prevent timer mid-turn fluctuations - update it once per turn
 #define GAME_UPDATE_TURN_TIMER_ONCE_PER_TURN
-/// Player can move only one unit while MP turn is loading
+/// Player can move only one unit while MP turn is loading. Deliberate balance rule (kek/lek/tournament):
+/// without it, many attacks queued at turn start all resolve before the opponent can act. Not a desync
+/// fix to undo -- Nova bypasses it once the local turn is active; we keep it.
 #define GAME_ALLOW_ONLY_ONE_UNIT_MOVE_ON_TURN_LOADING
 ///
 #define DO_TURN_CHANGE_ORDER
@@ -1715,14 +1717,6 @@
 // war ban (CS_ALLYING_WAR_RESCTRICTION) stored a local-clock deadline in the
 // sync archive; it now lasts until the end of the current turn.
 #define TURN_TIMER_RULES_DETERMINISTIC
-
-// GAME_ALLOW_ONLY_ONE_UNIT_MOVE_ON_TURN_LOADING dropped every order after the
-// first one at the start of a turn until the first mission echoed back over
-// the network -- players clicking fast at turn start lost orders silently.
-// Once the local player's turn is active the turn-start case lets orders
-// through; the turn-loading and end-of-turn (everyone done) cases still allow
-// only one.
-#define ORDERS_NOT_DROPPED_AT_TURN_START
 
 // Live desync detection (CvSyncFingerprint.cpp, tmp/ui/KekSyncCheck.lua).
 // Every KEK_SYNC_SLICE_INTERVAL turn slices (~2 s) each client hashes its
