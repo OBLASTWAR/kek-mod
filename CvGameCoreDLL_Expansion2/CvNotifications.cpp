@@ -746,6 +746,28 @@ bool CvNotifications::GetEndTurnBlockedType(EndTurnBlockingTypes& eBlockingType,
 				return true;
 				break;
 
+#ifdef MP_PLAYERS_VOTING_SYSTEM
+			// kekmod 2.2: an IRR/CC/SCRAP proposal blocks the end of turn until this
+			// player has voted on it. Owner (auto-yes) and CC subject (ineligible) aren't
+			// blocked; stale notifications from earlier turns don't resolve to a proposal.
+			case NOTIFICATION_MP_IRR_PROPOSAL:
+			case NOTIFICATION_MP_CC_PROPOSAL:
+			case NOTIFICATION_MP_SCRAP_PROPOSAL:
+			{
+				CvMPVotingSystem* pkMPVotingSystem = GC.getGame().GetMPVotingSystem();
+				int iProposalID = (pkMPVotingSystem && m_ePlayer < MAX_MAJOR_CIVS) ? pkMPVotingSystem->GetProposalIDbyUIid(m_aNotifications[iIndex].m_iLookupIndex) : -1;
+				if (iProposalID != -1 && !pkMPVotingSystem->GetProposalCompletion(iProposalID)
+					&& pkMPVotingSystem->GetVoterEligibility(iProposalID, m_ePlayer)
+					&& !pkMPVotingSystem->GetVoterHasVoted(iProposalID, m_ePlayer))
+				{
+					eBlockingType = ENDTURN_BLOCKING_DIPLO_VOTE;
+					iNotificationIndex = m_aNotifications[iIndex].m_iLookupIndex;
+					return true;
+				}
+				break;
+			}
+#endif
+
 			default:
 				// these notifications don't block, so don't return a blocking type
 				break;
