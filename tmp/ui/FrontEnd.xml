@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Context ColorSet="Beige_Black_Alpha" Font="TwCenMT22" FontStyle="Shadow" Name="FrontEnd" >
+
+    <Box Anchor="C,C" Size="Full,Full" Color="0,0,0,255" />
+    <Image Anchor="C,C" Offset="0,0"  Size="1920,1200" ID="AtlasLogo" />
+
+    <!-- KEK Mod: version in place of the Civ V / Brave New World logo, which every
+         menu screen draws top-right (Art/CivilzationV_Logo.dds is now blank).
+         @KEKMOD_VERSION@ is stamped at packaging time. -->
+    <Label Anchor="R,T" Offset="40,36" Font="TwCenMT24" FontStyle="Shadow" Color0="255,235,180,255" String="KEK Mod v@KEKMOD_VERSION@" ID="KekVersionLabel" />
+
+
+    <!-- Child Screens -->
+    <LuaContext FileName="Assets/UI/FrontEnd/LegalScreen" ID="LegalScreen" Hidden="1" />
+    <LuaContext FileName="Assets/UI/FrontEnd/MainMenu" ID="MainMenu" Hidden="1" />
+
+    <LuaContext FileName="Assets/UI/FrontEnd/FrontEndPopup" Hidden="1" />
+    <LuaContext FileName="Assets/UI/FrontEnd/ExitConfirm" Hidden="1" />
+		<LuaContext FileName="Assets/UI/FrontEnd/ContentSwitch" ID="ContentSwitch" Hidden="1" />
+</Context>
