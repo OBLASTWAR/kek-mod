@@ -1,7 +1,7 @@
 // Release CI: builds the DLL on the maintainer's Windows build machine and
 // publishes GitHub releases.
-//   push to main     -> stable release vX.Y.Z, marked Latest (X.Y from VERSION)
-//   push to release  -> pre-release vX.Y.Z-betaN
+//   push to main     -> stable release vX.Y, marked Latest (X from VERSION; every stable bumps Y)
+//   push to release  -> pre-release vX.Y-betaN (Y = the next stable)
 // Nothing is built when only non-shipping files (installer/, docs) changed.
 // Builds started by branch indexing never publish.
 // The build tooling lives in a private companion repo; you don't need any of
