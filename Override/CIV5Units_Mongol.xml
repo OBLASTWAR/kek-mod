@@ -45347,7 +45347,7 @@ The second sack of Ulundi is considered by historians to be the definitive end o
 		</Replace>
 		<Replace Tag="TXT_KEY_DIPLO_VOTE"> 
 			<Text>
-				UN VOTE
+				CAST VOTE
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_DIPLO_VOTE_TRADE_ALREADY_COMMITTED"> 
@@ -45422,7 +45422,7 @@ The second sack of Ulundi is considered by historians to be the definitive end o
 		</Replace>
 		<Replace Tag="TXT_KEY_DIPLO_VOTE_TT"> 
 			<Text>
-				You must vote in the United Nations!
+				You must vote on the active proposal before ending your turn!
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_DIPLO_WARMONGER_THREAT"> 
