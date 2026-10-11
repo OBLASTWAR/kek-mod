@@ -128853,6 +128853,16 @@ The ship has weather'd every rack; the prize we sought is won."
 					Toggle resource icons on the map.
 				</Text>
 			</Replace>
+		<Replace Tag="TXT_KEY_DIPLO_VOTE"> 
+			<Text>
+				ABSTIMMEN
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_DIPLO_VOTE_TT"> 
+			<Text>
+				Sie müssen über den aktiven Antrag abstimmen, bevor Sie Ihre Runde beenden!
+			</Text>
+		</Replace>
 	</Language_DE_DE>
 	<Language_ES_ES>
 		<Replace Tag="TXT_KEY_WONDER_HUBBLE_HELP"> 
@@ -131081,6 +131091,16 @@ The ship has weather'd every rack; the prize we sought is won."
 					Toggle resource icons on the map.
 				</Text>
 			</Replace>
+		<Replace Tag="TXT_KEY_DIPLO_VOTE"> 
+			<Text>
+				VOTAR
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_DIPLO_VOTE_TT"> 
+			<Text>
+				¡Debes votar la propuesta activa antes de terminar el turno!
+			</Text>
+		</Replace>
 	</Language_ES_ES>
 	<Language_FR_FR>
 		<Replace Tag="TXT_KEY_WONDER_HUBBLE_HELP"> 
@@ -133309,6 +133329,16 @@ The ship has weather'd every rack; the prize we sought is won."
 					Toggle resource icons on the map.
 				</Text>
 			</Replace>
+		<Replace Tag="TXT_KEY_DIPLO_VOTE"> 
+			<Text>
+				VOTER
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_DIPLO_VOTE_TT"> 
+			<Text>
+				Vous devez voter sur la proposition en cours avant de terminer votre tour !
+			</Text>
+		</Replace>
 	</Language_FR_FR>
 	<Language_IT_IT>
 		<Replace Tag="TXT_KEY_WONDER_HUBBLE_HELP"> 
@@ -135537,6 +135567,16 @@ The ship has weather'd every rack; the prize we sought is won."
 					Toggle resource icons on the map.
 				</Text>
 			</Replace>
+		<Replace Tag="TXT_KEY_DIPLO_VOTE"> 
+			<Text>
+				VOTA
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_DIPLO_VOTE_TT"> 
+			<Text>
+				Devi votare la proposta attiva prima di terminare il turno!
+			</Text>
+		</Replace>
 	</Language_IT_IT>
 	<Language_JA_JP>
 		<Replace Tag="TXT_KEY_WONDER_HUBBLE_HELP"> 
@@ -137765,6 +137805,16 @@ The ship has weather'd every rack; the prize we sought is won."
 					Toggle resource icons on the map.
 				</Text>
 			</Replace>
+		<Replace Tag="TXT_KEY_DIPLO_VOTE"> 
+			<Text>
+				投票する
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_DIPLO_VOTE_TT"> 
+			<Text>
+				ターンを終了する前に、現在の提案に投票してください！
+			</Text>
+		</Replace>
 	</Language_JA_JP>
 	<Language_KO_KR>
 		<Replace Tag="TXT_KEY_WONDER_HUBBLE_HELP"> 
@@ -139993,6 +140043,16 @@ The ship has weather'd every rack; the prize we sought is won."
 					Toggle resource icons on the map.
 				</Text>
 			</Replace>
+		<Replace Tag="TXT_KEY_DIPLO_VOTE"> 
+			<Text>
+				투표하기
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_DIPLO_VOTE_TT"> 
+			<Text>
+				턴을 종료하기 전에 진행 중인 안건에 투표해야 합니다!
+			</Text>
+		</Replace>
 	</Language_KO_KR>
 	<Language_PL_PL>
 		<Replace Tag="TXT_KEY_WONDER_HUBBLE_HELP"> 
@@ -142221,6 +142281,16 @@ The ship has weather'd every rack; the prize we sought is won."
 					Toggle resource icons on the map.
 				</Text>
 			</Replace>
+		<Replace Tag="TXT_KEY_DIPLO_VOTE"> 
+			<Text>
+				GŁOSUJ
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_DIPLO_VOTE_TT"> 
+			<Text>
+				Musisz zagłosować nad aktywną propozycją przed zakończeniem tury!
+			</Text>
+		</Replace>
 	</Language_PL_PL>
 	<Language_RU_RU>
 		<!-- Hotkey Manager labels with no RU_RU coverage anywhere (base game or this mod) -->
@@ -144498,6 +144568,16 @@ The ship has weather'd every rack; the prize we sought is won."
 					Toggle resource icons on the map.
 				</Text>
 			</Replace>
+		<Replace Tag="TXT_KEY_DIPLO_VOTE"> 
+			<Text>
+				ГОЛОСОВАТЬ
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_DIPLO_VOTE_TT"> 
+			<Text>
+				Вы должны проголосовать по активному предложению, прежде чем завершить ход!
+			</Text>
+		</Replace>
 	</Language_RU_RU>
 	<Language_ZH_Hant_HK>
 		<Replace Tag="TXT_KEY_WONDER_HUBBLE_HELP"> 
@@ -146726,6 +146806,16 @@ The ship has weather'd every rack; the prize we sought is won."
 					Toggle resource icons on the map.
 				</Text>
 			</Replace>
+		<Replace Tag="TXT_KEY_DIPLO_VOTE"> 
+			<Text>
+				投票
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_DIPLO_VOTE_TT"> 
+			<Text>
+				結束回合前，你必須對進行中的提案投票！
+			</Text>
+		</Replace>
 	</Language_ZH_Hant_HK>
 
 </GameData>
