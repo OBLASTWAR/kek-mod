@@ -349,8 +349,13 @@ end
 
 -------------------------------------------------
 -------------------------------------------------
+-- kekmod: ConfirmKick closes (Accept and Cancel alike) with
+-- CallParentShowHideHandler( true ), which runs our ShowHideHandler as a hide
+-- although the lobby stays up -- and a hide wipes the chat. See ShowHideHandler.
+local m_bKickPopupOpen = false;
 function OnKickPlayer( selectionIndex )
 	local playerID = GetPlayerIDBySelectionIndex(selectionIndex);
+	m_bKickPopupOpen = true;
 	UIManager:PushModal(Controls.ConfirmKick, true);	
 	local playerName = m_SlotInstances[selectionIndex].PlayerNameLabel:GetText();
 	LuaEvents.SetKickPlayer(playerID, playerName);
@@ -1330,6 +1335,13 @@ local m_bKekVersionAnnounced = false;
 function ShowHideHandler( bIsHide, bIsInit )
 
 		--print("ShowHideHandler Hide: " .. tostring(bIsHide) .. " Init: " .. tostring(bIsInit));
+    -- kekmod: the kick popup closing, not a real hide -- leave the lobby as it is.
+    if( bIsHide and m_bKickPopupOpen ) then
+			m_bKickPopupOpen = false;
+			if( not ContextPtr:IsHidden() ) then
+				return;
+			end
+    end
     if( bIsHide ) then
 			Controls.ChatStack:DestroyAllChildren();
 			m_bKekVersionAnnounced = false;	-- chat was cleared; re-announce next show
