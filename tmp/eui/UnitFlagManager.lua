@@ -79,6 +79,10 @@ local g_activeTeamID = Game.GetActiveTeam()
 local g_activePlayer = Players[ g_activePlayerID ]
 local g_activeTeam = Teams[ g_activeTeamID ]
 
+-- Lobby option: other players' flags also dim when their units are out of moves.
+-- Off by default, as in the base game, since it shows which enemy units have moved.
+local g_dimEnemyFlags = PreGame.GetGameOption( "GAMEOPTION_DIM_ENEMY_UNIT_FLAGS" ) > 0
+
 local g_colorGreen = Color( 0, 1, 0, 1 )
 local g_colorYellow = Color( 1, 1, 0, 1 )
 local g_colorRed = Color( 1, 0, 0, 1 )
@@ -707,7 +711,7 @@ local function CreateNewFlag( playerID, unitID, isSelected, isHiddenByFog, isInv
 		---------------------------------------------------------
 		-- update all other info
 		flag.Anchor:SetHide( isHiddenByFog or isInvisibleToActiveTeam )
-		flag.FlagShadow:SetAlpha( unit:CanMove() and 1 or 0.5 )
+		flag.FlagShadow:SetAlpha( ( unit:CanMove() or not ( g_dimEnemyFlags or g_activeTeamID == teamID ) ) and 1 or 0.5 )
 		flag.Button:SetDisabled( g_activeTeamID ~= teamID )
 		flag.Button:SetConsumeMouseOver( g_activeTeamID == teamID )
 		UpdateFlagType( flag )
@@ -940,10 +944,8 @@ function( playerID, unitID, isDimmed )
 	-- DebugUnit( playerID, unitID, "UnitShouldDimFlag, isDimmed=", isDimmed ) end
 	local flag = g_UnitFlags[ playerID ][ unitID ]
 	if flag then
-	local active_team = Game.GetActiveTeam();
-	local team = Players[playerID]:GetTeam();
-	local isActiveTeam = (active_team == team);
-		flag.FlagShadow:SetAlpha( (isDimmed and isActiveTeam) and 0.5 or 1.0 )
+		local isShown = g_dimEnemyFlags or Players[ playerID ]:GetTeam() == g_activeTeamID
+		flag.FlagShadow:SetAlpha( isDimmed and isShown and 0.5 or 1.0 )
 	else
 		-- DebugUnit( playerID, unitID, "flag not found for UnitShouldDimFlag" ) end
 	end
