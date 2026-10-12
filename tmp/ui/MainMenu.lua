@@ -15,10 +15,135 @@ local i1, i2 = string.find( UI.GetVersionInfo(), " " );
 versionNumber = string.sub(UI.GetVersionInfo(), 1, i2-1);
 Controls.VersionNumber:SetText(versionNumber);
 
+-------------------------------------------------
+-- kekmod: installed version + update check, shown above the game build number.
+-- The version is stamped at package/deploy time from KEKMOD_MOD_VERSION in
+-- CvHttpUtils.cpp. The check reads the GitHub releases Atom feed (plain URL, no
+-- User-Agent needed, unlike the API) through the undocumented vanilla
+-- Network.HttpRequest. Stable installs compare against stable tags only, betas
+-- against every tag, so stable players aren't nagged about betas.
+-------------------------------------------------
+local KEKMOD_VERSION = "@KEKMOD_VERSION@";
+local KEK_RELEASES_FEED = "https://github.com/OBLASTWAR/kek-mod/releases.atom";
+local KEK_RELEASE_PAGE = "http://github.com/OBLASTWAR/kek-mod/releases/tag/"; -- http: Steam overlay is flaky with https
+local KEK_CHECK_TIMEOUT = 10; -- seconds
+
+local g_KekLatest = nil;      -- newer tag than ours ("v2.4"), once the check found one
+local g_KekCheckState = nil;  -- nil (not started), "running", "done", "failed"
+
+-- "v2.3-beta2" -> { 2, 3, 0, 2 }; a stable sorts after its betas (4th part huge).
+local function KekVersionKey( s )
+	local major, minor, rest = string.match( s, "^v?(%d+)%.(%d+)(.*)$" );
+	if major == nil then
+		return nil;
+	end
+	local patch = tonumber( string.match( rest, "^%.(%d+)" ) ) or 0;
+	local beta = tonumber( string.match( rest, "%-beta(%d+)" ) ) or 1e9;
+	return { tonumber( major ), tonumber( minor ), patch, beta };
+end
+
+local function KekVersionNewer( a, b )
+	for i = 1, 4 do
+		if a[i] ~= b[i] then
+			return a[i] > b[i];
+		end
+	end
+	return false;
+end
+
+local function KekText( key, fallback, ... )
+	local text = Locale.ConvertTextKey( key, ... );
+	if text == nil or text == "" or text == key then
+		return fallback;
+	end
+	return text;
+end
+
+local function KekRenderVersion()
+	local v = KEKMOD_VERSION;
+	local label, tip;
+	if string.sub( v, 1, 1 ) == "@" then
+		label = "KEK Mod (unstamped dev build)";
+	elseif g_KekCheckState == "done" and g_KekLatest ~= nil then
+		local latest = string.sub( g_KekLatest, 2 );
+		label = KekText( "TXT_KEY_KEK_MENU_VERSION_OUTDATED",
+			"KEK Mod v" .. v .. " - [COLOR_NEGATIVE_TEXT]v" .. latest .. " is out, update with the KEK Mod installer[ENDCOLOR]", v, latest );
+		tip = KekText( "TXT_KEY_KEK_MENU_VERSION_OUTDATED_TT", "Click to open the v" .. latest .. " release page.", latest );
+	elseif g_KekCheckState == "done" then
+		label = KekText( "TXT_KEY_KEK_MENU_VERSION_UPTODATE", "KEK Mod v" .. v .. " - [COLOR_POSITIVE_TEXT]up to date[ENDCOLOR]", v );
+	elseif g_KekCheckState == "failed" then
+		label = KekText( "TXT_KEY_KEK_MENU_VERSION_UNREACHABLE", "KEK Mod v" .. v .. " - could not check for updates", v );
+	else
+		label = KekText( "TXT_KEY_KEK_MENU_VERSION_CHECKING", "KEK Mod v" .. v .. " - checking for updates...", v );
+	end
+	Controls.KekVersionLabel:SetText( label );
+	Controls.KekVersionButton:SetToolTipString( tip or "" );
+end
+
+-- Newest tag in the feed that is newer than ours, or nil if we're current.
+local function KekNewerTag( body )
+	local mine = KekVersionKey( KEKMOD_VERSION );
+	local mineIsBeta = mine[4] < 1e9;
+	local best, bestKey = nil, mine;
+	for tag in string.gmatch( body, "/releases/tag/([^\"<]+)" ) do
+		local key = KekVersionKey( tag );
+		if key ~= nil and ( mineIsBeta or key[4] == 1e9 ) and KekVersionNewer( key, bestKey ) then
+			best, bestKey = tag, key;
+		end
+	end
+	return best;
+end
+
+local function KekFinishCheck( state, latest )
+	ContextPtr:ClearUpdate();
+	g_KekCheckState = state;
+	g_KekLatest = latest;
+	KekRenderVersion();
+end
+
+local function KekStartVersionCheck()
+	if g_KekCheckState ~= nil or KekVersionKey( KEKMOD_VERSION ) == nil then
+		return;
+	end
+	if Network == nil or type( Network.HttpRequest ) ~= "function" then
+		g_KekCheckState = "failed";
+		return;
+	end
+	local ok, req = pcall( Network.HttpRequest, KEK_RELEASES_FEED );
+	if not ok or req == nil then
+		g_KekCheckState = "failed";
+		return;
+	end
+	g_KekCheckState = "running";
+	local tStart = os.time();
+	ContextPtr:SetUpdate( function()
+		local okF, finished = pcall( function() return req.Finished(); end );
+		if okF and finished then
+			local body = nil;
+			pcall( function() body = req.PopReceivedData(); end );
+			if body ~= nil and string.find( body, "/releases/tag/", 1, true ) then
+				KekFinishCheck( "done", KekNewerTag( body ) );
+			else
+				KekFinishCheck( "failed" );
+			end
+		elseif not okF or os.time() - tStart > KEK_CHECK_TIMEOUT then
+			KekFinishCheck( "failed" );
+		end
+	end );
+end
+
+Controls.KekVersionButton:RegisterCallback( Mouse.eLClick, function()
+	if g_KekLatest ~= nil then
+		pcall( function() Steam.ActivateGameOverlayToWebPage( KEK_RELEASE_PAGE .. g_KekLatest ); end );
+	end
+end );
+
 
 function ShowHideHandler( bIsHide, bIsInit )
     if( not bIsHide ) then
         Controls.Civ5Logo:SetTexture( "CivilzationV_Logo.dds" );
+        KekStartVersionCheck();
+        KekRenderVersion();
         
         -- This is a catch all to ensure that mods are not activated at this point in the UI.
         -- Also, since certain maps and settings will only be available in either the modding or multiplayer

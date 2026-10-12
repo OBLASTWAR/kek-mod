@@ -126625,6 +126625,31 @@ The ship has weather'd every rack; the prize we sought is won."
 					Toggle resource icons on the map.
 				</Text>
 			</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_CHECKING">
+			<Text>
+				KEK Mod v{1_Ver} - checking for updates...
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UPTODATE">
+			<Text>
+				KEK Mod v{1_Ver} - [COLOR_POSITIVE_TEXT]up to date[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED">
+			<Text>
+				KEK Mod v{1_Ver} - [COLOR_NEGATIVE_TEXT]v{2_Ver} is out, update with the KEK Mod installer[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UNREACHABLE">
+			<Text>
+				KEK Mod v{1_Ver} - could not check for updates
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED_TT">
+			<Text>
+				Click to open the v{1_Ver} release page.
+			</Text>
+		</Replace>
 	</Language_en_US>
 	<Language_DE_DE>
 		<Replace Tag="TXT_KEY_WONDER_HUBBLE_HELP"> 
@@ -128861,6 +128886,31 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Replace Tag="TXT_KEY_DIPLO_VOTE_TT"> 
 			<Text>
 				Sie müssen über den aktiven Antrag abstimmen, bevor Sie Ihre Runde beenden!
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_CHECKING">
+			<Text>
+				KEK Mod v{1_Ver} - suche nach Updates...
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UPTODATE">
+			<Text>
+				KEK Mod v{1_Ver} - [COLOR_POSITIVE_TEXT]aktuell[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED">
+			<Text>
+				KEK Mod v{1_Ver} - [COLOR_NEGATIVE_TEXT]v{2_Ver} ist verfügbar, aktualisieren Sie mit dem KEK Mod Installer[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UNREACHABLE">
+			<Text>
+				KEK Mod v{1_Ver} - Suche nach Updates fehlgeschlagen
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED_TT">
+			<Text>
+				Klicken, um die Release-Seite von v{1_Ver} zu öffnen.
 			</Text>
 		</Replace>
 	</Language_DE_DE>
@@ -131101,6 +131151,31 @@ The ship has weather'd every rack; the prize we sought is won."
 				¡Debes votar la propuesta activa antes de terminar el turno!
 			</Text>
 		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_CHECKING">
+			<Text>
+				KEK Mod v{1_Ver} - comprobando actualizaciones...
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UPTODATE">
+			<Text>
+				KEK Mod v{1_Ver} - [COLOR_POSITIVE_TEXT]actualizado[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED">
+			<Text>
+				KEK Mod v{1_Ver} - [COLOR_NEGATIVE_TEXT]ya está disponible la v{2_Ver}, actualiza con el instalador de KEK Mod[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UNREACHABLE">
+			<Text>
+				KEK Mod v{1_Ver} - no se pudieron comprobar las actualizaciones
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED_TT">
+			<Text>
+				Haz clic para abrir la página de la versión v{1_Ver}.
+			</Text>
+		</Replace>
 	</Language_ES_ES>
 	<Language_FR_FR>
 		<Replace Tag="TXT_KEY_WONDER_HUBBLE_HELP"> 
@@ -133337,6 +133412,31 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Replace Tag="TXT_KEY_DIPLO_VOTE_TT"> 
 			<Text>
 				Vous devez voter sur la proposition en cours avant de terminer votre tour !
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_CHECKING">
+			<Text>
+				KEK Mod v{1_Ver} - recherche de mises à jour...
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UPTODATE">
+			<Text>
+				KEK Mod v{1_Ver} - [COLOR_POSITIVE_TEXT]à jour[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED">
+			<Text>
+				KEK Mod v{1_Ver} - [COLOR_NEGATIVE_TEXT]la v{2_Ver} est disponible, mettez à jour avec l'installateur KEK Mod[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UNREACHABLE">
+			<Text>
+				KEK Mod v{1_Ver} - impossible de vérifier les mises à jour
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED_TT">
+			<Text>
+				Cliquez pour ouvrir la page de la version v{1_Ver}.
 			</Text>
 		</Replace>
 	</Language_FR_FR>
@@ -135577,6 +135677,31 @@ The ship has weather'd every rack; the prize we sought is won."
 				Devi votare la proposta attiva prima di terminare il turno!
 			</Text>
 		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_CHECKING">
+			<Text>
+				KEK Mod v{1_Ver} - controllo aggiornamenti...
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UPTODATE">
+			<Text>
+				KEK Mod v{1_Ver} - [COLOR_POSITIVE_TEXT]aggiornato[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED">
+			<Text>
+				KEK Mod v{1_Ver} - [COLOR_NEGATIVE_TEXT]è disponibile la v{2_Ver}, aggiorna con l'installer di KEK Mod[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UNREACHABLE">
+			<Text>
+				KEK Mod v{1_Ver} - impossibile controllare gli aggiornamenti
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED_TT">
+			<Text>
+				Clicca per aprire la pagina della versione v{1_Ver}.
+			</Text>
+		</Replace>
 	</Language_IT_IT>
 	<Language_JA_JP>
 		<Replace Tag="TXT_KEY_WONDER_HUBBLE_HELP"> 
@@ -137813,6 +137938,31 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Replace Tag="TXT_KEY_DIPLO_VOTE_TT"> 
 			<Text>
 				ターンを終了する前に、現在の提案に投票してください！
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_CHECKING">
+			<Text>
+				KEK Mod v{1_Ver} - アップデートを確認中...
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UPTODATE">
+			<Text>
+				KEK Mod v{1_Ver} - [COLOR_POSITIVE_TEXT]最新版です[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED">
+			<Text>
+				KEK Mod v{1_Ver} - [COLOR_NEGATIVE_TEXT]v{2_Ver}が公開されています。KEK Modインストーラーで更新してください[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UNREACHABLE">
+			<Text>
+				KEK Mod v{1_Ver} - アップデートを確認できませんでした
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED_TT">
+			<Text>
+				クリックしてv{1_Ver}のリリースページを開きます。
 			</Text>
 		</Replace>
 	</Language_JA_JP>
@@ -140053,6 +140203,31 @@ The ship has weather'd every rack; the prize we sought is won."
 				턴을 종료하기 전에 진행 중인 안건에 투표해야 합니다!
 			</Text>
 		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_CHECKING">
+			<Text>
+				KEK Mod v{1_Ver} - 업데이트 확인 중...
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UPTODATE">
+			<Text>
+				KEK Mod v{1_Ver} - [COLOR_POSITIVE_TEXT]최신 버전[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED">
+			<Text>
+				KEK Mod v{1_Ver} - [COLOR_NEGATIVE_TEXT]v{2_Ver}이(가) 출시되었습니다. KEK Mod 설치 프로그램으로 업데이트하세요[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UNREACHABLE">
+			<Text>
+				KEK Mod v{1_Ver} - 업데이트를 확인할 수 없습니다
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED_TT">
+			<Text>
+				클릭하여 v{1_Ver} 릴리스 페이지를 엽니다.
+			</Text>
+		</Replace>
 	</Language_KO_KR>
 	<Language_PL_PL>
 		<Replace Tag="TXT_KEY_WONDER_HUBBLE_HELP"> 
@@ -142289,6 +142464,31 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Replace Tag="TXT_KEY_DIPLO_VOTE_TT"> 
 			<Text>
 				Musisz zagłosować nad aktywną propozycją przed zakończeniem tury!
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_CHECKING">
+			<Text>
+				KEK Mod v{1_Ver} - sprawdzanie aktualizacji...
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UPTODATE">
+			<Text>
+				KEK Mod v{1_Ver} - [COLOR_POSITIVE_TEXT]aktualna wersja[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED">
+			<Text>
+				KEK Mod v{1_Ver} - [COLOR_NEGATIVE_TEXT]dostępna jest v{2_Ver}, zaktualizuj instalatorem KEK Mod[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UNREACHABLE">
+			<Text>
+				KEK Mod v{1_Ver} - nie można sprawdzić aktualizacji
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED_TT">
+			<Text>
+				Kliknij, aby otworzyć stronę wydania v{1_Ver}.
 			</Text>
 		</Replace>
 	</Language_PL_PL>
@@ -144578,6 +144778,31 @@ The ship has weather'd every rack; the prize we sought is won."
 				Вы должны проголосовать по активному предложению, прежде чем завершить ход!
 			</Text>
 		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_CHECKING">
+			<Text>
+				KEK мод v{1_Ver} - проверка обновлений...
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UPTODATE">
+			<Text>
+				KEK мод v{1_Ver} - [COLOR_POSITIVE_TEXT]актуальная версия[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED">
+			<Text>
+				KEK мод v{1_Ver} - [COLOR_NEGATIVE_TEXT]доступна v{2_Ver}, обновите через установщик KEK мода[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UNREACHABLE">
+			<Text>
+				KEK мод v{1_Ver} - не удалось проверить обновления
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED_TT">
+			<Text>
+				Нажмите, чтобы открыть страницу выпуска v{1_Ver}.
+			</Text>
+		</Replace>
 	</Language_RU_RU>
 	<Language_ZH_Hant_HK>
 		<Replace Tag="TXT_KEY_WONDER_HUBBLE_HELP"> 
@@ -146814,6 +147039,31 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Replace Tag="TXT_KEY_DIPLO_VOTE_TT"> 
 			<Text>
 				結束回合前，你必須對進行中的提案投票！
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_CHECKING">
+			<Text>
+				KEK Mod v{1_Ver} - 正在檢查更新...
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UPTODATE">
+			<Text>
+				KEK Mod v{1_Ver} - [COLOR_POSITIVE_TEXT]已是最新版本[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED">
+			<Text>
+				KEK Mod v{1_Ver} - [COLOR_NEGATIVE_TEXT]v{2_Ver} 已推出，請使用 KEK Mod 安裝程式更新[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UNREACHABLE">
+			<Text>
+				KEK Mod v{1_Ver} - 無法檢查更新
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED_TT">
+			<Text>
+				點擊開啟 v{1_Ver} 的發佈頁面。
 			</Text>
 		</Replace>
 	</Language_ZH_Hant_HK>

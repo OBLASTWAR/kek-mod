@@ -182,6 +182,10 @@
 
   <!-- Version Information  -->
   <Label Anchor="C,B" Offset="0,12" String="InvalidVersionNumber" Font="TwCenMT16" ID="VersionNumber"/>
+  <!-- KEK Mod: installed version + update check (MainMenu.lua); clickable when a newer release exists -->
+  <Button Anchor="C,B" Offset="0,32" Size="900,26" ID="KekVersionButton" ConsumeMouse="1">
+    <Label Anchor="C,C" Font="TwCenMT20" ColorSet="Beige_Black_Alpha" FontStyle="Shadow" ID="KekVersionLabel" String="KEK Mod"/>
+  </Button>
   <Button Anchor="R,B" Size="128,128" TextureOffset="384,128" ToolTip="TXT_KEY_TOUCH_HELP" Texture="Civ5_TouchIconAtlas_128.dds" NoStateChange="1" ID="TouchHelpButton" />
 
 
