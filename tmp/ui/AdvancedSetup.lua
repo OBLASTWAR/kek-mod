@@ -1232,7 +1232,7 @@ ScreenOptions = {
 		g_VictoryCondtionsManager:ResetInstances();
 	
 		for row in GameInfo.Victories() do
-			if(row.Type ~= "VICTORY_SCRAP") then
+			if(row.Type ~= "VICTORY_SCRAP" and row.Type ~= "VICTORY_REMAP") then
 				local victoryCondition = g_VictoryCondtionsManager:GetInstance();
 				
 				local victoryConditionTextButton = victoryCondition.GameOptionRoot:GetTextButton();

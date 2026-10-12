@@ -362,7 +362,7 @@ function PopulateGameOptions()
 	controlTable.Text:LocalizeAndSetText("TXT_KEY_VICTORYS_FORMAT");
     count = 1;
     for row in GameInfo.Victories() do
-		if(PreGame.IsVictory(row.ID) == true and row.Type ~= "VICTORY_SCRAP") then
+		if(PreGame.IsVictory(row.ID) == true and row.Type ~= "VICTORY_SCRAP" and row.Type ~= "VICTORY_REMAP") then
 			controlTable = g_VictoryConditionsIM:GetInstance();
 			g_VictoryConditionsList[count] = controlTable;
 			controlTable.Text:LocalizeAndSetText(row.Description);

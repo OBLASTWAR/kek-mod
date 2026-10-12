@@ -345,6 +345,7 @@ static const char* VoteTypeToken(int iType)
     case 0:  return "irr";
     case 1:  return "cc";
     case 2:  return "scrap";
+    case 3:  return "remap";
     default: return "unknown";
     }
 }
@@ -718,8 +719,8 @@ static void BuildTurnJson(std::string& out, PlayerTypes eUploader)
     out += "\",";
 
     // v5: present only once the game has ended (the game-end flush). For a
-    // scrap "victory" each client reports its own team, so GDR must treat
-    // VICTORY_SCRAP as a draw and ignore team/slots.
+    // scrap or remap "victory" each client reports its own team, so GDR must
+    // treat VICTORY_SCRAP / VICTORY_REMAP as no result and ignore team/slots.
     if (kGame.getWinner() != NO_TEAM && kGame.getVictory() != NO_VICTORY)
     {
         CvVictoryInfo* pkVictory = GC.getVictoryInfo(kGame.getVictory());

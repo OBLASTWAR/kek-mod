@@ -92091,6 +92091,17 @@
 			<SupportsSinglePlayer>false</SupportsSinglePlayer> 
 			<SupportsMultiplayer>true</SupportsMultiplayer> 
 		</Row>
+		<!-- int option (0 off, 1 majority, 2 unanimous): set from a dropdown in MPGameOptions.lua, not a checkbox -->
+		<Row> 
+			<ID>58</ID> 
+			<Type>GAMEOPTION_REMAP_VOTE</Type> 
+			<Description>TXT_KEY_GAME_OPTION_REMAP_VOTE</Description> 
+			<Help>TXT_KEY_GAME_OPTION_REMAP_VOTE_HELP</Help> 
+			<Default>false</Default> 
+			<Visible>false</Visible> 
+			<SupportsSinglePlayer>false</SupportsSinglePlayer> 
+			<SupportsMultiplayer>true</SupportsMultiplayer> 
+		</Row>
 	</GameOptions> 
 
 	<Table name="GameSpeed_Turns">
@@ -128142,6 +128153,12 @@
 		<Row> 
 			<ID>148</ID> 
 			<NotificationType>NOTIFICATION_MP_PROPOSAL_RESULT</NotificationType> 
+			<Welcomeness>0</Welcomeness> 
+			<Urgent>false</Urgent> 
+		</Row>
+		<Row> 
+			<ID>149</ID> 
+			<NotificationType>NOTIFICATION_MP_REMAP_PROPOSAL</NotificationType> 
 			<Welcomeness>0</Welcomeness> 
 			<Urgent>false</Urgent> 
 		</Row>
@@ -218265,6 +218282,28 @@
 			<VictoryStatement>TXT_KEY_VICTORY_SCRAP_BANG</VictoryStatement> 
 			<VictoryBackground>WonderConceptChristoRedentor.dds</VictoryBackground> 
 			<Civilopedia>TXT_KEY_VICTORY_SCRAP_PEDIA</Civilopedia> 
+			<TargetScore>false</TargetScore> 
+			<EndScore>false</EndScore> 
+			<Conquest>false</Conquest> 
+			<Influential>false</Influential> 
+			<Permanent>false</Permanent> 
+			<ReligionInAllCities>false</ReligionInAllCities> 
+			<FindAllNaturalWonders>false</FindAllNaturalWonders> 
+			<PopulationPercentLead>200</PopulationPercentLead> 
+			<LandPercent>0</LandPercent> 
+			<MinLandPercent>0</MinLandPercent> 
+			<NumCultureCities>0</NumCultureCities> 
+			<TotalCultureRatio>0</TotalCultureRatio> 
+			<VictoryDelayTurns>0</VictoryDelayTurns> 
+			<Audio>AS2D_VICTORY_SPEECH_SCRAP</Audio> 
+		</Row>
+		<Row> 
+			<ID>6</ID> 
+			<Type>VICTORY_REMAP</Type> 
+			<Description>TXT_KEY_VICTORY_REMAP</Description> 
+			<VictoryStatement>TXT_KEY_VICTORY_REMAP_BANG</VictoryStatement> 
+			<VictoryBackground>WonderConceptChristoRedentor.dds</VictoryBackground> 
+			<Civilopedia>TXT_KEY_VICTORY_REMAP_PEDIA</Civilopedia> 
 			<TargetScore>false</TargetScore> 
 			<EndScore>false</EndScore> 
 			<Conquest>false</Conquest> 

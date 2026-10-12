@@ -1561,6 +1561,22 @@ function UpdateOptions()
 				end
 			end
 	end
+
+	-- kekmod 2.2: int option with its own dropdown, so it isn't a Visible checkbox row above
+	local remapVoteNames = {
+		[1] = "TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY",
+		[2] = "TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_1",
+		[3] = "TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_2",
+		[4] = "TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_3",
+		[5] = "TXT_KEY_GAME_OPTION_REMAP_VOTE_UNANIMOUS",
+	};
+	local remapVoteName = remapVoteNames[PreGame.GetGameOption("GAMEOPTION_REMAP_VOTE")];
+	if(remapVoteName ~= nil) then
+		local controlTable = g_AdvancedOptionIM:GetInstance();
+		g_AdvancedOptionsList[count] = controlTable;
+		controlTable.Text:LocalizeAndSetText("TXT_KEY_GAME_OPTION_REMAP_VOTE_SUMMARY", Locale.ConvertTextKey(remapVoteName));
+		count = count + 1;
+	end
 	-- Add empty text to padd the bottom.
 	local controlTable = g_AdvancedOptionIM:GetInstance();
 	controlTable.Text:SetText(" ");

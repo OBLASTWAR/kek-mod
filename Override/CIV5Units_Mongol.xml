@@ -125089,6 +125089,116 @@ The ship has weather'd every rack; the prize we sought is won."
 				Come to me, all who labor and are heavy burdened, and I will give you rest.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
+			<Text>
+				Turn 10 Remap Vote
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_HELP"> 
+			<Text>
+				At the start of turn 10 every player is asked to vote on restarting the game on a new map. End turn is blocked until you vote. If the vote passes the game ends, and the host re-hosts on a new map.[NEWLINE][ICON_BULLET]Majority: more than half of the players must vote yes (4 of 6, 4 of 7, 5 of 8).[NEWLINE][ICON_BULLET]Majority +1/+2/+3: that many more yes votes. Raise it by one for each remap of the same lobby (6 players: 4, then 5, then 6).[NEWLINE][ICON_BULLET]Unanimous: every player must vote yes.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_OFF"> 
+			<Text>
+				Off
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY"> 
+			<Text>
+				Majority
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_1"> 
+			<Text>
+				Majority +1
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_2"> 
+			<Text>
+				Majority +2
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_3"> 
+			<Text>
+				Majority +3
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_UNANIMOUS"> 
+			<Text>
+				Unanimous
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_SUMMARY"> 
+			<Text>
+				Turn 10 Remap Vote ({1})
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE_CALLED"> 
+			<Text>
+				Turn 10 remap vote! Open the proposal to vote.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE"> 
+			<Text>
+				Turn 10 remap vote: restart the game on a new map? Needs {1} of {2} players to vote yes.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL"> 
+			<Text>
+				Vote on remap!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_MP_REMAP_PROPOSAL_PASSED"> 
+			<Text>
+				Remap vote passed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL_PASSED"> 
+			<Text>
+				Proposal Passed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_MP_REMAP_PROPOSAL_FAILED"> 
+			<Text>
+				Remap vote failed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL_FAILED"> 
+			<Text>
+				Proposal Failed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_REMAP"> 
+			<Text>
+				Restart on a new map. Needs {1} of {2} yes votes
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_STARTED_AUTOMATICALLY"> 
+			<Text>
+				Called automatically on turn 10
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP"> 
+			<Text>
+				Remap
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP_BANG"> 
+			<Text>
+				Remap!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP_PEDIA"> 
+			<Text>
+				Called automatically on turn 10 when the Turn 10 Remap Vote game option is on
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_FLAVOR_REMAP"> 
+			<Text>
+				The players voted to remap. The host will re-host the game on a new map.
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_DIPLOSTACK_LR_SWITCH_OPTION"> 
 			<Text>
 				Diplomacy List On The Left
@@ -127210,6 +127320,116 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_VICTORY_FLAVOR_SCRAP"> 
 			<Text>
 				Come to me, all who labor and are heavy burdened, and I will give you rest.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
+			<Text>
+				Turn 10 Remap Vote
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_HELP"> 
+			<Text>
+				At the start of turn 10 every player is asked to vote on restarting the game on a new map. End turn is blocked until you vote. If the vote passes the game ends, and the host re-hosts on a new map.[NEWLINE][ICON_BULLET]Majority: more than half of the players must vote yes (4 of 6, 4 of 7, 5 of 8).[NEWLINE][ICON_BULLET]Majority +1/+2/+3: that many more yes votes. Raise it by one for each remap of the same lobby (6 players: 4, then 5, then 6).[NEWLINE][ICON_BULLET]Unanimous: every player must vote yes.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_OFF"> 
+			<Text>
+				Off
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY"> 
+			<Text>
+				Majority
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_1"> 
+			<Text>
+				Majority +1
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_2"> 
+			<Text>
+				Majority +2
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_3"> 
+			<Text>
+				Majority +3
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_UNANIMOUS"> 
+			<Text>
+				Unanimous
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_SUMMARY"> 
+			<Text>
+				Turn 10 Remap Vote ({1})
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE_CALLED"> 
+			<Text>
+				Turn 10 remap vote! Open the proposal to vote.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE"> 
+			<Text>
+				Turn 10 remap vote: restart the game on a new map? Needs {1} of {2} players to vote yes.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL"> 
+			<Text>
+				Vote on remap!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_MP_REMAP_PROPOSAL_PASSED"> 
+			<Text>
+				Remap vote passed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL_PASSED"> 
+			<Text>
+				Proposal Passed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_MP_REMAP_PROPOSAL_FAILED"> 
+			<Text>
+				Remap vote failed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL_FAILED"> 
+			<Text>
+				Proposal Failed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_REMAP"> 
+			<Text>
+				Restart on a new map. Needs {1} of {2} yes votes
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_STARTED_AUTOMATICALLY"> 
+			<Text>
+				Called automatically on turn 10
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP"> 
+			<Text>
+				Remap
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP_BANG"> 
+			<Text>
+				Remap!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP_PEDIA"> 
+			<Text>
+				Called automatically on turn 10 when the Turn 10 Remap Vote game option is on
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_FLAVOR_REMAP"> 
+			<Text>
+				The players voted to remap. The host will re-host the game on a new map.
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_DIPLOSTACK_LR_SWITCH_OPTION"> 
@@ -129440,6 +129660,116 @@ The ship has weather'd every rack; the prize we sought is won."
 				Come to me, all who labor and are heavy burdened, and I will give you rest.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
+			<Text>
+				Turn 10 Remap Vote
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_HELP"> 
+			<Text>
+				At the start of turn 10 every player is asked to vote on restarting the game on a new map. End turn is blocked until you vote. If the vote passes the game ends, and the host re-hosts on a new map.[NEWLINE][ICON_BULLET]Majority: more than half of the players must vote yes (4 of 6, 4 of 7, 5 of 8).[NEWLINE][ICON_BULLET]Majority +1/+2/+3: that many more yes votes. Raise it by one for each remap of the same lobby (6 players: 4, then 5, then 6).[NEWLINE][ICON_BULLET]Unanimous: every player must vote yes.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_OFF"> 
+			<Text>
+				Off
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY"> 
+			<Text>
+				Majority
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_1"> 
+			<Text>
+				Majority +1
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_2"> 
+			<Text>
+				Majority +2
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_3"> 
+			<Text>
+				Majority +3
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_UNANIMOUS"> 
+			<Text>
+				Unanimous
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_SUMMARY"> 
+			<Text>
+				Turn 10 Remap Vote ({1})
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE_CALLED"> 
+			<Text>
+				Turn 10 remap vote! Open the proposal to vote.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE"> 
+			<Text>
+				Turn 10 remap vote: restart the game on a new map? Needs {1} of {2} players to vote yes.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL"> 
+			<Text>
+				Vote on remap!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_MP_REMAP_PROPOSAL_PASSED"> 
+			<Text>
+				Remap vote passed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL_PASSED"> 
+			<Text>
+				Proposal Passed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_MP_REMAP_PROPOSAL_FAILED"> 
+			<Text>
+				Remap vote failed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL_FAILED"> 
+			<Text>
+				Proposal Failed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_REMAP"> 
+			<Text>
+				Restart on a new map. Needs {1} of {2} yes votes
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_STARTED_AUTOMATICALLY"> 
+			<Text>
+				Called automatically on turn 10
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP"> 
+			<Text>
+				Remap
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP_BANG"> 
+			<Text>
+				Remap!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP_PEDIA"> 
+			<Text>
+				Called automatically on turn 10 when the Turn 10 Remap Vote game option is on
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_FLAVOR_REMAP"> 
+			<Text>
+				The players voted to remap. The host will re-host the game on a new map.
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_DIPLOSTACK_LR_SWITCH_OPTION"> 
 			<Text>
 				Diplomacy List On The Left
@@ -131666,6 +131996,116 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_VICTORY_FLAVOR_SCRAP"> 
 			<Text>
 				Come to me, all who labor and are heavy burdened, and I will give you rest.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
+			<Text>
+				Turn 10 Remap Vote
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_HELP"> 
+			<Text>
+				At the start of turn 10 every player is asked to vote on restarting the game on a new map. End turn is blocked until you vote. If the vote passes the game ends, and the host re-hosts on a new map.[NEWLINE][ICON_BULLET]Majority: more than half of the players must vote yes (4 of 6, 4 of 7, 5 of 8).[NEWLINE][ICON_BULLET]Majority +1/+2/+3: that many more yes votes. Raise it by one for each remap of the same lobby (6 players: 4, then 5, then 6).[NEWLINE][ICON_BULLET]Unanimous: every player must vote yes.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_OFF"> 
+			<Text>
+				Off
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY"> 
+			<Text>
+				Majority
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_1"> 
+			<Text>
+				Majority +1
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_2"> 
+			<Text>
+				Majority +2
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_3"> 
+			<Text>
+				Majority +3
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_UNANIMOUS"> 
+			<Text>
+				Unanimous
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_SUMMARY"> 
+			<Text>
+				Turn 10 Remap Vote ({1})
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE_CALLED"> 
+			<Text>
+				Turn 10 remap vote! Open the proposal to vote.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE"> 
+			<Text>
+				Turn 10 remap vote: restart the game on a new map? Needs {1} of {2} players to vote yes.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL"> 
+			<Text>
+				Vote on remap!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_MP_REMAP_PROPOSAL_PASSED"> 
+			<Text>
+				Remap vote passed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL_PASSED"> 
+			<Text>
+				Proposal Passed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_MP_REMAP_PROPOSAL_FAILED"> 
+			<Text>
+				Remap vote failed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL_FAILED"> 
+			<Text>
+				Proposal Failed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_REMAP"> 
+			<Text>
+				Restart on a new map. Needs {1} of {2} yes votes
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_STARTED_AUTOMATICALLY"> 
+			<Text>
+				Called automatically on turn 10
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP"> 
+			<Text>
+				Remap
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP_BANG"> 
+			<Text>
+				Remap!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP_PEDIA"> 
+			<Text>
+				Called automatically on turn 10 when the Turn 10 Remap Vote game option is on
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_FLAVOR_REMAP"> 
+			<Text>
+				The players voted to remap. The host will re-host the game on a new map.
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_DIPLOSTACK_LR_SWITCH_OPTION"> 
@@ -133896,6 +134336,116 @@ The ship has weather'd every rack; the prize we sought is won."
 				Come to me, all who labor and are heavy burdened, and I will give you rest.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
+			<Text>
+				Turn 10 Remap Vote
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_HELP"> 
+			<Text>
+				At the start of turn 10 every player is asked to vote on restarting the game on a new map. End turn is blocked until you vote. If the vote passes the game ends, and the host re-hosts on a new map.[NEWLINE][ICON_BULLET]Majority: more than half of the players must vote yes (4 of 6, 4 of 7, 5 of 8).[NEWLINE][ICON_BULLET]Majority +1/+2/+3: that many more yes votes. Raise it by one for each remap of the same lobby (6 players: 4, then 5, then 6).[NEWLINE][ICON_BULLET]Unanimous: every player must vote yes.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_OFF"> 
+			<Text>
+				Off
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY"> 
+			<Text>
+				Majority
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_1"> 
+			<Text>
+				Majority +1
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_2"> 
+			<Text>
+				Majority +2
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_3"> 
+			<Text>
+				Majority +3
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_UNANIMOUS"> 
+			<Text>
+				Unanimous
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_SUMMARY"> 
+			<Text>
+				Turn 10 Remap Vote ({1})
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE_CALLED"> 
+			<Text>
+				Turn 10 remap vote! Open the proposal to vote.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE"> 
+			<Text>
+				Turn 10 remap vote: restart the game on a new map? Needs {1} of {2} players to vote yes.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL"> 
+			<Text>
+				Vote on remap!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_MP_REMAP_PROPOSAL_PASSED"> 
+			<Text>
+				Remap vote passed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL_PASSED"> 
+			<Text>
+				Proposal Passed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_MP_REMAP_PROPOSAL_FAILED"> 
+			<Text>
+				Remap vote failed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL_FAILED"> 
+			<Text>
+				Proposal Failed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_REMAP"> 
+			<Text>
+				Restart on a new map. Needs {1} of {2} yes votes
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_STARTED_AUTOMATICALLY"> 
+			<Text>
+				Called automatically on turn 10
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP"> 
+			<Text>
+				Remap
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP_BANG"> 
+			<Text>
+				Remap!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP_PEDIA"> 
+			<Text>
+				Called automatically on turn 10 when the Turn 10 Remap Vote game option is on
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_FLAVOR_REMAP"> 
+			<Text>
+				The players voted to remap. The host will re-host the game on a new map.
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_DIPLOSTACK_LR_SWITCH_OPTION"> 
 			<Text>
 				Diplomacy List On The Left
@@ -136122,6 +136672,116 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_VICTORY_FLAVOR_SCRAP"> 
 			<Text>
 				Come to me, all who labor and are heavy burdened, and I will give you rest.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
+			<Text>
+				Turn 10 Remap Vote
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_HELP"> 
+			<Text>
+				At the start of turn 10 every player is asked to vote on restarting the game on a new map. End turn is blocked until you vote. If the vote passes the game ends, and the host re-hosts on a new map.[NEWLINE][ICON_BULLET]Majority: more than half of the players must vote yes (4 of 6, 4 of 7, 5 of 8).[NEWLINE][ICON_BULLET]Majority +1/+2/+3: that many more yes votes. Raise it by one for each remap of the same lobby (6 players: 4, then 5, then 6).[NEWLINE][ICON_BULLET]Unanimous: every player must vote yes.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_OFF"> 
+			<Text>
+				Off
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY"> 
+			<Text>
+				Majority
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_1"> 
+			<Text>
+				Majority +1
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_2"> 
+			<Text>
+				Majority +2
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_3"> 
+			<Text>
+				Majority +3
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_UNANIMOUS"> 
+			<Text>
+				Unanimous
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_SUMMARY"> 
+			<Text>
+				Turn 10 Remap Vote ({1})
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE_CALLED"> 
+			<Text>
+				Turn 10 remap vote! Open the proposal to vote.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE"> 
+			<Text>
+				Turn 10 remap vote: restart the game on a new map? Needs {1} of {2} players to vote yes.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL"> 
+			<Text>
+				Vote on remap!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_MP_REMAP_PROPOSAL_PASSED"> 
+			<Text>
+				Remap vote passed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL_PASSED"> 
+			<Text>
+				Proposal Passed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_MP_REMAP_PROPOSAL_FAILED"> 
+			<Text>
+				Remap vote failed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL_FAILED"> 
+			<Text>
+				Proposal Failed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_REMAP"> 
+			<Text>
+				Restart on a new map. Needs {1} of {2} yes votes
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_STARTED_AUTOMATICALLY"> 
+			<Text>
+				Called automatically on turn 10
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP"> 
+			<Text>
+				Remap
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP_BANG"> 
+			<Text>
+				Remap!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP_PEDIA"> 
+			<Text>
+				Called automatically on turn 10 when the Turn 10 Remap Vote game option is on
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_FLAVOR_REMAP"> 
+			<Text>
+				The players voted to remap. The host will re-host the game on a new map.
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_DIPLOSTACK_LR_SWITCH_OPTION"> 
@@ -138352,6 +139012,116 @@ The ship has weather'd every rack; the prize we sought is won."
 				Come to me, all who labor and are heavy burdened, and I will give you rest.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
+			<Text>
+				Turn 10 Remap Vote
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_HELP"> 
+			<Text>
+				At the start of turn 10 every player is asked to vote on restarting the game on a new map. End turn is blocked until you vote. If the vote passes the game ends, and the host re-hosts on a new map.[NEWLINE][ICON_BULLET]Majority: more than half of the players must vote yes (4 of 6, 4 of 7, 5 of 8).[NEWLINE][ICON_BULLET]Majority +1/+2/+3: that many more yes votes. Raise it by one for each remap of the same lobby (6 players: 4, then 5, then 6).[NEWLINE][ICON_BULLET]Unanimous: every player must vote yes.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_OFF"> 
+			<Text>
+				Off
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY"> 
+			<Text>
+				Majority
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_1"> 
+			<Text>
+				Majority +1
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_2"> 
+			<Text>
+				Majority +2
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_3"> 
+			<Text>
+				Majority +3
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_UNANIMOUS"> 
+			<Text>
+				Unanimous
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_SUMMARY"> 
+			<Text>
+				Turn 10 Remap Vote ({1})
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE_CALLED"> 
+			<Text>
+				Turn 10 remap vote! Open the proposal to vote.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE"> 
+			<Text>
+				Turn 10 remap vote: restart the game on a new map? Needs {1} of {2} players to vote yes.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL"> 
+			<Text>
+				Vote on remap!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_MP_REMAP_PROPOSAL_PASSED"> 
+			<Text>
+				Remap vote passed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL_PASSED"> 
+			<Text>
+				Proposal Passed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_MP_REMAP_PROPOSAL_FAILED"> 
+			<Text>
+				Remap vote failed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL_FAILED"> 
+			<Text>
+				Proposal Failed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_REMAP"> 
+			<Text>
+				Restart on a new map. Needs {1} of {2} yes votes
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_STARTED_AUTOMATICALLY"> 
+			<Text>
+				Called automatically on turn 10
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP"> 
+			<Text>
+				Remap
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP_BANG"> 
+			<Text>
+				Remap!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP_PEDIA"> 
+			<Text>
+				Called automatically on turn 10 when the Turn 10 Remap Vote game option is on
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_FLAVOR_REMAP"> 
+			<Text>
+				The players voted to remap. The host will re-host the game on a new map.
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_DIPLOSTACK_LR_SWITCH_OPTION"> 
 			<Text>
 				Diplomacy List On The Left
@@ -140578,6 +141348,116 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_VICTORY_FLAVOR_SCRAP"> 
 			<Text>
 				Come to me, all who labor and are heavy burdened, and I will give you rest.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
+			<Text>
+				Turn 10 Remap Vote
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_HELP"> 
+			<Text>
+				At the start of turn 10 every player is asked to vote on restarting the game on a new map. End turn is blocked until you vote. If the vote passes the game ends, and the host re-hosts on a new map.[NEWLINE][ICON_BULLET]Majority: more than half of the players must vote yes (4 of 6, 4 of 7, 5 of 8).[NEWLINE][ICON_BULLET]Majority +1/+2/+3: that many more yes votes. Raise it by one for each remap of the same lobby (6 players: 4, then 5, then 6).[NEWLINE][ICON_BULLET]Unanimous: every player must vote yes.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_OFF"> 
+			<Text>
+				Off
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY"> 
+			<Text>
+				Majority
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_1"> 
+			<Text>
+				Majority +1
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_2"> 
+			<Text>
+				Majority +2
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_3"> 
+			<Text>
+				Majority +3
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_UNANIMOUS"> 
+			<Text>
+				Unanimous
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_SUMMARY"> 
+			<Text>
+				Turn 10 Remap Vote ({1})
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE_CALLED"> 
+			<Text>
+				Turn 10 remap vote! Open the proposal to vote.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE"> 
+			<Text>
+				Turn 10 remap vote: restart the game on a new map? Needs {1} of {2} players to vote yes.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL"> 
+			<Text>
+				Vote on remap!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_MP_REMAP_PROPOSAL_PASSED"> 
+			<Text>
+				Remap vote passed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL_PASSED"> 
+			<Text>
+				Proposal Passed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_MP_REMAP_PROPOSAL_FAILED"> 
+			<Text>
+				Remap vote failed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL_FAILED"> 
+			<Text>
+				Proposal Failed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_REMAP"> 
+			<Text>
+				Restart on a new map. Needs {1} of {2} yes votes
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_STARTED_AUTOMATICALLY"> 
+			<Text>
+				Called automatically on turn 10
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP"> 
+			<Text>
+				Remap
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP_BANG"> 
+			<Text>
+				Remap!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP_PEDIA"> 
+			<Text>
+				Called automatically on turn 10 when the Turn 10 Remap Vote game option is on
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_FLAVOR_REMAP"> 
+			<Text>
+				The players voted to remap. The host will re-host the game on a new map.
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_DIPLOSTACK_LR_SWITCH_OPTION"> 
@@ -142842,6 +143722,116 @@ The ship has weather'd every rack; the prize we sought is won."
 				"Придите ко Мне все трудящиеся и обремененные, и Я успокою вас".
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
+			<Text>
+				Turn 10 Remap Vote
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_HELP"> 
+			<Text>
+				At the start of turn 10 every player is asked to vote on restarting the game on a new map. End turn is blocked until you vote. If the vote passes the game ends, and the host re-hosts on a new map.[NEWLINE][ICON_BULLET]Majority: more than half of the players must vote yes (4 of 6, 4 of 7, 5 of 8).[NEWLINE][ICON_BULLET]Majority +1/+2/+3: that many more yes votes. Raise it by one for each remap of the same lobby (6 players: 4, then 5, then 6).[NEWLINE][ICON_BULLET]Unanimous: every player must vote yes.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_OFF"> 
+			<Text>
+				Off
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY"> 
+			<Text>
+				Majority
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_1"> 
+			<Text>
+				Majority +1
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_2"> 
+			<Text>
+				Majority +2
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_3"> 
+			<Text>
+				Majority +3
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_UNANIMOUS"> 
+			<Text>
+				Unanimous
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_SUMMARY"> 
+			<Text>
+				Turn 10 Remap Vote ({1})
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE_CALLED"> 
+			<Text>
+				Turn 10 remap vote! Open the proposal to vote.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE"> 
+			<Text>
+				Turn 10 remap vote: restart the game on a new map? Needs {1} of {2} players to vote yes.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL"> 
+			<Text>
+				Vote on remap!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_MP_REMAP_PROPOSAL_PASSED"> 
+			<Text>
+				Remap vote passed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL_PASSED"> 
+			<Text>
+				Proposal Passed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_MP_REMAP_PROPOSAL_FAILED"> 
+			<Text>
+				Remap vote failed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL_FAILED"> 
+			<Text>
+				Proposal Failed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_REMAP"> 
+			<Text>
+				Restart on a new map. Needs {1} of {2} yes votes
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_STARTED_AUTOMATICALLY"> 
+			<Text>
+				Called automatically on turn 10
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP"> 
+			<Text>
+				Remap
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP_BANG"> 
+			<Text>
+				Remap!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP_PEDIA"> 
+			<Text>
+				Called automatically on turn 10 when the Turn 10 Remap Vote game option is on
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_FLAVOR_REMAP"> 
+			<Text>
+				The players voted to remap. The host will re-host the game on a new map.
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_DIPLOSTACK_LR_SWITCH_OPTION"> 
 			<Text>
 				Дипл. список с левой стороны
@@ -145083,6 +146073,116 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_VICTORY_FLAVOR_SCRAP"> 
 			<Text>
 				Come to me, all who labor and are heavy burdened, and I will give you rest.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
+			<Text>
+				Turn 10 Remap Vote
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_HELP"> 
+			<Text>
+				At the start of turn 10 every player is asked to vote on restarting the game on a new map. End turn is blocked until you vote. If the vote passes the game ends, and the host re-hosts on a new map.[NEWLINE][ICON_BULLET]Majority: more than half of the players must vote yes (4 of 6, 4 of 7, 5 of 8).[NEWLINE][ICON_BULLET]Majority +1/+2/+3: that many more yes votes. Raise it by one for each remap of the same lobby (6 players: 4, then 5, then 6).[NEWLINE][ICON_BULLET]Unanimous: every player must vote yes.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_OFF"> 
+			<Text>
+				Off
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY"> 
+			<Text>
+				Majority
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_1"> 
+			<Text>
+				Majority +1
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_2"> 
+			<Text>
+				Majority +2
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_3"> 
+			<Text>
+				Majority +3
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_UNANIMOUS"> 
+			<Text>
+				Unanimous
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_SUMMARY"> 
+			<Text>
+				Turn 10 Remap Vote ({1})
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE_CALLED"> 
+			<Text>
+				Turn 10 remap vote! Open the proposal to vote.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE"> 
+			<Text>
+				Turn 10 remap vote: restart the game on a new map? Needs {1} of {2} players to vote yes.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL"> 
+			<Text>
+				Vote on remap!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_MP_REMAP_PROPOSAL_PASSED"> 
+			<Text>
+				Remap vote passed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL_PASSED"> 
+			<Text>
+				Proposal Passed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_MP_REMAP_PROPOSAL_FAILED"> 
+			<Text>
+				Remap vote failed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_REMAP_PROPOSAL_FAILED"> 
+			<Text>
+				Proposal Failed!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_REMAP"> 
+			<Text>
+				Restart on a new map. Needs {1} of {2} yes votes
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_STARTED_AUTOMATICALLY"> 
+			<Text>
+				Called automatically on turn 10
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP"> 
+			<Text>
+				Remap
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP_BANG"> 
+			<Text>
+				Remap!
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_REMAP_PEDIA"> 
+			<Text>
+				Called automatically on turn 10 when the Turn 10 Remap Vote game option is on
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_VICTORY_FLAVOR_REMAP"> 
+			<Text>
+				The players voted to remap. The host will re-host the game on a new map.
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_DIPLOSTACK_LR_SWITCH_OPTION"> 
