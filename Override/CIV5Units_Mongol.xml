@@ -126964,227 +126964,227 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_IRR_BUTTON"> 
 			<Text>
-				Ask for Irrelevance [ICON_TEAM_1]
+				Um Irrelevanz bitten [ICON_TEAM_1]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_CC_BUTTON"> 
 			<Text>
-				Propose Concede [ICON_TROPHY_GOLD]
+				Aufgabe vorschlagen [ICON_TROPHY_GOLD]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_SCRAP_BUTTON"> 
 			<Text>
-				Propose Scrap [ICON_FLOWER]
+				Scrap vorschlagen [ICON_FLOWER]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_IRR"> 
 			<Text>
-				{1} asked for irr!
+				{1} bittet um IRR!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_CC"> 
 			<Text>
-				{1} proposed to concede to {2}!
+				{1} schlägt vor, vor {2} aufzugeben!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_SCRAP"> 
 			<Text>
-				{1} proposed scrap!
+				{1} schlägt Scrap vor!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MESSAGE_MP_PROPOSAL_FINISHED"> 
 			<Text>
-				Proposal complete!
+				Abstimmung beendet!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_ACTIVE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Only one proposal of the same type is allowed at a time![ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Es ist nur ein Antrag desselben Typs gleichzeitig erlaubt![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_UNAVAILABLE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]This proposal is currently blocked by the game rules.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Dieser Antrag ist durch die Spielregeln derzeit gesperrt.[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_ON_COOLDOWN"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]You have started this proposal recently, and may not do so again until turn {1_Num}.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Sie haben diesen Antrag erst kürzlich gestellt und können ihn erst in Runde {1_Num} wieder stellen.[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_WAIT_NEXT_TURN"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Wait until the next turn to start another proposal.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Warten Sie bis zur nächsten Runde, um einen weiteren Antrag zu stellen.[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_ALREADY_HAS_ACTIVE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]You can have only one active proposal at a time![ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Sie können nur einen aktiven Antrag gleichzeitig haben![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_CC_VOTE_POPUP_TITLE"> 
 			<Text>
-				Choose player to concede to
+				Spieler wählen, vor dem aufgegeben wird
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_POSITIVE_VOTE_CHART_STATUS"> 
 			<Text>
-				[COLOR_POSITIVE_TEXT]YES[ENDCOLOR]
+				[COLOR_POSITIVE_TEXT]JA[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NEGATIVE_VOTE_CHART_STATUS"> 
 			<Text>
-				[COLOR_NEGATIVE_TEXT]NO[ENDCOLOR]
+				[COLOR_NEGATIVE_TEXT]NEIN[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL"> 
 			<Text>
-				Vote on irr!
+				Abstimmung über IRR!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL"> 
 			<Text>
-				Vote on cc!
+				Abstimmung über Aufgabe (CC)!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL"> 
 			<Text>
-				Vote on scrap!
+				Abstimmung über Scrap!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_IRR_PROPOSAL_PASSED"> 
 			<Text>
-				IRR Proposal by {1} Passed!
+				IRR-Antrag von {1} angenommen!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				Antrag angenommen!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_CC_PROPOSAL_PASSED"> 
 			<Text>
-				CC Proposal by {1} Passed!
+				CC-Antrag von {1} angenommen!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				Antrag angenommen!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_SCRAP_PROPOSAL_PASSED"> 
 			<Text>
-				Scrap Proposal by {1} Passed!
+				Scrap-Antrag von {1} angenommen!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				Antrag angenommen!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_IRR_PROPOSAL_FAILED"> 
 			<Text>
-				IRR Proposal by {1} Failed!
+				IRR-Antrag von {1} abgelehnt!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				Antrag abgelehnt!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_CC_PROPOSAL_FAILED"> 
 			<Text>
-				CC Proposal by {1} Failed!
+				CC-Antrag von {1} abgelehnt!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				Antrag abgelehnt!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_SCRAP_PROPOSAL_FAILED"> 
 			<Text>
-				Scrap Proposal by {1} Failed!
+				Scrap-Antrag von {1} abgelehnt!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				Antrag abgelehnt!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_TITLE"> 
 			<Text>
-				PROPOSAL CHART
+				ABSTIMMUNG
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_CURRENT_PROPOSAL_LABEL"> 
 			<Text>
-				CURRENT PROPOSAL
+				AKTUELLER ANTRAG
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_IRR"> 
 			<Text>
-				Admit player's irrelevancy
+				Irrelevanz des Spielers anerkennen
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_CC"> 
 			<Text>
-				Conclude {1} supremacy
+				Überlegenheit von {1} anerkennen
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_SCRAP"> 
 			<Text>
-				Scrap the game. Results in a draw
+				Spiel abbrechen (Scrap). Endet unentschieden
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_STARTED_BY"> 
 			<Text>
-				Started by {1}
+				Gestellt von {1}
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_EXPIRATION_TURN"> 
 			<Text>
-				Expiration turn
+				Endet in Runde
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_MAX_VOTERS"> 
 			<Text>
-				Voters total
+				Stimmberechtigte
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_YES_VOTES"> 
 			<Text>
-				Voted YES
+				Mit JA gestimmt
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_RECEIVED_VOTES"> 
 			<Text>
-				Votes received
+				Abgegebene Stimmen
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_MISSING_VOTES"> 
 			<Text>
-				Votes missing
+				Fehlende Stimmen
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_VOTE_YES_BUTTON"> 
 			<Text>
-				Vote yes
+				Dafür stimmen
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_VOTE_NO_BUTTON"> 
 			<Text>
-				Vote no
+				Dagegen stimmen
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_PROPOSAL_PASSED"> 
 			<Text>
-				[COLOR_POSITIVE_TEXT]Proposal Passed![ENDCOLOR]
+				[COLOR_POSITIVE_TEXT]Antrag angenommen![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_PROPOSAL_FAILED"> 
 			<Text>
-				[COLOR_NEGATIVE_TEXT]Proposal Failed![ENDCOLOR]
+				[COLOR_NEGATIVE_TEXT]Antrag abgelehnt![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORYSCREEN_SCRAP"> 
@@ -127204,12 +127204,12 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_SCRAP_PEDIA">
 			<Text>
-				Use Propose scrap button from Victory Progress menu
+				Nutzen Sie die Schaltfläche „Scrap vorschlagen“ im Menü Siegesfortschritt
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_FLAVOR_SCRAP"> 
 			<Text>
-				Come to me, all who labor and are heavy burdened, and I will give you rest.
+				„Kommt her zu mir, alle, die ihr mühselig und beladen seid; ich will euch erquicken.“
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_DIPLOSTACK_LR_SWITCH_OPTION"> 
@@ -127949,7 +127949,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_MP_NO_PROPOSAL"> 
 			<Text>
-				Nothing
+				Nichts
 			</Text>
 		</Row>
 		<Replace Tag="TXT_KEY_MAP_OPTION_STRATEGIC_BALANCE_WITH_COAL"> 
@@ -129202,72 +129202,72 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_IRR_BUTTON"> 
 			<Text>
-				Ask for Irrelevance [ICON_TEAM_1]
+				Pedir irrelevancia [ICON_TEAM_1]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_CC_BUTTON"> 
 			<Text>
-				Propose Concede [ICON_TROPHY_GOLD]
+				Proponer rendición [ICON_TROPHY_GOLD]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_SCRAP_BUTTON"> 
 			<Text>
-				Propose Scrap [ICON_FLOWER]
+				Proponer scrap [ICON_FLOWER]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_IRR"> 
 			<Text>
-				{1} asked for irr!
+				¡{1} ha pedido irr!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_CC"> 
 			<Text>
-				{1} proposed to concede to {2}!
+				¡{1} ha propuesto rendirse ante {2}!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_SCRAP"> 
 			<Text>
-				{1} proposed scrap!
+				¡{1} ha propuesto scrap!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MESSAGE_MP_PROPOSAL_FINISHED"> 
 			<Text>
-				Proposal complete!
+				¡Votación terminada!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_ACTIVE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Only one proposal of the same type is allowed at a time![ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]¡Solo se permite una propuesta del mismo tipo a la vez![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_UNAVAILABLE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]This proposal is currently blocked by the game rules.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Las reglas de la partida bloquean ahora esta propuesta.[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_ON_COOLDOWN"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]You have started this proposal recently, and may not do so again until turn {1_Num}.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Has iniciado esta propuesta hace poco y no puedes volver a hacerlo hasta el turno {1_Num}.[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_WAIT_NEXT_TURN"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Wait until the next turn to start another proposal.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Espera al siguiente turno para iniciar otra propuesta.[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_ALREADY_HAS_ACTIVE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]You can have only one active proposal at a time![ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]¡Solo puedes tener una propuesta activa a la vez![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_CC_VOTE_POPUP_TITLE"> 
 			<Text>
-				Choose player to concede to
+				Elige ante qué jugador rendirte
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_POSITIVE_VOTE_CHART_STATUS"> 
 			<Text>
-				[COLOR_POSITIVE_TEXT]YES[ENDCOLOR]
+				[COLOR_POSITIVE_TEXT]SÍ[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NEGATIVE_VOTE_CHART_STATUS"> 
@@ -129277,152 +129277,152 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL"> 
 			<Text>
-				Vote on irr!
+				¡Vota sobre el irr!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL"> 
 			<Text>
-				Vote on cc!
+				¡Vota sobre la rendición (CC)!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL"> 
 			<Text>
-				Vote on scrap!
+				¡Vota sobre el scrap!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_IRR_PROPOSAL_PASSED"> 
 			<Text>
-				IRR Proposal by {1} Passed!
+				¡Propuesta de IRR de {1} aprobada!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				¡Propuesta aprobada!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_CC_PROPOSAL_PASSED"> 
 			<Text>
-				CC Proposal by {1} Passed!
+				¡Propuesta de CC de {1} aprobada!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				¡Propuesta aprobada!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_SCRAP_PROPOSAL_PASSED"> 
 			<Text>
-				Scrap Proposal by {1} Passed!
+				¡Propuesta de scrap de {1} aprobada!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				¡Propuesta aprobada!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_IRR_PROPOSAL_FAILED"> 
 			<Text>
-				IRR Proposal by {1} Failed!
+				¡Propuesta de IRR de {1} rechazada!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				¡Propuesta rechazada!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_CC_PROPOSAL_FAILED"> 
 			<Text>
-				CC Proposal by {1} Failed!
+				¡Propuesta de CC de {1} rechazada!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				¡Propuesta rechazada!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_SCRAP_PROPOSAL_FAILED"> 
 			<Text>
-				Scrap Proposal by {1} Failed!
+				¡Propuesta de scrap de {1} rechazada!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				¡Propuesta rechazada!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_TITLE"> 
 			<Text>
-				PROPOSAL CHART
+				VOTACIÓN
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_CURRENT_PROPOSAL_LABEL"> 
 			<Text>
-				CURRENT PROPOSAL
+				PROPUESTA ACTUAL
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_IRR"> 
 			<Text>
-				Admit player's irrelevancy
+				Reconocer la irrelevancia del jugador
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_CC"> 
 			<Text>
-				Conclude {1} supremacy
+				Reconocer la supremacía de {1}
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_SCRAP"> 
 			<Text>
-				Scrap the game. Results in a draw
+				Anular la partida (scrap). Termina en empate
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_STARTED_BY"> 
 			<Text>
-				Started by {1}
+				Iniciada por {1}
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_EXPIRATION_TURN"> 
 			<Text>
-				Expiration turn
+				Turno de expiración
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_MAX_VOTERS"> 
 			<Text>
-				Voters total
+				Total de votantes
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_YES_VOTES"> 
 			<Text>
-				Voted YES
+				Votos SÍ
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_RECEIVED_VOTES"> 
 			<Text>
-				Votes received
+				Votos recibidos
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_MISSING_VOTES"> 
 			<Text>
-				Votes missing
+				Votos pendientes
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_VOTE_YES_BUTTON"> 
 			<Text>
-				Vote yes
+				Votar sí
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_VOTE_NO_BUTTON"> 
 			<Text>
-				Vote no
+				Votar no
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_PROPOSAL_PASSED"> 
 			<Text>
-				[COLOR_POSITIVE_TEXT]Proposal Passed![ENDCOLOR]
+				[COLOR_POSITIVE_TEXT]¡Propuesta aprobada![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_PROPOSAL_FAILED"> 
 			<Text>
-				[COLOR_NEGATIVE_TEXT]Proposal Failed![ENDCOLOR]
+				[COLOR_NEGATIVE_TEXT]¡Propuesta rechazada![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORYSCREEN_SCRAP"> 
@@ -129437,17 +129437,17 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_SCRAP_BANG"> 
 			<Text>
-				Scrap!
+				¡Scrap!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_SCRAP_PEDIA">
 			<Text>
-				Use Propose scrap button from Victory Progress menu
+				Usa el botón «Proponer scrap» del menú Progreso hacia la victoria
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_FLAVOR_SCRAP"> 
 			<Text>
-				Come to me, all who labor and are heavy burdened, and I will give you rest.
+				«Venid a mí todos los que estáis trabajados y cargados, y yo os haré descansar.»
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_DIPLOSTACK_LR_SWITCH_OPTION"> 
@@ -130187,7 +130187,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_MP_NO_PROPOSAL"> 
 			<Text>
-				Nothing
+				Nada
 			</Text>
 		</Row>
 		<Replace Tag="TXT_KEY_MAP_OPTION_STRATEGIC_BALANCE_WITH_COAL"> 
@@ -131440,227 +131440,227 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_IRR_BUTTON"> 
 			<Text>
-				Ask for Irrelevance [ICON_TEAM_1]
+				Demander l'IRR [ICON_TEAM_1]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_CC_BUTTON"> 
 			<Text>
-				Propose Concede [ICON_TROPHY_GOLD]
+				Proposer la capitulation [ICON_TROPHY_GOLD]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_SCRAP_BUTTON"> 
 			<Text>
-				Propose Scrap [ICON_FLOWER]
+				Proposer le scrap [ICON_FLOWER]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_IRR"> 
 			<Text>
-				{1} asked for irr!
+				{1} demande l'IRR !
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_CC"> 
 			<Text>
-				{1} proposed to concede to {2}!
+				{1} propose de capituler face à {2} !
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_SCRAP"> 
 			<Text>
-				{1} proposed scrap!
+				{1} propose le scrap !
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MESSAGE_MP_PROPOSAL_FINISHED"> 
 			<Text>
-				Proposal complete!
+				Vote terminé !
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_ACTIVE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Only one proposal of the same type is allowed at a time![ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Une seule proposition du même type est autorisée à la fois ![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_UNAVAILABLE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]This proposal is currently blocked by the game rules.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Cette proposition est actuellement bloquée par les règles de la partie.[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_ON_COOLDOWN"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]You have started this proposal recently, and may not do so again until turn {1_Num}.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Vous avez lancé cette proposition récemment et ne pourrez pas la relancer avant le tour {1_Num}.[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_WAIT_NEXT_TURN"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Wait until the next turn to start another proposal.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Attendez le tour suivant pour lancer une autre proposition.[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_ALREADY_HAS_ACTIVE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]You can have only one active proposal at a time![ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Vous ne pouvez avoir qu'une seule proposition active à la fois ![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_CC_VOTE_POPUP_TITLE"> 
 			<Text>
-				Choose player to concede to
+				Choisissez le joueur face auquel capituler
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_POSITIVE_VOTE_CHART_STATUS"> 
 			<Text>
-				[COLOR_POSITIVE_TEXT]YES[ENDCOLOR]
+				[COLOR_POSITIVE_TEXT]OUI[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NEGATIVE_VOTE_CHART_STATUS"> 
 			<Text>
-				[COLOR_NEGATIVE_TEXT]NO[ENDCOLOR]
+				[COLOR_NEGATIVE_TEXT]NON[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL"> 
 			<Text>
-				Vote on irr!
+				Vote sur l'IRR !
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL"> 
 			<Text>
-				Vote on cc!
+				Vote sur la capitulation (CC) !
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL"> 
 			<Text>
-				Vote on scrap!
+				Vote sur le scrap !
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_IRR_PROPOSAL_PASSED"> 
 			<Text>
-				IRR Proposal by {1} Passed!
+				Proposition d'IRR de {1} adoptée !
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				Proposition adoptée !
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_CC_PROPOSAL_PASSED"> 
 			<Text>
-				CC Proposal by {1} Passed!
+				Proposition de CC de {1} adoptée !
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				Proposition adoptée !
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_SCRAP_PROPOSAL_PASSED"> 
 			<Text>
-				Scrap Proposal by {1} Passed!
+				Proposition de scrap de {1} adoptée !
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				Proposition adoptée !
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_IRR_PROPOSAL_FAILED"> 
 			<Text>
-				IRR Proposal by {1} Failed!
+				Proposition d'IRR de {1} rejetée !
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				Proposition rejetée !
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_CC_PROPOSAL_FAILED"> 
 			<Text>
-				CC Proposal by {1} Failed!
+				Proposition de CC de {1} rejetée !
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				Proposition rejetée !
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_SCRAP_PROPOSAL_FAILED"> 
 			<Text>
-				Scrap Proposal by {1} Failed!
+				Proposition de scrap de {1} rejetée !
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				Proposition rejetée !
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_TITLE"> 
 			<Text>
-				PROPOSAL CHART
+				VOTE
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_CURRENT_PROPOSAL_LABEL"> 
 			<Text>
-				CURRENT PROPOSAL
+				PROPOSITION EN COURS
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_IRR"> 
 			<Text>
-				Admit player's irrelevancy
+				Reconnaître la non-pertinence du joueur
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_CC"> 
 			<Text>
-				Conclude {1} supremacy
+				Reconnaître la suprématie de {1}
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_SCRAP"> 
 			<Text>
-				Scrap the game. Results in a draw
+				Annuler la partie (scrap). Se termine par un match nul
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_STARTED_BY"> 
 			<Text>
-				Started by {1}
+				Lancée par {1}
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_EXPIRATION_TURN"> 
 			<Text>
-				Expiration turn
+				Tour d'expiration
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_MAX_VOTERS"> 
 			<Text>
-				Voters total
+				Nombre de votants
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_YES_VOTES"> 
 			<Text>
-				Voted YES
+				Votes OUI
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_RECEIVED_VOTES"> 
 			<Text>
-				Votes received
+				Votes reçus
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_MISSING_VOTES"> 
 			<Text>
-				Votes missing
+				Votes manquants
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_VOTE_YES_BUTTON"> 
 			<Text>
-				Vote yes
+				Voter oui
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_VOTE_NO_BUTTON"> 
 			<Text>
-				Vote no
+				Voter non
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_PROPOSAL_PASSED"> 
 			<Text>
-				[COLOR_POSITIVE_TEXT]Proposal Passed![ENDCOLOR]
+				[COLOR_POSITIVE_TEXT]Proposition adoptée ![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_PROPOSAL_FAILED"> 
 			<Text>
-				[COLOR_NEGATIVE_TEXT]Proposal Failed![ENDCOLOR]
+				[COLOR_NEGATIVE_TEXT]Proposition rejetée ![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORYSCREEN_SCRAP"> 
@@ -131675,17 +131675,17 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_SCRAP_BANG"> 
 			<Text>
-				Scrap!
+				Scrap !
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_SCRAP_PEDIA">
 			<Text>
-				Use Propose scrap button from Victory Progress menu
+				Utilisez le bouton « Proposer le scrap » du menu Progrès vers la victoire
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_FLAVOR_SCRAP"> 
 			<Text>
-				Come to me, all who labor and are heavy burdened, and I will give you rest.
+				« Venez à moi, vous tous qui êtes fatigués et chargés, et je vous donnerai du repos. »
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_DIPLOSTACK_LR_SWITCH_OPTION"> 
@@ -132425,7 +132425,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_MP_NO_PROPOSAL"> 
 			<Text>
-				Nothing
+				Rien
 			</Text>
 		</Row>
 		<Replace Tag="TXT_KEY_MAP_OPTION_STRATEGIC_BALANCE_WITH_COAL"> 
@@ -133678,72 +133678,72 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_IRR_BUTTON"> 
 			<Text>
-				Ask for Irrelevance [ICON_TEAM_1]
+				Chiedi irrilevanza [ICON_TEAM_1]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_CC_BUTTON"> 
 			<Text>
-				Propose Concede [ICON_TROPHY_GOLD]
+				Proponi resa [ICON_TROPHY_GOLD]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_SCRAP_BUTTON"> 
 			<Text>
-				Propose Scrap [ICON_FLOWER]
+				Proponi scrap [ICON_FLOWER]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_IRR"> 
 			<Text>
-				{1} asked for irr!
+				{1} ha chiesto l'irr!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_CC"> 
 			<Text>
-				{1} proposed to concede to {2}!
+				{1} ha proposto di arrendersi a {2}!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_SCRAP"> 
 			<Text>
-				{1} proposed scrap!
+				{1} ha proposto lo scrap!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MESSAGE_MP_PROPOSAL_FINISHED"> 
 			<Text>
-				Proposal complete!
+				Votazione conclusa!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_ACTIVE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Only one proposal of the same type is allowed at a time![ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]È consentita una sola proposta dello stesso tipo alla volta![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_UNAVAILABLE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]This proposal is currently blocked by the game rules.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Questa proposta è attualmente bloccata dalle regole della partita.[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_ON_COOLDOWN"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]You have started this proposal recently, and may not do so again until turn {1_Num}.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Hai avviato questa proposta di recente e non potrai farlo di nuovo fino al turno {1_Num}.[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_WAIT_NEXT_TURN"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Wait until the next turn to start another proposal.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Attendi il turno successivo per avviare un'altra proposta.[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_ALREADY_HAS_ACTIVE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]You can have only one active proposal at a time![ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Puoi avere una sola proposta attiva alla volta![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_CC_VOTE_POPUP_TITLE"> 
 			<Text>
-				Choose player to concede to
+				Scegli il giocatore a cui arrenderti
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_POSITIVE_VOTE_CHART_STATUS"> 
 			<Text>
-				[COLOR_POSITIVE_TEXT]YES[ENDCOLOR]
+				[COLOR_POSITIVE_TEXT]SÌ[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NEGATIVE_VOTE_CHART_STATUS"> 
@@ -133753,152 +133753,152 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL"> 
 			<Text>
-				Vote on irr!
+				Vota sull'irr!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL"> 
 			<Text>
-				Vote on cc!
+				Vota sulla resa (CC)!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL"> 
 			<Text>
-				Vote on scrap!
+				Vota sullo scrap!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_IRR_PROPOSAL_PASSED"> 
 			<Text>
-				IRR Proposal by {1} Passed!
+				Proposta di IRR di {1} approvata!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				Proposta approvata!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_CC_PROPOSAL_PASSED"> 
 			<Text>
-				CC Proposal by {1} Passed!
+				Proposta di CC di {1} approvata!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				Proposta approvata!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_SCRAP_PROPOSAL_PASSED"> 
 			<Text>
-				Scrap Proposal by {1} Passed!
+				Proposta di scrap di {1} approvata!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				Proposta approvata!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_IRR_PROPOSAL_FAILED"> 
 			<Text>
-				IRR Proposal by {1} Failed!
+				Proposta di IRR di {1} respinta!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				Proposta respinta!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_CC_PROPOSAL_FAILED"> 
 			<Text>
-				CC Proposal by {1} Failed!
+				Proposta di CC di {1} respinta!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				Proposta respinta!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_SCRAP_PROPOSAL_FAILED"> 
 			<Text>
-				Scrap Proposal by {1} Failed!
+				Proposta di scrap di {1} respinta!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				Proposta respinta!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_TITLE"> 
 			<Text>
-				PROPOSAL CHART
+				VOTAZIONE
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_CURRENT_PROPOSAL_LABEL"> 
 			<Text>
-				CURRENT PROPOSAL
+				PROPOSTA ATTUALE
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_IRR"> 
 			<Text>
-				Admit player's irrelevancy
+				Riconoscere l'irrilevanza del giocatore
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_CC"> 
 			<Text>
-				Conclude {1} supremacy
+				Riconoscere la supremazia di {1}
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_SCRAP"> 
 			<Text>
-				Scrap the game. Results in a draw
+				Annulla la partita (scrap). Finisce in pareggio
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_STARTED_BY"> 
 			<Text>
-				Started by {1}
+				Avviata da {1}
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_EXPIRATION_TURN"> 
 			<Text>
-				Expiration turn
+				Turno di scadenza
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_MAX_VOTERS"> 
 			<Text>
-				Voters total
+				Votanti totali
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_YES_VOTES"> 
 			<Text>
-				Voted YES
+				Voti SÌ
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_RECEIVED_VOTES"> 
 			<Text>
-				Votes received
+				Voti ricevuti
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_MISSING_VOTES"> 
 			<Text>
-				Votes missing
+				Voti mancanti
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_VOTE_YES_BUTTON"> 
 			<Text>
-				Vote yes
+				Vota sì
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_VOTE_NO_BUTTON"> 
 			<Text>
-				Vote no
+				Vota no
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_PROPOSAL_PASSED"> 
 			<Text>
-				[COLOR_POSITIVE_TEXT]Proposal Passed![ENDCOLOR]
+				[COLOR_POSITIVE_TEXT]Proposta approvata![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_PROPOSAL_FAILED"> 
 			<Text>
-				[COLOR_NEGATIVE_TEXT]Proposal Failed![ENDCOLOR]
+				[COLOR_NEGATIVE_TEXT]Proposta respinta![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORYSCREEN_SCRAP"> 
@@ -133918,12 +133918,12 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_SCRAP_PEDIA">
 			<Text>
-				Use Propose scrap button from Victory Progress menu
+				Usa il pulsante «Proponi scrap» nel menu Progressi verso la vittoria
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_FLAVOR_SCRAP"> 
 			<Text>
-				Come to me, all who labor and are heavy burdened, and I will give you rest.
+				«Venite a me, voi tutti che siete stanchi e oppressi, e io vi darò ristoro.»
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_DIPLOSTACK_LR_SWITCH_OPTION"> 
@@ -134663,7 +134663,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_MP_NO_PROPOSAL"> 
 			<Text>
-				Nothing
+				Niente
 			</Text>
 		</Row>
 		<Replace Tag="TXT_KEY_MAP_OPTION_STRATEGIC_BALANCE_WITH_COAL"> 
@@ -135916,252 +135916,252 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_IRR_BUTTON"> 
 			<Text>
-				Ask for Irrelevance [ICON_TEAM_1]
+				IRRを申請 [ICON_TEAM_1]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_CC_BUTTON"> 
 			<Text>
-				Propose Concede [ICON_TROPHY_GOLD]
+				降伏を提案 [ICON_TROPHY_GOLD]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_SCRAP_BUTTON"> 
 			<Text>
-				Propose Scrap [ICON_FLOWER]
+				スクラップを提案 [ICON_FLOWER]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_IRR"> 
 			<Text>
-				{1} asked for irr!
+				{1}がIRRを申請しました！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_CC"> 
 			<Text>
-				{1} proposed to concede to {2}!
+				{1}が{2}への降伏を提案しました！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_SCRAP"> 
 			<Text>
-				{1} proposed scrap!
+				{1}がスクラップを提案しました！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MESSAGE_MP_PROPOSAL_FINISHED"> 
 			<Text>
-				Proposal complete!
+				投票が終了しました！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_ACTIVE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Only one proposal of the same type is allowed at a time![ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]同じ種類の提案は同時に1つまでです！[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_UNAVAILABLE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]This proposal is currently blocked by the game rules.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]この提案は現在、ゲームのルールにより利用できません。[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_ON_COOLDOWN"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]You have started this proposal recently, and may not do so again until turn {1_Num}.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]最近この提案を行ったため、ターン{1_Num}まで再び行うことはできません。[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_WAIT_NEXT_TURN"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Wait until the next turn to start another proposal.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]次のターンまで待ってから新しい提案を行ってください。[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_ALREADY_HAS_ACTIVE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]You can have only one active proposal at a time![ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]同時に有効にできる提案は1つだけです！[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_CC_VOTE_POPUP_TITLE"> 
 			<Text>
-				Choose player to concede to
+				降伏する相手プレイヤーを選択
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_POSITIVE_VOTE_CHART_STATUS"> 
 			<Text>
-				[COLOR_POSITIVE_TEXT]YES[ENDCOLOR]
+				[COLOR_POSITIVE_TEXT]賛成[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NEGATIVE_VOTE_CHART_STATUS"> 
 			<Text>
-				[COLOR_NEGATIVE_TEXT]NO[ENDCOLOR]
+				[COLOR_NEGATIVE_TEXT]反対[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL"> 
 			<Text>
-				Vote on irr!
+				IRRの投票！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL"> 
 			<Text>
-				Vote on cc!
+				降伏(CC)の投票！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL"> 
 			<Text>
-				Vote on scrap!
+				スクラップの投票！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_IRR_PROPOSAL_PASSED"> 
 			<Text>
-				IRR Proposal by {1} Passed!
+				{1}によるIRRの提案が可決されました！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				提案が可決されました！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_CC_PROPOSAL_PASSED"> 
 			<Text>
-				CC Proposal by {1} Passed!
+				{1}によるCCの提案が可決されました！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				提案が可決されました！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_SCRAP_PROPOSAL_PASSED"> 
 			<Text>
-				Scrap Proposal by {1} Passed!
+				{1}によるスクラップの提案が可決されました！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				提案が可決されました！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_IRR_PROPOSAL_FAILED"> 
 			<Text>
-				IRR Proposal by {1} Failed!
+				{1}によるIRRの提案が否決されました！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				提案が否決されました！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_CC_PROPOSAL_FAILED"> 
 			<Text>
-				CC Proposal by {1} Failed!
+				{1}によるCCの提案が否決されました！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				提案が否決されました！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_SCRAP_PROPOSAL_FAILED"> 
 			<Text>
-				Scrap Proposal by {1} Failed!
+				{1}によるスクラップの提案が否決されました！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				提案が否決されました！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_TITLE"> 
 			<Text>
-				PROPOSAL CHART
+				投票
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_CURRENT_PROPOSAL_LABEL"> 
 			<Text>
-				CURRENT PROPOSAL
+				現在の提案
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_IRR"> 
 			<Text>
-				Admit player's irrelevancy
+				プレイヤーの脱落を認める
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_CC"> 
 			<Text>
-				Conclude {1} supremacy
+				{1}の優位を認める
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_SCRAP"> 
 			<Text>
-				Scrap the game. Results in a draw
+				ゲームを破棄（スクラップ）。引き分けになります
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_STARTED_BY"> 
 			<Text>
-				Started by {1}
+				提案者: {1}
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_EXPIRATION_TURN"> 
 			<Text>
-				Expiration turn
+				期限のターン
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_MAX_VOTERS"> 
 			<Text>
-				Voters total
+				投票者数
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_YES_VOTES"> 
 			<Text>
-				Voted YES
+				賛成票
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_RECEIVED_VOTES"> 
 			<Text>
-				Votes received
+				投票済み
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_MISSING_VOTES"> 
 			<Text>
-				Votes missing
+				未投票
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_VOTE_YES_BUTTON"> 
 			<Text>
-				Vote yes
+				賛成する
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_VOTE_NO_BUTTON"> 
 			<Text>
-				Vote no
+				反対する
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_PROPOSAL_PASSED"> 
 			<Text>
-				[COLOR_POSITIVE_TEXT]Proposal Passed![ENDCOLOR]
+				[COLOR_POSITIVE_TEXT]提案が可決されました！[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_PROPOSAL_FAILED"> 
 			<Text>
-				[COLOR_NEGATIVE_TEXT]Proposal Failed![ENDCOLOR]
+				[COLOR_NEGATIVE_TEXT]提案が否決されました！[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORYSCREEN_SCRAP"> 
 			<Text>
-				[ICON_FLOWER] Scrap
+				[ICON_FLOWER] スクラップ
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_SCRAP"> 
 			<Text>
-				Scrap
+				スクラップ
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_SCRAP_BANG"> 
 			<Text>
-				Scrap!
+				スクラップ！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_SCRAP_PEDIA">
 			<Text>
-				Use Propose scrap button from Victory Progress menu
+				勝利への道メニューの「スクラップを提案」ボタンを使用してください
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_FLAVOR_SCRAP"> 
 			<Text>
-				Come to me, all who labor and are heavy burdened, and I will give you rest.
+				「すべて疲れた人、重荷を負っている人は、わたしのもとに来なさい。休ませてあげよう。」
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_DIPLOSTACK_LR_SWITCH_OPTION"> 
@@ -136896,12 +136896,12 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCRAP"> 
 			<Text>
-				Scrap
+				スクラップ
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_NO_PROPOSAL"> 
 			<Text>
-				Nothing
+				なし
 			</Text>
 		</Row>
 		<Replace Tag="TXT_KEY_MAP_OPTION_STRATEGIC_BALANCE_WITH_COAL"> 
@@ -138154,252 +138154,252 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_IRR_BUTTON"> 
 			<Text>
-				Ask for Irrelevance [ICON_TEAM_1]
+				IRR 요청 [ICON_TEAM_1]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_CC_BUTTON"> 
 			<Text>
-				Propose Concede [ICON_TROPHY_GOLD]
+				항복 제안 [ICON_TROPHY_GOLD]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_SCRAP_BUTTON"> 
 			<Text>
-				Propose Scrap [ICON_FLOWER]
+				스크랩 제안 [ICON_FLOWER]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_IRR"> 
 			<Text>
-				{1} asked for irr!
+				{1}님이 IRR을 요청했습니다!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_CC"> 
 			<Text>
-				{1} proposed to concede to {2}!
+				{1}님이 {2}님에게 항복을 제안했습니다!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_SCRAP"> 
 			<Text>
-				{1} proposed scrap!
+				{1}님이 스크랩을 제안했습니다!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MESSAGE_MP_PROPOSAL_FINISHED"> 
 			<Text>
-				Proposal complete!
+				투표가 끝났습니다!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_ACTIVE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Only one proposal of the same type is allowed at a time![ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]같은 종류의 안건은 한 번에 하나만 진행할 수 있습니다![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_UNAVAILABLE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]This proposal is currently blocked by the game rules.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]이 안건은 현재 게임 규칙에 의해 막혀 있습니다.[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_ON_COOLDOWN"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]You have started this proposal recently, and may not do so again until turn {1_Num}.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]최근에 이 안건을 시작했으므로 {1_Num}턴까지 다시 시작할 수 없습니다.[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_WAIT_NEXT_TURN"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Wait until the next turn to start another proposal.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]다음 턴까지 기다린 후 새 안건을 시작하십시오.[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_ALREADY_HAS_ACTIVE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]You can have only one active proposal at a time![ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]진행 중인 안건은 한 번에 하나만 가질 수 있습니다![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_CC_VOTE_POPUP_TITLE"> 
 			<Text>
-				Choose player to concede to
+				항복할 플레이어 선택
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_POSITIVE_VOTE_CHART_STATUS"> 
 			<Text>
-				[COLOR_POSITIVE_TEXT]YES[ENDCOLOR]
+				[COLOR_POSITIVE_TEXT]찬성[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NEGATIVE_VOTE_CHART_STATUS"> 
 			<Text>
-				[COLOR_NEGATIVE_TEXT]NO[ENDCOLOR]
+				[COLOR_NEGATIVE_TEXT]반대[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL"> 
 			<Text>
-				Vote on irr!
+				IRR 투표!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL"> 
 			<Text>
-				Vote on cc!
+				항복(CC) 투표!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL"> 
 			<Text>
-				Vote on scrap!
+				스크랩 투표!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_IRR_PROPOSAL_PASSED"> 
 			<Text>
-				IRR Proposal by {1} Passed!
+				{1}님의 IRR 안건 가결!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				안건 가결!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_CC_PROPOSAL_PASSED"> 
 			<Text>
-				CC Proposal by {1} Passed!
+				{1}님의 CC 안건 가결!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				안건 가결!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_SCRAP_PROPOSAL_PASSED"> 
 			<Text>
-				Scrap Proposal by {1} Passed!
+				{1}님의 스크랩 안건 가결!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				안건 가결!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_IRR_PROPOSAL_FAILED"> 
 			<Text>
-				IRR Proposal by {1} Failed!
+				{1}님의 IRR 안건 부결!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				안건 부결!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_CC_PROPOSAL_FAILED"> 
 			<Text>
-				CC Proposal by {1} Failed!
+				{1}님의 CC 안건 부결!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				안건 부결!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_SCRAP_PROPOSAL_FAILED"> 
 			<Text>
-				Scrap Proposal by {1} Failed!
+				{1}님의 스크랩 안건 부결!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				안건 부결!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_TITLE"> 
 			<Text>
-				PROPOSAL CHART
+				투표
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_CURRENT_PROPOSAL_LABEL"> 
 			<Text>
-				CURRENT PROPOSAL
+				현재 안건
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_IRR"> 
 			<Text>
-				Admit player's irrelevancy
+				플레이어의 탈락 인정
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_CC"> 
 			<Text>
-				Conclude {1} supremacy
+				{1}의 우위 인정
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_SCRAP"> 
 			<Text>
-				Scrap the game. Results in a draw
+				게임 무효(스크랩). 무승부로 끝납니다
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_STARTED_BY"> 
 			<Text>
-				Started by {1}
+				제안자: {1}
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_EXPIRATION_TURN"> 
 			<Text>
-				Expiration turn
+				만료 턴
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_MAX_VOTERS"> 
 			<Text>
-				Voters total
+				전체 투표자
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_YES_VOTES"> 
 			<Text>
-				Voted YES
+				찬성 투표
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_RECEIVED_VOTES"> 
 			<Text>
-				Votes received
+				받은 투표
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_MISSING_VOTES"> 
 			<Text>
-				Votes missing
+				남은 투표
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_VOTE_YES_BUTTON"> 
 			<Text>
-				Vote yes
+				찬성 투표하기
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_VOTE_NO_BUTTON"> 
 			<Text>
-				Vote no
+				반대 투표하기
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_PROPOSAL_PASSED"> 
 			<Text>
-				[COLOR_POSITIVE_TEXT]Proposal Passed![ENDCOLOR]
+				[COLOR_POSITIVE_TEXT]안건이 가결되었습니다![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_PROPOSAL_FAILED"> 
 			<Text>
-				[COLOR_NEGATIVE_TEXT]Proposal Failed![ENDCOLOR]
+				[COLOR_NEGATIVE_TEXT]안건이 부결되었습니다![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORYSCREEN_SCRAP"> 
 			<Text>
-				[ICON_FLOWER] Scrap
+				[ICON_FLOWER] 스크랩
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_SCRAP"> 
 			<Text>
-				Scrap
+				스크랩
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_SCRAP_BANG"> 
 			<Text>
-				Scrap!
+				스크랩!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_SCRAP_PEDIA">
 			<Text>
-				Use Propose scrap button from Victory Progress menu
+				승리 진행 메뉴의 '스크랩 제안' 버튼을 사용하십시오
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_FLAVOR_SCRAP"> 
 			<Text>
-				Come to me, all who labor and are heavy burdened, and I will give you rest.
+				"수고하고 무거운 짐 진 자들아 다 내게로 오라 내가 너희를 쉬게 하리라"
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_DIPLOSTACK_LR_SWITCH_OPTION"> 
@@ -139134,12 +139134,12 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCRAP"> 
 			<Text>
-				Scrap
+				스크랩
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_NO_PROPOSAL"> 
 			<Text>
-				Nothing
+				없음
 			</Text>
 		</Row>
 		<Replace Tag="TXT_KEY_MAP_OPTION_STRATEGIC_BALANCE_WITH_COAL"> 
@@ -140392,227 +140392,227 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_IRR_BUTTON"> 
 			<Text>
-				Ask for Irrelevance [ICON_TEAM_1]
+				Poproś o IRR [ICON_TEAM_1]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_CC_BUTTON"> 
 			<Text>
-				Propose Concede [ICON_TROPHY_GOLD]
+				Zaproponuj kapitulację [ICON_TROPHY_GOLD]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_SCRAP_BUTTON"> 
 			<Text>
-				Propose Scrap [ICON_FLOWER]
+				Zaproponuj scrap [ICON_FLOWER]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_IRR"> 
 			<Text>
-				{1} asked for irr!
+				{1} prosi o irr!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_CC"> 
 			<Text>
-				{1} proposed to concede to {2}!
+				{1} proponuje kapitulację przed {2}!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_SCRAP"> 
 			<Text>
-				{1} proposed scrap!
+				{1} proponuje scrap!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MESSAGE_MP_PROPOSAL_FINISHED"> 
 			<Text>
-				Proposal complete!
+				Głosowanie zakończone!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_ACTIVE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Only one proposal of the same type is allowed at a time![ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Jednocześnie dozwolona jest tylko jedna propozycja tego samego typu![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_UNAVAILABLE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]This proposal is currently blocked by the game rules.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Ta propozycja jest obecnie zablokowana przez zasady gry.[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_ON_COOLDOWN"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]You have started this proposal recently, and may not do so again until turn {1_Num}.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Niedawno rozpocząłeś tę propozycję i możesz to zrobić ponownie dopiero w turze {1_Num}.[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_WAIT_NEXT_TURN"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Wait until the next turn to start another proposal.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Poczekaj do następnej tury, aby rozpocząć kolejną propozycję.[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_ALREADY_HAS_ACTIVE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]You can have only one active proposal at a time![ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Możesz mieć tylko jedną aktywną propozycję naraz![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_CC_VOTE_POPUP_TITLE"> 
 			<Text>
-				Choose player to concede to
+				Wybierz gracza, przed którym skapitulujesz
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_POSITIVE_VOTE_CHART_STATUS"> 
 			<Text>
-				[COLOR_POSITIVE_TEXT]YES[ENDCOLOR]
+				[COLOR_POSITIVE_TEXT]TAK[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NEGATIVE_VOTE_CHART_STATUS"> 
 			<Text>
-				[COLOR_NEGATIVE_TEXT]NO[ENDCOLOR]
+				[COLOR_NEGATIVE_TEXT]NIE[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL"> 
 			<Text>
-				Vote on irr!
+				Głosuj nad irr!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL"> 
 			<Text>
-				Vote on cc!
+				Głosuj nad kapitulacją (CC)!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL"> 
 			<Text>
-				Vote on scrap!
+				Głosuj nad scrapem!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_IRR_PROPOSAL_PASSED"> 
 			<Text>
-				IRR Proposal by {1} Passed!
+				Propozycja IRR gracza {1} przyjęta!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				Propozycja przyjęta!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_CC_PROPOSAL_PASSED"> 
 			<Text>
-				CC Proposal by {1} Passed!
+				Propozycja CC gracza {1} przyjęta!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				Propozycja przyjęta!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_SCRAP_PROPOSAL_PASSED"> 
 			<Text>
-				Scrap Proposal by {1} Passed!
+				Propozycja scrapu gracza {1} przyjęta!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				Propozycja przyjęta!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_IRR_PROPOSAL_FAILED"> 
 			<Text>
-				IRR Proposal by {1} Failed!
+				Propozycja IRR gracza {1} odrzucona!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				Propozycja odrzucona!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_CC_PROPOSAL_FAILED"> 
 			<Text>
-				CC Proposal by {1} Failed!
+				Propozycja CC gracza {1} odrzucona!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				Propozycja odrzucona!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_SCRAP_PROPOSAL_FAILED"> 
 			<Text>
-				Scrap Proposal by {1} Failed!
+				Propozycja scrapu gracza {1} odrzucona!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				Propozycja odrzucona!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_TITLE"> 
 			<Text>
-				PROPOSAL CHART
+				GŁOSOWANIE
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_CURRENT_PROPOSAL_LABEL"> 
 			<Text>
-				CURRENT PROPOSAL
+				BIEŻĄCA PROPOZYCJA
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_IRR"> 
 			<Text>
-				Admit player's irrelevancy
+				Uznaj nieistotność gracza
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_CC"> 
 			<Text>
-				Conclude {1} supremacy
+				Uznaj przewagę gracza {1}
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_SCRAP"> 
 			<Text>
-				Scrap the game. Results in a draw
+				Anuluj grę (scrap). Kończy się remisem
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_STARTED_BY"> 
 			<Text>
-				Started by {1}
+				Rozpoczęta przez: {1}
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_EXPIRATION_TURN"> 
 			<Text>
-				Expiration turn
+				Tura wygaśnięcia
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_MAX_VOTERS"> 
 			<Text>
-				Voters total
+				Liczba głosujących
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_YES_VOTES"> 
 			<Text>
-				Voted YES
+				Głosy na TAK
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_RECEIVED_VOTES"> 
 			<Text>
-				Votes received
+				Oddane głosy
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_MISSING_VOTES"> 
 			<Text>
-				Votes missing
+				Brakujące głosy
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_VOTE_YES_BUTTON"> 
 			<Text>
-				Vote yes
+				Głosuj za
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_VOTE_NO_BUTTON"> 
 			<Text>
-				Vote no
+				Głosuj przeciw
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_PROPOSAL_PASSED"> 
 			<Text>
-				[COLOR_POSITIVE_TEXT]Proposal Passed![ENDCOLOR]
+				[COLOR_POSITIVE_TEXT]Propozycja przyjęta![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_PROPOSAL_FAILED"> 
 			<Text>
-				[COLOR_NEGATIVE_TEXT]Proposal Failed![ENDCOLOR]
+				[COLOR_NEGATIVE_TEXT]Propozycja odrzucona![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORYSCREEN_SCRAP"> 
@@ -140632,12 +140632,12 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_SCRAP_PEDIA">
 			<Text>
-				Use Propose scrap button from Victory Progress menu
+				Użyj przycisku „Zaproponuj scrap” w menu Postęp ku zwycięstwu
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_FLAVOR_SCRAP"> 
 			<Text>
-				Come to me, all who labor and are heavy burdened, and I will give you rest.
+				„Przyjdźcie do Mnie wszyscy, którzy utrudzeni i obciążeni jesteście, a Ja was pokrzepię.”
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_DIPLOSTACK_LR_SWITCH_OPTION"> 
@@ -141377,7 +141377,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_MP_NO_PROPOSAL"> 
 			<Text>
-				Nothing
+				Nic
 			</Text>
 		</Row>
 		<Replace Tag="TXT_KEY_MAP_OPTION_STRATEGIC_BALANCE_WITH_COAL"> 
@@ -142664,7 +142664,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_IRR_BUTTON"> 
 			<Text>
-				Попросить Ирр [ICON_TEAM_1]
+				Попросить ИРР [ICON_TEAM_1]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_CC_BUTTON"> 
@@ -142679,7 +142679,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_IRR"> 
 			<Text>
-				{1} просит ирр!
+				{1} просит ИРР!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_CC"> 
@@ -142754,7 +142754,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_IRR_PROPOSAL_PASSED"> 
 			<Text>
-				Предложение Ирр от {1}: Одобрено!
+				Предложение ИРР от {1}: Одобрено!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL_PASSED"> 
@@ -142784,7 +142784,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_IRR_PROPOSAL_FAILED"> 
 			<Text>
-				Предложение Ирр от {1}: Отклонено!
+				Предложение ИРР от {1}: Отклонено!
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL_FAILED"> 
@@ -142839,7 +142839,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_STARTED_BY"> 
 			<Text>
-				начато {1}
+				Начато: {1}
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_EXPIRATION_TURN"> 
@@ -142879,7 +142879,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_PROPOSAL_PASSED"> 
 			<Text>
-				[COLOR_POSITIVE_TEXT]Предложение Принято![ENDCOLOR]
+				[COLOR_POSITIVE_TEXT]Предложение Одобрено![ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_PROPOSAL_FAILED"> 
@@ -144917,252 +144917,252 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_IRR_BUTTON"> 
 			<Text>
-				Ask for Irrelevance [ICON_TEAM_1]
+				申請IRR [ICON_TEAM_1]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_CC_BUTTON"> 
 			<Text>
-				Propose Concede [ICON_TROPHY_GOLD]
+				提議投降 [ICON_TROPHY_GOLD]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSE_SCRAP_BUTTON"> 
 			<Text>
-				Propose Scrap [ICON_FLOWER]
+				提議作廢 [ICON_FLOWER]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_IRR"> 
 			<Text>
-				{1} asked for irr!
+				{1}申請了IRR！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_CC"> 
 			<Text>
-				{1} proposed to concede to {2}!
+				{1}提議向{2}投降！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_PROPOSED_SCRAP"> 
 			<Text>
-				{1} proposed scrap!
+				{1}提議作廢本局！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MESSAGE_MP_PROPOSAL_FINISHED"> 
 			<Text>
-				Proposal complete!
+				投票已結束！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_ACTIVE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Only one proposal of the same type is allowed at a time![ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]同一類型的提案同時只能有一個！[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_UNAVAILABLE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]This proposal is currently blocked by the game rules.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]此提案目前被遊戲規則禁止。[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_TYPE_ON_COOLDOWN"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]You have started this proposal recently, and may not do so again until turn {1_Num}.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]你最近已發起過此提案，須到第{1_Num}回合才能再次發起。[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_WAIT_NEXT_TURN"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]Wait until the next turn to start another proposal.[ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]請等到下一回合再發起新的提案。[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_WARN_MP_PROPOSAL_ALREADY_HAS_ACTIVE"> 
 			<Text>
-				[ICON_BULLET][COLOR_NEGATIVE_TEXT]You can have only one active proposal at a time![ENDCOLOR]
+				[ICON_BULLET][COLOR_NEGATIVE_TEXT]你同時只能有一個進行中的提案！[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_CC_VOTE_POPUP_TITLE"> 
 			<Text>
-				Choose player to concede to
+				選擇要向其投降的玩家
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_POSITIVE_VOTE_CHART_STATUS"> 
 			<Text>
-				[COLOR_POSITIVE_TEXT]YES[ENDCOLOR]
+				[COLOR_POSITIVE_TEXT]贊成[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NEGATIVE_VOTE_CHART_STATUS"> 
 			<Text>
-				[COLOR_NEGATIVE_TEXT]NO[ENDCOLOR]
+				[COLOR_NEGATIVE_TEXT]反對[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL"> 
 			<Text>
-				Vote on irr!
+				IRR投票！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL"> 
 			<Text>
-				Vote on cc!
+				投降(CC)投票！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL"> 
 			<Text>
-				Vote on scrap!
+				作廢投票！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_IRR_PROPOSAL_PASSED"> 
 			<Text>
-				IRR Proposal by {1} Passed!
+				{1}發起的IRR提案已通過！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				提案已通過！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_CC_PROPOSAL_PASSED"> 
 			<Text>
-				CC Proposal by {1} Passed!
+				{1}發起的CC提案已通過！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				提案已通過！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_SCRAP_PROPOSAL_PASSED"> 
 			<Text>
-				Scrap Proposal by {1} Passed!
+				{1}發起的作廢提案已通過！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL_PASSED"> 
 			<Text>
-				Proposal Passed!
+				提案已通過！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_IRR_PROPOSAL_FAILED"> 
 			<Text>
-				IRR Proposal by {1} Failed!
+				{1}發起的IRR提案未通過！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_IRR_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				提案未通過！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_CC_PROPOSAL_FAILED"> 
 			<Text>
-				CC Proposal by {1} Failed!
+				{1}發起的CC提案未通過！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_CC_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				提案未通過！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_MP_SCRAP_PROPOSAL_FAILED"> 
 			<Text>
-				Scrap Proposal by {1} Failed!
+				{1}發起的作廢提案未通過！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_NOTIFICATION_SUMMARY_MP_SCRAP_PROPOSAL_FAILED"> 
 			<Text>
-				Proposal Failed!
+				提案未通過！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_TITLE"> 
 			<Text>
-				PROPOSAL CHART
+				投票
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_CURRENT_PROPOSAL_LABEL"> 
 			<Text>
-				CURRENT PROPOSAL
+				目前提案
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_IRR"> 
 			<Text>
-				Admit player's irrelevancy
+				承認玩家已無關大局
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_CC"> 
 			<Text>
-				Conclude {1} supremacy
+				承認{1}的優勢
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_SCRAP"> 
 			<Text>
-				Scrap the game. Results in a draw
+				作廢本局，結果為平局
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_STARTED_BY"> 
 			<Text>
-				Started by {1}
+				發起人：{1}
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_EXPIRATION_TURN"> 
 			<Text>
-				Expiration turn
+				到期回合
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_MAX_VOTERS"> 
 			<Text>
-				Voters total
+				投票人數
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_YES_VOTES"> 
 			<Text>
-				Voted YES
+				贊成票
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_RECEIVED_VOTES"> 
 			<Text>
-				Votes received
+				已收到票數
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_MISSING_VOTES"> 
 			<Text>
-				Votes missing
+				尚缺票數
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_VOTE_YES_BUTTON"> 
 			<Text>
-				Vote yes
+				投贊成票
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_VOTE_NO_BUTTON"> 
 			<Text>
-				Vote no
+				投反對票
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_PROPOSAL_PASSED"> 
 			<Text>
-				[COLOR_POSITIVE_TEXT]Proposal Passed![ENDCOLOR]
+				[COLOR_POSITIVE_TEXT]提案已通過！[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCREEN_PROPOSAL_FAILED"> 
 			<Text>
-				[COLOR_NEGATIVE_TEXT]Proposal Failed![ENDCOLOR]
+				[COLOR_NEGATIVE_TEXT]提案未通過！[ENDCOLOR]
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORYSCREEN_SCRAP"> 
 			<Text>
-				[ICON_FLOWER] Scrap
+				[ICON_FLOWER] 作廢
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_SCRAP"> 
 			<Text>
-				Scrap
+				作廢
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_SCRAP_BANG"> 
 			<Text>
-				Scrap!
+				作廢！
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_SCRAP_PEDIA">
 			<Text>
-				Use Propose scrap button from Victory Progress menu
+				請使用勝利進度選單中的「提議作廢」按鈕
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_VICTORY_FLAVOR_SCRAP"> 
 			<Text>
-				Come to me, all who labor and are heavy burdened, and I will give you rest.
+				「凡勞苦擔重擔的人可以到我這裡來，我就使你們得安息。」
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_DIPLOSTACK_LR_SWITCH_OPTION"> 
@@ -145897,12 +145897,12 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_MP_PROPOSAL_SCRAP"> 
 			<Text>
-				Scrap
+				作廢
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_NO_PROPOSAL"> 
 			<Text>
-				Nothing
+				無
 			</Text>
 		</Row>
 		<Replace Tag="TXT_KEY_MAP_OPTION_STRATEGIC_BALANCE_WITH_COAL"> 
