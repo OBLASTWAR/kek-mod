@@ -64,6 +64,8 @@ function ResetMultiplayerOptions()
 	else
 		PreGame.SetGameOption("GAMEOPTION_DYNAMIC_TURNS", false);
 		PreGame.SetGameOption("GAMEOPTION_SIMULTANEOUS_TURNS", true);
+		-- kek: remap vote defaults to Unanimous (5, see MPGameOptions.lua g_RemapVoteValues)
+		PreGame.SetGameOption("GAMEOPTION_REMAP_VOTE", 5);
 	end
 end
 

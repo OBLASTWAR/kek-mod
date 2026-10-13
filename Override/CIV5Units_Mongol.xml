@@ -125091,7 +125091,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
 			<Text>
-				Turn 10 Remap Vote
+				Remap Vote
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_HELP"> 
@@ -125131,7 +125131,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_SUMMARY"> 
 			<Text>
-				Turn 10 Remap Vote ({1})
+				Remap Vote ({1})
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE_CALLED"> 
@@ -127324,7 +127324,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
 			<Text>
-				Remap-Abstimmung in Runde 10
+				Remap-Abstimmung
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_HELP"> 
@@ -127364,7 +127364,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_SUMMARY"> 
 			<Text>
-				Remap-Abstimmung in Runde 10 ({1})
+				Remap-Abstimmung ({1})
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE_CALLED"> 
@@ -129662,7 +129662,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
 			<Text>
-				Votación de remap en el turno 10
+				Votación de remap
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_HELP"> 
@@ -129702,7 +129702,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_SUMMARY"> 
 			<Text>
-				Votación de remap en el turno 10 ({1})
+				Votación de remap ({1})
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE_CALLED"> 
@@ -132000,7 +132000,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
 			<Text>
-				Vote de remap au tour 10
+				Vote de remap
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_HELP"> 
@@ -132040,7 +132040,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_SUMMARY"> 
 			<Text>
-				Vote de remap au tour 10 ({1})
+				Vote de remap ({1})
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE_CALLED"> 
@@ -134338,7 +134338,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
 			<Text>
-				Votazione remap al turno 10
+				Votazione remap
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_HELP"> 
@@ -134378,7 +134378,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_SUMMARY"> 
 			<Text>
-				Votazione remap al turno 10 ({1})
+				Votazione remap ({1})
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE_CALLED"> 
@@ -136676,7 +136676,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
 			<Text>
-				10ターン目のリマップ投票
+				リマップ投票
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_HELP"> 
@@ -136716,7 +136716,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_SUMMARY"> 
 			<Text>
-				10ターン目のリマップ投票（{1}）
+				リマップ投票（{1}）
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE_CALLED"> 
@@ -139014,7 +139014,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
 			<Text>
-				10턴 리맵 투표
+				리맵 투표
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_HELP"> 
@@ -139054,7 +139054,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_SUMMARY"> 
 			<Text>
-				10턴 리맵 투표 ({1})
+				리맵 투표 ({1})
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE_CALLED"> 
@@ -141352,7 +141352,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
 			<Text>
-				Głosowanie o remap w 10. turze
+				Głosowanie o remap
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_HELP"> 
@@ -141392,7 +141392,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_SUMMARY"> 
 			<Text>
-				Głosowanie o remap w 10. turze ({1})
+				Głosowanie o remap ({1})
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE_CALLED"> 
@@ -143724,7 +143724,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
 			<Text>
-				Голосование за ремап на 10-м ходу
+				Голосование за ремап
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_HELP"> 
@@ -143764,7 +143764,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_SUMMARY"> 
 			<Text>
-				Голосование за ремап на 10-м ходу ({1})
+				Голосование за ремап ({1})
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE_CALLED"> 
@@ -146077,7 +146077,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
 			<Text>
-				第10回合重開地圖投票
+				重開地圖投票
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_HELP"> 
@@ -146117,7 +146117,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE_SUMMARY"> 
 			<Text>
-				第10回合重開地圖投票（{1}）
+				重開地圖投票（{1}）
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_MP_MESSAGE_REMAP_VOTE_CALLED"> 
