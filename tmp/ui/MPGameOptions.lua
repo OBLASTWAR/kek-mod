@@ -897,6 +897,55 @@ end
 Controls.TurnTimerCheck:RegisterCallback( Mouse.eLClick, OnTurnTimerChecked );
 
 ----------------------------------------------------------------
+-- kekmod 2.2: turn-10 remap vote. GAMEOPTION_REMAP_VOTE is an int game option
+-- (0 off, 1..4 majority +0..+3, 5 unanimous) read by CvMPVotingSystem::DoTurn,
+-- so it gets a dropdown here instead of a checkbox (its GameOptions row is
+-- Visible=false). The +N steps raise the bar for each remap of the same lobby.
+----------------------------------------------------------------
+local g_RemapVoteValues = {
+	{ Value = 0, Name = "TXT_KEY_GAME_OPTION_REMAP_VOTE_OFF" },
+	{ Value = 1, Name = "TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY" },
+	{ Value = 2, Name = "TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_1" },
+	{ Value = 3, Name = "TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_2" },
+	{ Value = 4, Name = "TXT_KEY_GAME_OPTION_REMAP_VOTE_MAJORITY_PLUS_3" },
+	{ Value = 5, Name = "TXT_KEY_GAME_OPTION_REMAP_VOTE_UNANIMOUS" },
+};
+
+function AddRemapVoteDropDown(bCanEdit)
+	local gameOption = g_DropDownOptionsManager:GetInstance();
+	local toolTip = Locale.ConvertTextKey("TXT_KEY_GAME_OPTION_REMAP_VOTE_HELP");
+
+	gameOption.OptionName:SetText(Locale.ConvertTextKey("TXT_KEY_GAME_OPTION_REMAP_VOTE"));
+	gameOption.OptionName:SetToolTipString(toolTip);
+	gameOption.OptionDropDown:SetDisabled(not bCanEdit);
+
+	local dropDownButton = gameOption.OptionDropDown:GetButton();
+	dropDownButton:SetToolTipString(toolTip);
+
+	gameOption.OptionDropDown:ClearEntries();
+	for _, entry in ipairs(g_RemapVoteValues) do
+		local controlTable = {};
+		gameOption.OptionDropDown:BuildEntry( "InstanceOne", controlTable );
+		controlTable.Button:LocalizeAndSetText(entry.Name);
+		controlTable.Button:RegisterCallback(Mouse.eLClick, function()
+			dropDownButton:LocalizeAndSetText(entry.Name);
+			PreGame.SetGameOption("GAMEOPTION_REMAP_VOTE", entry.Value);
+			SendGameOptionChanged();
+		end);
+	end
+
+	local current = g_RemapVoteValues[1];
+	for _, entry in ipairs(g_RemapVoteValues) do
+		if(PreGame.GetGameOption("GAMEOPTION_REMAP_VOTE") == entry.Value) then
+			current = entry;
+		end
+	end
+	dropDownButton:LocalizeAndSetText(current.Name);
+
+	gameOption.OptionDropDown:CalculateInternals();
+end
+
+----------------------------------------------------------------
 ----------------------------------------------------------------
 function RefreshDropDownOptions()
 	g_DropDownOptionsManager:ResetInstances();
@@ -990,6 +1039,10 @@ function RefreshDropDownOptions()
 		
 		gameOption.OptionDropDown:CalculateInternals();
 	end
+
+	if(not PreGame.IsHotSeatGame()) then
+		AddRemapVoteDropDown(bCanEdit);
+	end
 	
 	Controls.DropDownOptionsStack:CalculateSize();
 	Controls.DropDownOptionsStack:ReprocessAnchoring();
@@ -1017,7 +1070,7 @@ function RefreshGameOptions()
 	---------------------------------
 	-- Victory conditions
 	for row in GameInfo.Victories() do
-		if(row.Type ~= "VICTORY_SCRAP") then
+		if(row.Type ~= "VICTORY_SCRAP" and row.Type ~= "VICTORY_REMAP") then
 			local victoryCondition = g_VictoryCondtionsManager:GetInstance();
 			
 			local victoryConditionTextButton = victoryCondition.GameOptionRoot:GetTextButton();

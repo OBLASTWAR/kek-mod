@@ -15,6 +15,17 @@ local g_TeamEntries = {};
 local g_TeamData = {};
 
 local SEPARATOR_MARGIN = 10;
+
+-- Yes votes the remap vote needs out of maxVotes. Mirrors GetRemapVotesNeeded in
+-- CvVotingClasses.cpp: GAMEOPTION_REMAP_VOTE 1..4 = strict majority +0..+3
+-- (capped at everyone), anything else = unanimous.
+local function GetRemapVotesNeeded( maxVotes )
+	local mode = PreGame.GetGameOption("GAMEOPTION_REMAP_VOTE");
+	if mode == nil or mode < 1 or mode > 4 then
+		return maxVotes;
+	end
+	return math.min(maxVotes, math.floor(maxVotes / 2) + 1 + (mode - 1));
+end
 local g_MPVotingSystemLastId = 0
 
 local function onVoteReceived( Id, playerId, bVote )
@@ -44,6 +55,9 @@ local function onProposalResult( Id, expires, OwnerId, SubjectId, iType, Status)
 			elseif iType ==1003 then
 				--Events.EndGameShow(-1, Players[Game.GetActivePlayer()]:GetTeam())  -- scrap screen
 				Game.SetWinner(Players[Game.GetActivePlayer()]:GetTeam(), GameInfoTypes.VICTORY_SCRAP);
+			elseif iType ==1004 then
+				-- remap: same game-ending path as scrap; players re-host on a new map
+				Game.SetWinner(Players[Game.GetActivePlayer()]:GetTeam(), GameInfoTypes.VICTORY_REMAP);
 			end
 		end
 		if Id == g_MPVotingSystemLastId then
@@ -307,7 +321,9 @@ function UpdateAndSort(Id, iResult)
 	end
 	local proposalType = Game.GetProposalType(Id);
 	print('proposalType:', proposalType)
-	local owner = Players[Game.GetProposalOwner(Id)]:GetName()
+	-- the turn-10 remap vote has no owner (-1)
+	local ownerId = Game.GetProposalOwner(Id)
+	local owner = ownerId ~= -1 and Players[ownerId]:GetName() or nil
 	local subject = Game.GetProposalSubject(Id);
 	if subject ~= -1 then
 		subject = Players[subject]:GetName()
@@ -318,8 +334,15 @@ function UpdateAndSort(Id, iResult)
 		Controls.ProposalName:LocalizeAndSetText("TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_CC", subject)
 	elseif proposalType == 2 then  -- scrap
 		Controls.ProposalName:LocalizeAndSetText("TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_SCRAP")
+	elseif proposalType == 3 then  -- remap
+		local maxVotes = Game.GetMaxVotes(Id)
+		Controls.ProposalName:LocalizeAndSetText("TXT_KEY_MP_PROPOSAL_SCREEN_SUMMARY_REMAP", GetRemapVotesNeeded(maxVotes), maxVotes)
 	end
-	Controls.ProposalStartedBy:LocalizeAndSetText("TXT_KEY_MP_PROPOSAL_SCREEN_STARTED_BY", owner)
+	if owner ~= nil then
+		Controls.ProposalStartedBy:LocalizeAndSetText("TXT_KEY_MP_PROPOSAL_SCREEN_STARTED_BY", owner)
+	else
+		Controls.ProposalStartedBy:LocalizeAndSetText("TXT_KEY_MP_PROPOSAL_SCREEN_STARTED_AUTOMATICALLY")
+	end
 	Controls.Expiration:SetText(Game.GetElapsedGameTurns() + Game.GetProposalExpirationCounter(Id))
 	local MaxVotes = Game.GetMaxVotes(Id)
 	local YesVotes = Game.GetYesVotes(Id)

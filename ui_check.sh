@@ -29,7 +29,8 @@ for f in CultureOverview.lua CultureOverview.xml EnemyUnitPanel.lua InGame.lua J
   MPGameOptions.lua MPGameSetupScreen.xml MPTurnPanel.lua MPTurnPanel.xml CivilopediaScreen.lua \
   GameMenu.lua Demographics.lua Bombardment.lua ChoosePantheonPopup.lua ChooseReligionPopup.lua \
   ReplayViewer.lua ReplayViewer.xml ReligionOverview.lua ReligionOverview.xml EspionageOverview.lua \
-  UnitList.lua UnitList.xml Highlights.xml NetworkKickedPopup.lua KekSyncCheck.lua; do ui "$f"; done
+  UnitList.lua UnitList.xml Highlights.xml NetworkKickedPopup.lua KekSyncCheck.lua MainMenu.lua MainMenu.xml \
+  ActionInfoPanel.lua; do ui "$f"; done
 
 if has "-- destroy: check fix for need to update plot & cargo & airbase" "$E/UnitFlagManager/UnitFlagManager.lua"
 then eui UnitFlagManager.xml; eui UnitFlagManager.lua; else ui UnitFlagManager.xml; ui UnitFlagManager.lua; fi

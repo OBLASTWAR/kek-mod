@@ -17,6 +17,9 @@ local GreyFog  = 1; -- once seen
 local WhiteFog = 2; -- eyes on
 local g_DimAlpha = 0.45;
 local g_DimAirAlpha = 0.6;
+-- Lobby option: other players' flags also dim when their units are out of moves.
+-- Off by default, as in the base game, since it shows which enemy units have moved.
+local g_DimEnemyFlags = PreGame.GetGameOption( "GAMEOPTION_DIM_ENEMY_UNIT_FLAGS" ) > 0;
 
 local GarrisonOffset = Vector2( -43, -39 );
 local GarrisonOtherOffset = Vector2( -55, -34 );
@@ -1461,7 +1464,7 @@ function OnDimEvent( playerID, unitID, bDim )
         	local active_team = Players[Game.GetActivePlayer()]:GetTeam();
         	local team = Players[playerID]:GetTeam();
         	
-        	if( active_team == team )
+        	if( active_team == team or g_DimEnemyFlags )
         	then
                 --print( "  Unit dim: " .. tostring( playerID ) .. " " .. tostring( unitID ) .. " " .. iDim );
                 flag:SetDim( bDim  );
