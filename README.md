@@ -18,7 +18,7 @@ Built on [ImmoSS/Civ5-Patch](https://github.com/ImmoSS/Civ5-Patch).
 
 ### Installer (recommended)
 
-1. Download [`CivVModInstaller.exe`](https://github.com/OBLASTWAR/kek-mod/raw/main/installer/CivVModInstaller.exe).
+1. Download [`CivVModInstaller.exe`](https://github.com/OBLASTWAR/civ5-mod-installer/releases/latest/download/CivVModInstaller.exe).
 2. Run it and click **INSTALL** next to KEK Mod. Optionally install EUI from
    the same window.
 3. Start Civ V.
@@ -72,7 +72,7 @@ The installer only needs `python3`, which comes with almost every distro and
 with SteamOS. Install it with one line:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/OBLASTWAR/kek-mod/main/installer/linux/civ5-mod | python3 - install-self
+curl -fsSL https://github.com/OBLASTWAR/civ5-mod-installer/releases/latest/download/civ5-mod | python3 - install-self
 ```
 
 After that, open **Civ V Mod Installer** from your app menu or run:
