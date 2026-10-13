@@ -5,7 +5,7 @@
 #   ./install-linux.sh --tag v2.0      a specific release tag
 #   ./install-linux.sh --beta          newest release, prereleases included
 #   ./install-linux.sh --no-eui        skip EUI (vanilla UI)
-#   ./install-linux.sh --eui-zip FILE  EUI zip to install (UI_bc1 from CivFanatics)
+#   ./install-linux.sh --eui-zip FILE  EUI zip to install instead of downloading it
 #   ./install-linux.sh --civ-dir DIR   Civ V folder, if auto-detect misses it
 #
 # Linux equivalent of KekModInstaller.exe, which can't be used under Proton:
@@ -22,9 +22,9 @@
 # Script to Assets/Maps if missing -> clear the game's cache inside the
 # Proton prefix.
 #
-# EUI has no stable download URL (see installer/EuiExtra.cs), so it is never
-# fetched: an existing Assets/DLC/UI_bc1 is kept, else the zip comes from
-# --eui-zip or this checkout's installer/UI_bc1.zip.
+# EUI: an existing Assets/DLC/UI_bc1 is kept, else the zip comes from
+# --eui-zip or the latest release of OBLASTWAR/enhanced-user-interface (EUI
+# v1.28g with our fixes, see installer/EuiExtra.cs).
 #
 # Needs: bash, curl, python3.
 set -euo pipefail
@@ -38,7 +38,7 @@ TAG=""
 WANT_BETA=0
 WANT_EUI=1
 CIV_DIR=""
-EUI_ZIP="$SCRIPT_DIR/installer/UI_bc1.zip"
+EUI_ZIP=""
 while [[ $# -gt 0 ]]; do
     case "$1" in
         --tag)     TAG="${2:?--tag needs a value}"; shift 2 ;;
@@ -134,12 +134,29 @@ if [[ "$WANT_EUI" == 1 ]]; then
     if [[ -d "$DLC/UI_bc1" || -d "$DLC/UI_bc1_xits" ]]; then
         echo "[EUI] already installed, leaving it alone"
     else
-        [[ -f "$EUI_ZIP" ]] || die "EUI zip not found ($EUI_ZIP).
-  Download EUI (UI_bc1) from CivFanatics and pass --eui-zip <file>,
-  or use --no-eui for the vanilla UI."
+        EUI_TAG=""
+        if [[ -z "$EUI_ZIP" ]]; then
+            EUI_ZIP="$WORK/UI_bc1.zip"
+            echo "[EUI] downloading the latest OBLASTWAR/enhanced-user-interface release"
+            curl -fsSL -H "Accept: application/vnd.github+json" -o "$WORK/eui.json" \
+                "https://api.github.com/repos/OBLASTWAR/enhanced-user-interface/releases/latest" \
+                || die "EUI release lookup failed. Pass --eui-zip <file>, or use --no-eui for the vanilla UI."
+            read -r EUI_TAG EUI_URL < <(python3 - "$WORK/eui.json" <<'PY'
+import json, sys
+rel = json.load(open(sys.argv[1]))
+url = next((a["browser_download_url"] for a in rel.get("assets", []) if a["name"] == "UI_bc1.zip"), "")
+print(rel["tag_name"] + "\t" + url)
+PY
+)
+            [[ -n "$EUI_URL" ]] || die "EUI release $EUI_TAG has no UI_bc1.zip."
+            curl -fsSL -o "$EUI_ZIP" "$EUI_URL" || die "EUI download failed: $EUI_URL"
+        fi
+        [[ -f "$EUI_ZIP" ]] || die "EUI zip not found ($EUI_ZIP)."
         [[ "$(zip_top_dirs "$EUI_ZIP")" == UI_bc1* ]] \
             || die "$EUI_ZIP doesn't look like EUI (expected a top-level UI_bc1 folder)"
         extract_zip "$EUI_ZIP" "$DLC"
+        # Same marker civ5-mod and KekModInstaller write (see EuiExtra.cs).
+        [[ -n "$EUI_TAG" ]] && printf '%s' "$EUI_TAG" > "$DLC/UI_bc1/kekmod-eui-version.txt"
         echo "[EUI] installed -> $DLC/$(zip_top_dirs "$EUI_ZIP")"
     fi
 fi
