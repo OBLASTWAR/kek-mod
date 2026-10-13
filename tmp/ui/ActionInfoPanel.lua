@@ -40,6 +40,24 @@ local chooseFreeTechTooltipString = Locale.ConvertTextKey( "TXT_KEY_CHOOSE_FREE_
 local TurnTimerActiveTooltipString = Locale.ConvertTextKey( "TXT_KEY_TURN_TIMER_ACTIVE_TT" );
 local TurnTimerWaitingTooltipString = Locale.ConvertTextKey( "TXT_KEY_TURN_TIMER_WAITING_TT" );
 
+-- kek: trade offers from other human players that you haven't looked at yet
+-- this turn are shown before the turn ends (from lekmod). End turn reads
+-- RESPOND TO DEALS and opens the next one; each sender is shown once a
+-- turn, so after that End Turn works as usual. Not a hard block.
+local function KekText( key, fallback )
+	local text = Locale.ConvertTextKey( key );
+	if text == nil or text == "" or text == key then
+		return fallback;
+	end
+	return text;
+end
+local respondToDealsString = KekText( "TXT_KEY_KEK_RESPOND_TO_DEALS", "RESPOND TO DEALS" );
+local respondToDealsTooltipString = KekText( "TXT_KEY_KEK_RESPOND_TO_DEALS_TT",
+	"Other players have sent you trade offers you haven't looked at this turn. Click to see them." );
+local g_ReviewedDealSenders = {};
+local g_DealPromptRefreshTimer = 0;
+local g_LastDealPromptSender = -1;
+
 function SetEndTurnFlashing (iFlashingState)
 
 	local bHideEndTurnFlash    = true;
@@ -90,6 +108,33 @@ function GetPlayerByID (iPlayerID)
 	return Players[iPlayerID];
 end
 
+-- Next human player with an open trade offer to us that we haven't been
+-- shown this turn, or -1.
+local function GetNextUnreviewedDealSender()
+	local iUs = Game.GetActivePlayer();
+	if iUs == nil or iUs < 0 or iUs >= GameDefines.MAX_MAJOR_CIVS then
+		return -1;
+	end
+	for iPlayer = 0, GameDefines.MAX_MAJOR_CIVS - 1 do
+		local pPlayer = Players[iPlayer];
+		if iPlayer ~= iUs and not g_ReviewedDealSenders[iPlayer]
+			and pPlayer and pPlayer:IsHuman() and UI.ProposedDealExists( iPlayer, iUs ) then
+			return iPlayer;
+		end
+	end
+	return -1;
+end
+
+local function OpenNextPendingDeal()
+	local iSender = GetNextUnreviewedDealSender();
+	if iSender == -1 then
+		return false;
+	end
+	g_ReviewedDealSenders[iSender] = true;
+	Events.OpenPlayerDealScreenEvent( iSender );
+	return true;
+end
+
 -------------------------------------------------
 -- End Turn Button Handler
 -------------------------------------------------
@@ -107,6 +152,12 @@ function OnEndTurnClicked()
 	end
 	-- Have we already signaled that we are done?
 	if Network.HasSentNetTurnComplete() and PreGame.IsMultiplayerGame() then
+		-- kek: an offer that arrived after we ended the turn opens directly,
+		-- without taking the turn back.
+		if OpenNextPendingDeal() then
+			OnEndTurnDirty();
+			return;
+		end
 		if Network.SendTurnUnready() then
 			-- Success
 			OnEndTurnDirty();
@@ -167,6 +218,12 @@ function OnEndTurnClicked()
 	--		Game.SelectionListGameNetMessage(GameMessageTypes.GAMEMESSAGE_PUSH_MISSION, GameInfoTypes.MISSION_SKIP, pUnit:GetID(), 0, 0, false);
 	--	end	
 	else
+		-- kek: show unseen trade offers before ending the turn.
+		if UI.CanEndTurn() and OpenNextPendingDeal() then
+			OnEndTurnDirty();
+			return;
+		end
+
 		if (not UI.CanEndTurn()) then
 			print("UI thinks that we can't end turn, but the notification system disagrees");
 		end
@@ -310,6 +367,14 @@ function OnActivePlayerTurnEnd()
 end
 Events.ActivePlayerTurnEnd.Add( OnActivePlayerTurnEnd );
 
+-- kek: every open offer is shown again next turn.
+function OnDealPromptTurnStart()
+	g_ReviewedDealSenders = {};
+	g_LastDealPromptSender = -1;
+end
+Events.ActivePlayerTurnStart.Add( OnDealPromptTurnStart );
+Events.GameplaySetActivePlayer.Add( OnDealPromptTurnStart );
+
 -----------------------------------------------------
 function OnRemotePlayerTurnEnd()
 	OnEndTurnDirty(); -- The "Waiting For Players" tooltip might need to be updated.
@@ -320,8 +385,13 @@ Events.RemotePlayerTurnEnd.Add( OnRemotePlayerTurnEnd );
 function OnEndTurnDirty()
 	
 	local player = Players[Game.GetActivePlayer()];
-	if not player:IsTurnActive() or (PreGame.IsMultiplayerGame() and Network.HasSentNetTurnComplete()) or Game.IsProcessingMessages() then
+	if not player:IsTurnActive() or Game.IsProcessingMessages() then
 		setEndTurnWaiting();			
+		return;
+	end
+	-- kek: after ending the turn the button still offers a newly arrived trade offer.
+	if PreGame.IsMultiplayerGame() and Network.HasSentNetTurnComplete() and GetNextUnreviewedDealSender() == -1 then
+		setEndTurnWaiting();
 		return;
 	end
 	
@@ -486,7 +556,12 @@ function OnEndTurnDirty()
 		iFlashingState = FLASHING_END_TURN;
 	else
 		--print("None of the states match");
-		if UI.WaitingForRemotePlayers() then
+		if GetNextUnreviewedDealSender() ~= -1 then
+			strEndTurnMessage = respondToDealsString;
+			strButtonToolTip = respondToDealsTooltipString;
+			buttonDisabled = false;
+			iFlashingState = FLASHING_END_TURN;
+		elseif UI.WaitingForRemotePlayers() then
 			strEndTurnMessage = waitForPlayersString;
 			strButtonToolTip = waitForPlayersTooltipString;
 			buttonDisabled = true;
@@ -513,6 +588,23 @@ end
 Events.SerialEventEndTurnDirty.Add( OnEndTurnDirty );
 
 OnEndTurnDirty();
+
+-- kek: nothing fires when a trade offer arrives or is withdrawn, so check
+-- a few times a second and refresh the button when the next sender changes.
+function OnDealPromptUpdate( fDeltaTime )
+	g_DealPromptRefreshTimer = g_DealPromptRefreshTimer + fDeltaTime;
+	if g_DealPromptRefreshTimer < 0.25 then
+		return;
+	end
+	g_DealPromptRefreshTimer = 0;
+
+	local iSender = GetNextUnreviewedDealSender();
+	if iSender ~= g_LastDealPromptSender then
+		g_LastDealPromptSender = iSender;
+		OnEndTurnDirty();
+	end
+end
+ContextPtr:SetUpdate( OnDealPromptUpdate );
 
 -----------------------------------------------------
 function OnEndTurnBlockingChanged(ePrevEndTurnBlockingType, eNewEndTurnBlockingType)

@@ -126640,6 +126640,16 @@ The ship has weather'd every rack; the prize we sought is won."
 				KEK Mod v{1_Ver} - [COLOR_NEGATIVE_TEXT]v{2_Ver} is out, update with the KEK Mod installer[ENDCOLOR]
 			</Text>
 		</Replace>
+		<Replace Tag="TXT_KEY_KEK_RESPOND_TO_DEALS">
+			<Text>
+				RESPOND TO DEALS
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_RESPOND_TO_DEALS_TT">
+			<Text>
+				Other players have sent you trade offers you haven't looked at this turn. Click to see them.
+			</Text>
+		</Replace>
 		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UNREACHABLE">
 			<Text>
 				KEK Mod v{1_Ver} - could not check for updates
@@ -128901,6 +128911,16 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED">
 			<Text>
 				KEK Mod v{1_Ver} - [COLOR_NEGATIVE_TEXT]v{2_Ver} ist verfügbar, aktualisieren Sie mit dem KEK Mod Installer[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_RESPOND_TO_DEALS">
+			<Text>
+				AUF ANGEBOTE ANTWORTEN
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_RESPOND_TO_DEALS_TT">
+			<Text>
+				Andere Spieler haben Ihnen Handelsangebote geschickt, die Sie in dieser Runde noch nicht angesehen haben. Klicken Sie, um sie anzuzeigen.
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UNREACHABLE">
@@ -131166,6 +131186,16 @@ The ship has weather'd every rack; the prize we sought is won."
 				KEK Mod v{1_Ver} - [COLOR_NEGATIVE_TEXT]ya está disponible la v{2_Ver}, actualiza con el instalador de KEK Mod[ENDCOLOR]
 			</Text>
 		</Replace>
+		<Replace Tag="TXT_KEY_KEK_RESPOND_TO_DEALS">
+			<Text>
+				RESPONDER A OFERTAS
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_RESPOND_TO_DEALS_TT">
+			<Text>
+				Otros jugadores te han enviado ofertas comerciales que no has visto este turno. Haz clic para verlas.
+			</Text>
+		</Replace>
 		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UNREACHABLE">
 			<Text>
 				KEK Mod v{1_Ver} - no se pudieron comprobar las actualizaciones
@@ -133427,6 +133457,16 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED">
 			<Text>
 				KEK Mod v{1_Ver} - [COLOR_NEGATIVE_TEXT]la v{2_Ver} est disponible, mettez à jour avec l'installateur KEK Mod[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_RESPOND_TO_DEALS">
+			<Text>
+				RÉPONDRE AUX OFFRES
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_RESPOND_TO_DEALS_TT">
+			<Text>
+				D'autres joueurs vous ont envoyé des offres commerciales que vous n'avez pas encore vues ce tour-ci. Cliquez pour les voir.
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UNREACHABLE">
@@ -135692,6 +135732,16 @@ The ship has weather'd every rack; the prize we sought is won."
 				KEK Mod v{1_Ver} - [COLOR_NEGATIVE_TEXT]è disponibile la v{2_Ver}, aggiorna con l'installer di KEK Mod[ENDCOLOR]
 			</Text>
 		</Replace>
+		<Replace Tag="TXT_KEY_KEK_RESPOND_TO_DEALS">
+			<Text>
+				RISPONDI ALLE OFFERTE
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_RESPOND_TO_DEALS_TT">
+			<Text>
+				Altri giocatori ti hanno inviato offerte commerciali che non hai ancora visto in questo turno. Clicca per vederle.
+			</Text>
+		</Replace>
 		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UNREACHABLE">
 			<Text>
 				KEK Mod v{1_Ver} - impossibile controllare gli aggiornamenti
@@ -137953,6 +138003,16 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED">
 			<Text>
 				KEK Mod v{1_Ver} - [COLOR_NEGATIVE_TEXT]v{2_Ver}が公開されています。KEK Modインストーラーで更新してください[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_RESPOND_TO_DEALS">
+			<Text>
+				取引に応答
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_RESPOND_TO_DEALS_TT">
+			<Text>
+				他のプレイヤーから、このターンにまだ確認していない取引の提案が届いています。クリックして確認してください。
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UNREACHABLE">
@@ -140218,6 +140278,16 @@ The ship has weather'd every rack; the prize we sought is won."
 				KEK Mod v{1_Ver} - [COLOR_NEGATIVE_TEXT]v{2_Ver}이(가) 출시되었습니다. KEK Mod 설치 프로그램으로 업데이트하세요[ENDCOLOR]
 			</Text>
 		</Replace>
+		<Replace Tag="TXT_KEY_KEK_RESPOND_TO_DEALS">
+			<Text>
+				거래 제안에 응답
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_RESPOND_TO_DEALS_TT">
+			<Text>
+				다른 플레이어가 이번 턴에 아직 확인하지 않은 거래 제안을 보냈습니다. 클릭하여 확인하세요.
+			</Text>
+		</Replace>
 		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UNREACHABLE">
 			<Text>
 				KEK Mod v{1_Ver} - 업데이트를 확인할 수 없습니다
@@ -142479,6 +142549,16 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED">
 			<Text>
 				KEK Mod v{1_Ver} - [COLOR_NEGATIVE_TEXT]dostępna jest v{2_Ver}, zaktualizuj instalatorem KEK Mod[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_RESPOND_TO_DEALS">
+			<Text>
+				ODPOWIEDZ NA OFERTY
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_RESPOND_TO_DEALS_TT">
+			<Text>
+				Inni gracze wysłali Ci oferty handlowe, których nie widziałeś w tej turze. Kliknij, aby je zobaczyć.
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UNREACHABLE">
@@ -144793,6 +144873,16 @@ The ship has weather'd every rack; the prize we sought is won."
 				KEK мод v{1_Ver} - [COLOR_NEGATIVE_TEXT]доступна v{2_Ver}, обновите через установщик KEK мода[ENDCOLOR]
 			</Text>
 		</Replace>
+		<Replace Tag="TXT_KEY_KEK_RESPOND_TO_DEALS">
+			<Text>
+				ОТВЕТИТЬ НА ПРЕДЛОЖЕНИЯ
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_RESPOND_TO_DEALS_TT">
+			<Text>
+				Другие игроки отправили вам торговые предложения, которые вы ещё не смотрели в этом ходу. Нажмите, чтобы их увидеть.
+			</Text>
+		</Replace>
 		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UNREACHABLE">
 			<Text>
 				KEK мод v{1_Ver} - не удалось проверить обновления
@@ -147054,6 +147144,16 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED">
 			<Text>
 				KEK Mod v{1_Ver} - [COLOR_NEGATIVE_TEXT]v{2_Ver} 已推出，請使用 KEK Mod 安裝程式更新[ENDCOLOR]
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_RESPOND_TO_DEALS">
+			<Text>
+				回應交易提議
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_RESPOND_TO_DEALS_TT">
+			<Text>
+				其他玩家向你發送了本回合尚未查看的交易提議。點擊以查看。
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_UNREACHABLE">
