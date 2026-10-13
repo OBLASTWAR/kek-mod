@@ -325,7 +325,8 @@ function UpdateGameOptionsDisplay(bUpdateOnly)
 	Controls.TurnModePull:GetButton():LocalizeAndSetText( turnModeStr );
 	Controls.TurnModePull:GetButton():LocalizeAndSetToolTip( g_turnModeData[turnModeStr].tooltip );
 	Controls.TurnModePull:SetDisabled( not bCanEdit );
-	Controls.TurnModeRoot:SetHide(PreGame.IsHotSeatGame());	
+	-- kek: turn mode is fixed (simultaneous online, sequential hotseat, see MPGameDefaults.lua)
+	Controls.TurnModeRoot:SetHide(true);
 
 	-- Update the options panel
 	RefreshGameOptions();
@@ -1060,6 +1061,16 @@ end
 
 ----------------------------------------------------------------
 ----------------------------------------------------------------
+-- kek: game options not offered in MP lobbies. They stay at their GameOptions
+-- <Default> (off) and are still available in single player.
+g_HiddenMPGameOptions = {
+	GAMEOPTION_POLICY_SAVING = true,
+	GAMEOPTION_PROMOTION_SAVING = true,
+	GAMEOPTION_DISABLE_START_BIAS = true,
+	GAMEOPTION_NO_CITY_RAZING = true,
+	GAMEOPTION_RANDOM_PERSONALITIES = true,
+};
+
 function RefreshGameOptions()
 
 	g_GameOptionsManager:ResetInstances();
@@ -1107,7 +1118,8 @@ function RefreshGameOptions()
 		-- Don't show several of the game options because they are handled elsewhere.
 		if( option.Type ~= "GAMEOPTION_END_TURN_TIMER_ENABLED" 
 				and option.Type ~= "GAMEOPTION_SIMULTANEOUS_TURNS"
-				and option.Type ~= "GAMEOPTION_DYNAMIC_TURNS") then 
+				and option.Type ~= "GAMEOPTION_DYNAMIC_TURNS"
+				and not g_HiddenMPGameOptions[option.Type]) then 
 			local savedValue = PreGame.GetGameOption(option.Type);
 			if(savedValue ~= nil) then
 				option.Checked = savedValue == 1;
@@ -1204,25 +1216,10 @@ function RefreshGameOptions()
 	-- Set turn timer units label.
 	RefreshTurnTimerUnits();
 
+	-- kek: the DLC Allowed list is hidden; every DLC is always allowed.
 	local bCanEditDLC = CanEditDLCGameOptions();
-	---------------------------------
-	-- DLC Allowed
 	for row in GameInfo.DownloadableContent() do
-		if (row.IsBaseContentUpgrade == 0) then
-			local dlcEntries = g_DLCAllowedManager:GetInstance();
-			
-			local dlcButton = dlcEntries.GameOptionRoot:GetTextButton();
-			dlcButton:LocalizeAndSetText(row.FriendlyNameKey);
-			
-			dlcEntries.GameOptionRoot:SetCheck(PreGame.IsDLCAllowed(row.PackageID));
-			dlcEntries.GameOptionRoot:SetDisabled( not bCanEditDLC );
-			
-			dlcEntries.GameOptionRoot:RegisterCheckHandler( function(bCheck)
-																PreGame.SetDLCAllowed(row.PackageID, bCheck);
-																SendGameOptionChanged();
-															end
-														  );
-		else
+		if (row.IsBaseContentUpgrade ~= 0 or bCanEditDLC) then
 			PreGame.SetDLCAllowed(row.PackageID, true);
 		end
 	end

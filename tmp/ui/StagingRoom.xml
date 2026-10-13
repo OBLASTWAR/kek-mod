@@ -336,7 +336,7 @@
 
 
         <!-- Max Turn Check & Edit Box -->
-        <Box Anchor="L,T" Size="480,24" Offset="20,0" Color="255,255,255,0" >
+        <Box Hidden="1" Anchor="L,T" Size="480,24" Offset="20,0" Color="255,255,255,0" >
           <Stack ID="MaxTurnStack" Anchor="L,T" Size="463,32" Offset="10,0" StackGrowth="Right" Padding="8">
             <Box Anchor="L,C"  Size="32,32" Color="255,255,200,0">
               <CheckBox ButtonTexture="assets/UI/Art/Controls/CheckBox2TheBox.dds" Font="TwCenMT20" Anchor="L,C" TextAnchorSide="Right" TextOffset="40,0" String="TXT_KEY_AD_SETUP_MAX_TURNS" ToolTip="TXT_KEY_AD_SETUP_MAX_TURNS_TT" IsChecked="0" ID="MaxTurnsCheck" ConsumeMouse="1" />
@@ -371,13 +371,13 @@
         <Stack Anchor="L,T" Offset="20,0" Padding="-7" StackGrowth="Bottom" ID="GameOptionsStack" />
 
         <!-- DLC -->
-        <Box Anchor="C,T" Size="500,30" Offset="0,0" Color="White.0" >
+        <Box Hidden="1" Anchor="C,T" Size="500,30" Offset="0,0" Color="White.0" >
           <Image  Anchor="C,T"  Offset="0,0" Texture="bar500x2.dds" Size="500.1" />
           <Label  Anchor="C,B"  Offset="0,5" String="TXT_KEY_DLC_ALLOWED" Font="TwCenMT20" />
           <Image  Anchor="C,B"  Offset="0,0" Texture="bar500x2.dds" Size="500.1" />
         </Box>
 
-        <Stack Anchor="L,T" Offset="20,0" Padding="-7" StackGrowth="Bottom" ID="DLCAllowedStack" />
+        <Stack Anchor="L,T" Offset="20,0" Padding="-7" StackGrowth="Bottom" ID="DLCAllowedStack" Hidden="1" />
 
         <!-- Mods -->
         <Stack Anchor="L,T" Offset="0,12"   Size="128,128" StackGrowth="Bottom" Padding="3" Hidden="1">
