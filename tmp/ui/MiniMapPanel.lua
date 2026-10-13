@@ -114,7 +114,7 @@ function OnVictoryScreenOpen()
 		endgametype = EndGameTypes.Culture;
 	elseif victory == GameInfoTypes.VICTORY_DIPLOMATIC then
 		endgametype = EndGameTypes.Diplomatic;
-	elseif victory == GameInfoTypes.VICTORY_SCRAP then
+	elseif victory == GameInfoTypes.VICTORY_SCRAP or victory == GameInfoTypes.VICTORY_REMAP then
 		endgametype = 11;
 	end
 	Events.EndGameShow( endgametype, -2 );

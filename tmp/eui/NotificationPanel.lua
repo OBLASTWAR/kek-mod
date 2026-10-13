@@ -328,6 +328,7 @@ for k, v, w in ([[
 	NOTIFICATION_MP_IRR_PROPOSAL		MPVotingSystemProposal
 	NOTIFICATION_MP_CC_PROPOSAL		MPVotingSystemProposal
 	NOTIFICATION_MP_SCRAP_PROPOSAL		MPVotingSystemProposal
+	NOTIFICATION_MP_REMAP_PROPOSAL		MPVotingSystemProposal
 	NOTIFICATION_MP_PROPOSAL_RESULT		MPVotingSystemResult
 ]]):gmatch("(%S+)[^%S\n\r]*(%S*)[^%S\n\r]*(%S*)[^\n\r]*") do
 	local n = NotificationTypes[k]
@@ -464,6 +465,7 @@ local function SetupNotification( instance, sequence, Id, type, toolTip, strSumm
 		elseif type == NotificationTypes.NOTIFICATION_MP_IRR_PROPOSAL
 			or type == NotificationTypes.NOTIFICATION_MP_CC_PROPOSAL
 			or type == NotificationTypes.NOTIFICATION_MP_SCRAP_PROPOSAL
+			or type == NotificationTypes.NOTIFICATION_MP_REMAP_PROPOSAL
 			then
 			print('irr/cc/scrap notification setup')
 			print('icon hookup for proposal owner:', iGameValue)
@@ -475,6 +477,8 @@ local function SetupNotification( instance, sequence, Id, type, toolTip, strSumm
 				instance.StatusFrame:SetText('[ICON_TROPHY_GOLD]')
 			elseif type == NotificationTypes.NOTIFICATION_MP_SCRAP_PROPOSAL then
 				instance.StatusFrame:SetText('[ICON_FLOWER]')
+			elseif type == NotificationTypes.NOTIFICATION_MP_REMAP_PROPOSAL then
+				instance.StatusFrame:SetText('[ICON_INTERNATIONAL_TRADE]')
 			end
 			-- debug only
 			--instance.StatusFrame:SetText(Id .. '|' .. Game.GetProposalIDbyUIid(Id) .. '/' .. Game.GetLastProposalID())

@@ -193,6 +193,9 @@ function OnDisplay( type, team )
 		if( Game.GetVictory() == GameInfoTypes.VICTORY_SCRAP ) then
 	    	Controls.EndGameText:SetText( Locale.ConvertTextKey( "TXT_KEY_VICTORY_FLAVOR_SCRAP" ) );
 	    	victoryType = "VICTORY_SCRAP";
+		elseif( Game.GetVictory() == GameInfoTypes.VICTORY_REMAP ) then
+	    	Controls.EndGameText:SetText( Locale.ConvertTextKey( "TXT_KEY_VICTORY_FLAVOR_REMAP" ) );
+	    	victoryType = "VICTORY_REMAP";
 		end
 		
 		if(victoryType ~= nil and PreGame.GetGameOption("GAMEOPTION_NO_EXTENDED_PLAY") ~= 1)then

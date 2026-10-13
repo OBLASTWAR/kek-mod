@@ -1316,6 +1316,7 @@ enum MPVotingSystemProposalTypes
 	PROPOSAL_IRR,
 	PROPOSAL_CC,
 	PROPOSAL_SCRAP,
+	PROPOSAL_REMAP,  // kekmod 2.2: called automatically at the start of REMAP_VOTE_TURN, no owner
 
 	NUM_PROPOSAL_TYPES
 };
@@ -1384,6 +1385,7 @@ public:
 	int GetMaxVotes(int iProposalID);
 	bool IsPlayerHasActiveProposal(PlayerTypes ePlayerID);
 	bool IsAnyActiveProposalType(MPVotingSystemProposalTypes eType);
+	bool IsAnyProposalType(MPVotingSystemProposalTypes eType);
 	bool IsProposalTypeOnCooldown(MPVotingSystemProposalTypes eType, PlayerTypes ePlayerID);
 	bool IsProposalTypeAvailable(MPVotingSystemProposalTypes eType);
 
@@ -1405,9 +1407,12 @@ private:
 	const static int IRR_THRESHOLD_TIMES_100 = 80;  // 80% of total support is enough for irr. 100% during tournament competition. 
 	const static int MAX_ACTIVE_RESOLUTIONS = MAX_MAJOR_CIVS + 2;  // 1 irr x players, 1 cc and 1 scrap
 	const static int PROPOSAL_COOLDOWN = 10;
+	const static int REMAP_VOTE_TURN = 10;
 
 	void DoCheckVoters(int iProposalID);
 	void DoUpdateProposalStatus(int iProposalID);
+	void AddProposalNotification(int iProposalID);
+	void AddResultNotification(int iProposalID);
 };
 
 

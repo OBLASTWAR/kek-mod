@@ -563,6 +563,7 @@ bool CvNotifications::MayUserDismiss(int iLookupIndex)
 			case NOTIFICATION_MP_IRR_PROPOSAL:
 			case NOTIFICATION_MP_CC_PROPOSAL:
 			case NOTIFICATION_MP_SCRAP_PROPOSAL:
+			case NOTIFICATION_MP_REMAP_PROPOSAL:
 #endif
 				return false;
 				break;
@@ -747,12 +748,13 @@ bool CvNotifications::GetEndTurnBlockedType(EndTurnBlockingTypes& eBlockingType,
 				break;
 
 #ifdef MP_PLAYERS_VOTING_SYSTEM
-			// kekmod 2.2: an IRR/CC/SCRAP proposal blocks the end of turn until this
+			// kekmod 2.2: an IRR/CC/SCRAP/REMAP proposal blocks the end of turn until this
 			// player has voted on it. Owner (auto-yes) and CC subject (ineligible) aren't
 			// blocked; stale notifications from earlier turns don't resolve to a proposal.
 			case NOTIFICATION_MP_IRR_PROPOSAL:
 			case NOTIFICATION_MP_CC_PROPOSAL:
 			case NOTIFICATION_MP_SCRAP_PROPOSAL:
+			case NOTIFICATION_MP_REMAP_PROPOSAL:
 			{
 				CvMPVotingSystem* pkMPVotingSystem = GC.getGame().GetMPVotingSystem();
 				int iProposalID = (pkMPVotingSystem && m_ePlayer < MAX_MAJOR_CIVS) ? pkMPVotingSystem->GetProposalIDbyUIid(m_aNotifications[iIndex].m_iLookupIndex) : -1;
@@ -1139,15 +1141,20 @@ void CvNotifications::Activate(Notification& notification)
 	case NOTIFICATION_MP_IRR_PROPOSAL:
 	case NOTIFICATION_MP_CC_PROPOSAL:
 	case NOTIFICATION_MP_SCRAP_PROPOSAL:
+	case NOTIFICATION_MP_REMAP_PROPOSAL:
 	case NOTIFICATION_MP_PROPOSAL_RESULT:
-		CvAssertMsg(notification.m_iGameDataIndex >= 0, "notification.m_iGameDataIndex is out of bounds");
-		if (notification.m_iGameDataIndex >= 0)
+		// kekmod 2.2: m_iGameDataIndex is the proposal owner, which is NO_PLAYER for
+		// the turn-10 remap vote, so resolve the proposal from the lookup index instead.
 		{
 			CvMPVotingSystem* pkMPVotingSystem = GC.getGame().GetMPVotingSystem();
 			int iUI_id = notification.m_iLookupIndex;
-			int iStatus = (int)pkMPVotingSystem->GetProposalStatus(pkMPVotingSystem->GetProposalIDbyUIid(iUI_id));
-			CvPopupInfo kPopup(BUTTONPOPUP_MODDER_0, iUI_id, iStatus);
-			GC.GetEngineUserInterface()->AddPopup(kPopup);
+			int iProposalID = pkMPVotingSystem->GetProposalIDbyUIid(iUI_id);
+			if (iProposalID != -1)
+			{
+				int iStatus = (int)pkMPVotingSystem->GetProposalStatus(iProposalID);
+				CvPopupInfo kPopup(BUTTONPOPUP_MODDER_0, iUI_id, iStatus);
+				GC.GetEngineUserInterface()->AddPopup(kPopup);
+			}
 		}
 		break;
 #endif
