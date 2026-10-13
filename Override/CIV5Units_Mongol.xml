@@ -125234,6 +125234,16 @@ The ship has weather'd every rack; the prize we sought is won."
 				No private messages.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS"> 
+			<Text>
+				Dim Enemy Unit Flags
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS_HELP"> 
+			<Text>
+				Other players' unit flags dim when their units are out of moves, just like your own. When off, only your own team's flags dim, as in the base game.
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_OXFORD_UNIVERSITY"> 
 			<Text>
 				Ban Oxford University
@@ -128262,6 +128272,16 @@ The ship has weather'd every rack; the prize we sought is won."
 				No private messages.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS"> 
+			<Text>
+				Gegnerische Einheitenflaggen abdunkeln
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS_HELP"> 
+			<Text>
+				Die Einheitenflaggen anderer Spieler werden abgedunkelt, wenn deren Einheiten keine Bewegungspunkte mehr haben, genau wie Ihre eigenen. Wenn deaktiviert, werden nur die Flaggen Ihres eigenen Teams abgedunkelt, wie im Grundspiel.
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_OXFORD_UNIVERSITY"> 
 			<Text>
 				Ban Oxford University
@@ -130633,6 +130653,16 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_CHAT_HELP"> 
 			<Text>
 				No private messages.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS"> 
+			<Text>
+				Atenuar banderas de unidades enemigas
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS_HELP"> 
+			<Text>
+				Las banderas de las unidades de otros jugadores se atenúan cuando sus unidades no tienen movimientos, igual que las tuyas. Si está desactivado, solo se atenúan las banderas de tu equipo, como en el juego base.
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_OXFORD_UNIVERSITY"> 
@@ -133008,6 +133038,16 @@ The ship has weather'd every rack; the prize we sought is won."
 				No private messages.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS"> 
+			<Text>
+				Assombrir les drapeaux des unités ennemies
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS_HELP"> 
+			<Text>
+				Les drapeaux des unités des autres joueurs s'assombrissent quand leurs unités n'ont plus de mouvements, comme les vôtres. Désactivé : seuls les drapeaux de votre équipe s'assombrissent, comme dans le jeu de base.
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_OXFORD_UNIVERSITY"> 
 			<Text>
 				Ban Oxford University
@@ -135379,6 +135419,16 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_CHAT_HELP"> 
 			<Text>
 				No private messages.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS"> 
+			<Text>
+				Oscura le bandiere delle unità nemiche
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS_HELP"> 
+			<Text>
+				Le bandiere delle unità degli altri giocatori si oscurano quando le loro unità hanno esaurito i movimenti, come le tue. Se disattivato, si oscurano solo le bandiere della tua squadra, come nel gioco base.
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_OXFORD_UNIVERSITY"> 
@@ -137754,6 +137804,16 @@ The ship has weather'd every rack; the prize we sought is won."
 				No private messages.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS"> 
+			<Text>
+				敵ユニットのフラグを暗くする
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS_HELP"> 
+			<Text>
+				他のプレイヤーのユニットが移動力を使い切ると、自分のユニットと同様にそのフラグが暗くなります。オフの場合は、基本ゲームと同様に自チームのフラグのみが暗くなります。
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_OXFORD_UNIVERSITY"> 
 			<Text>
 				Ban Oxford University
@@ -140127,6 +140187,16 @@ The ship has weather'd every rack; the prize we sought is won."
 				No private messages.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS"> 
+			<Text>
+				적 유닛 깃발 어둡게 표시
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS_HELP"> 
+			<Text>
+				다른 플레이어의 유닛이 이동력을 모두 사용하면 내 유닛처럼 깃발이 어둡게 표시됩니다. 끄면 기본 게임처럼 내 팀의 깃발만 어둡게 표시됩니다.
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_OXFORD_UNIVERSITY"> 
 			<Text>
 				Ban Oxford University
@@ -142498,6 +142568,16 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_CHAT_HELP"> 
 			<Text>
 				No private messages.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS"> 
+			<Text>
+				Przyciemniaj flagi wrogich jednostek
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS_HELP"> 
+			<Text>
+				Flagi jednostek innych graczy są przyciemniane, gdy ich jednostki nie mają już ruchów, tak jak Twoje. Gdy wyłączone, przyciemniane są tylko flagi Twojej drużyny, jak w podstawowej grze.
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_OXFORD_UNIVERSITY"> 
@@ -144907,6 +144987,16 @@ The ship has weather'd every rack; the prize we sought is won."
 				Личные сообщения отключены.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS"> 
+			<Text>
+				Затемнять флаги вражеских юнитов
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS_HELP"> 
+			<Text>
+				Флаги юнитов других игроков затемняются, когда у этих юнитов не осталось очков передвижения, как и ваши. Если выключено, затемняются только флаги вашей команды, как в базовой игре.
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_OXFORD_UNIVERSITY"> 
 			<Text>
 				Запретить постройку Оксфордского Университета
@@ -147293,6 +147383,16 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_CHAT_HELP"> 
 			<Text>
 				No private messages.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS"> 
+			<Text>
+				淡化敵方單位旗幟
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS_HELP"> 
+			<Text>
+				其他玩家的單位用完移動力時，其旗幟會像你自己的一樣變暗。關閉時，只有你自己隊伍的旗幟會變暗，與原版遊戲相同。
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_OXFORD_UNIVERSITY"> 

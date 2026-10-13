@@ -79,6 +79,10 @@ local g_activeTeamID = Game.GetActiveTeam()
 local g_activePlayer = Players[ g_activePlayerID ]
 local g_activeTeam = Teams[ g_activeTeamID ]
 
+-- Lobby option: other players' flags also dim when their units are out of moves.
+-- Off by default, as in the base game, since it shows which enemy units have moved.
+local g_dimEnemyFlags = PreGame.GetGameOption( "GAMEOPTION_DIM_ENEMY_UNIT_FLAGS" ) > 0
+
 local g_colorGreen = Color( 0, 1, 0, 1 )
 local g_colorYellow = Color( 1, 1, 0, 1 )
 local g_colorRed = Color( 1, 0, 0, 1 )
@@ -215,7 +219,9 @@ local function UpdatePlotFlags( plot )
 		for i = 0, GetPlotNumUnits( plot ) - 1 do
 			unit = GetPlotUnit( plot, i )
 			flag = g_UnitFlags[ unit:GetOwner() ][ unit:GetID() ]
-			if flag and flag.m_Plot then
+			-- Units the active team can't see (e.g. submarines) take no place in the stack,
+			-- otherwise the gap they leave gives them away.
+			if flag and flag.m_Plot and not unit:IsInvisible( g_activeTeamID, true ) then
 				if unit:IsCargo() then
 					table_insert( aflags, flag )
 				elseif flag.m_IsAirCraft then
@@ -258,7 +264,7 @@ local function UpdatePlotFlags( plot )
 			unit = GetPlotUnit( plot, i )
 			flag = g_UnitFlags[ unit:GetOwner() ][ unit:GetID() ]
 			-- DebugFlag( flag,"candidate is aircraft?", flag and flag.m_IsAirCraft ) end
-			if flag and flag.m_Plot then
+			if flag and flag.m_Plot and not unit:IsInvisible( g_activeTeamID, true ) then
 				if unit:IsCargo() then
 					table_insert( aflags, flag )
 				elseif flag.m_IsAirCraft then
@@ -356,7 +362,7 @@ local function UpdatePlotFlags( plot )
 		if #transportnits > 0 then
 			for i = 1, #transportnits do
 				local transportUnit = transportnits[i].m_Player:GetUnitByID( transportnits[i].m_UnitID )
-				local cargo = transportUnit:GetCargo()
+				local cargo = transportUnit and transportUnit:GetCargo() or 0
 				if cargo > 0 then
 					local x, y
 					local transportFlag = g_UnitFlags[ transportUnit:GetOwner() ][ transportUnit:GetID() ]
@@ -465,27 +471,61 @@ local function SetFlagSelected( flag, isSelected )
 end--SetFlagSelected
 
 --==========================================================
+-- Units are looked up by ID instead of keeping the unit object on the
+-- flag. A unit can be deleted while its flag still exists (events arrive
+-- late, e.g. during MP turn processing), and calling into a deleted unit's
+-- object crashes the game. Nil when the unit is gone.
+local function GetFlagUnit( flag )
+	local player = Players[ flag.m_PlayerID ]
+	return player and player:GetUnitByID( flag.m_UnitID )
+end
+
+--==========================================================
+-- Tooltip for a carrier's cargo count: the names of the units aboard.
+local function SetCargoTip( carrierFlag, transportUnit )
+	local plot = transportUnit:GetPlot()
+	local names = {}
+	if plot then
+		for i = 0, GetPlotNumUnits( plot ) - 1 do
+			local cargoUnit = GetPlotUnit( plot, i )
+			if cargoUnit:GetTransportUnit() == transportUnit then
+				table_insert( names, Locale.ConvertTextKey( cargoUnit:GetNameKey() ) )
+			end
+		end
+	end
+	carrierFlag.Cargo:SetToolTipString( table.concat( names, "[NEWLINE]" ) )
+end
+
+--==========================================================
 local function FinishMove( flag )
 	-- DebugFlag( flag, "FinishMove" ) end
 	-- Have we changed carrier ?
-	local unit = flag.m_Unit
+	local unit = GetFlagUnit( flag )
+	if not unit then
+		return
+	end
 	local transportUnit = unit:GetTransportUnit()
 	if flag.m_TransportUnit ~= transportUnit then
 		if flag.m_TransportUnit then
-			local oldCarrier = g_UnitFlags[ flag.m_TransportUnit:GetOwner() ][ flag.m_TransportUnit:GetID() ]
-			if oldCarrier then
-				local cargo = oldCarrier.m_Unit:GetCargo()
+			local oldCarrier = g_UnitFlags[ flag.m_TransportOwner ][ flag.m_TransportID ]
+			local oldCarrierUnit = oldCarrier and GetFlagUnit( oldCarrier )
+			if oldCarrierUnit then
+				local cargo = oldCarrierUnit:GetCargo()
 				oldCarrier.CargoBG:SetHide( cargo < 1 )
 				oldCarrier.Cargo:SetText( cargo )
+				SetCargoTip( oldCarrier, oldCarrierUnit )
 			end
 		end
 		flag.m_TransportUnit = transportUnit
+		flag.m_TransportOwner = transportUnit and transportUnit:GetOwner()
+		flag.m_TransportID = transportUnit and transportUnit:GetID()
 		if transportUnit then
 			local newCarrier = g_UnitFlags[ transportUnit:GetOwner() ][ transportUnit:GetID() ]
 			if newCarrier then
 				local cargo = transportUnit:GetCargo()
 				newCarrier.CargoBG:SetHide( cargo < 1 )
 				newCarrier.Cargo:SetText( cargo )
+				SetCargoTip( newCarrier, transportUnit )
 			end
 		end
 	end
@@ -509,7 +549,10 @@ end
 local function UpdateFlagType( flag )
 	-- DebugFlag( flag, "UpdateFlagType" ) end
 
-	local unit = flag.m_Unit
+	local unit = GetFlagUnit( flag )
+	if not unit then
+		return
+	end
 	local textureName, maskName
 
 	if unit:IsEmbarked() then
@@ -640,7 +683,6 @@ local function CreateNewFlag( playerID, unitID, isSelected, isHiddenByFog, isInv
 		flag.m_MaxHitPoints = unit:GetMaxHitPoints()
 		flag.m_Player = player
 		flag.m_PlayerID = playerID
-		flag.m_Unit = unit
 		flag.m_UnitID = unitID
 
 		---------------------------------------------------------
@@ -664,11 +706,12 @@ local function CreateNewFlag( playerID, unitID, isSelected, isHiddenByFog, isInv
 		local cargo = unit:GetCargo()
 		flag.CargoBG:SetHide( cargo < 1 )
 		flag.Cargo:SetText( cargo )
+		SetCargoTip( flag, unit )
 
 		---------------------------------------------------------
 		-- update all other info
 		flag.Anchor:SetHide( isHiddenByFog or isInvisibleToActiveTeam )
-		flag.FlagShadow:SetAlpha( unit:CanMove() and 1 or 0.5 )
+		flag.FlagShadow:SetAlpha( ( unit:CanMove() or not ( g_dimEnemyFlags or g_activeTeamID == teamID ) ) and 1 or 0.5 )
 		flag.Button:SetDisabled( g_activeTeamID ~= teamID )
 		flag.Button:SetConsumeMouseOver( g_activeTeamID == teamID )
 		UpdateFlagType( flag )
@@ -732,7 +775,8 @@ function( playerID, unitID, unitPosition )
 			if UnitMoving( playerID, unitID ) then
 				flag.m_Plot = nil
 			end
-			local targetPlot = flag.m_Unit:GetPlot()
+			local unit = GetFlagUnit( flag )
+			local targetPlot = unit and unit:GetPlot()
 			if targetPlot ~= plot then
 				UpdatePlotFlags( plot )
 				-- DebugFlag( flag, "starting to move: setting flag offset to", 0, 0 ) end
@@ -787,7 +831,7 @@ function( playerID, unitID, isVisible, checkFlag )--, blendTime )
 		local flag = g_UnitFlags[ playerID ][ unitID ]
 		if flag then
 			flag.m_IsInvisibleToActiveTeam = not isVisible
-			flag.Anchor:SetHide( not isVisible or flag.m_IsInvisibleToActiveTeamm_IsHiddenByFog )
+			flag.Anchor:SetHide( not isVisible or flag.m_IsHiddenByFog )
 		end
 	end
 end)
@@ -900,10 +944,8 @@ function( playerID, unitID, isDimmed )
 	-- DebugUnit( playerID, unitID, "UnitShouldDimFlag, isDimmed=", isDimmed ) end
 	local flag = g_UnitFlags[ playerID ][ unitID ]
 	if flag then
-	local active_team = Game.GetActiveTeam();
-	local team = Players[playerID]:GetTeam();
-	local isActiveTeam = (active_team == team);
-		flag.FlagShadow:SetAlpha( (isDimmed and isActiveTeam) and 0.5 or 1.0 )
+		local isShown = g_dimEnemyFlags or Players[ playerID ]:GetTeam() == g_activeTeamID
+		flag.FlagShadow:SetAlpha( isDimmed and isShown and 0.5 or 1.0 )
 	else
 		-- DebugUnit( playerID, unitID, "flag not found for UnitShouldDimFlag" ) end
 	end

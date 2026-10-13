@@ -92102,6 +92102,16 @@
 			<SupportsSinglePlayer>false</SupportsSinglePlayer> 
 			<SupportsMultiplayer>true</SupportsMultiplayer> 
 		</Row>
+		<Row> 
+			<ID>59</ID> 
+			<Type>GAMEOPTION_DIM_ENEMY_UNIT_FLAGS</Type> 
+			<Description>TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS</Description> 
+			<Help>TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS_HELP</Help> 
+			<Default>false</Default> 
+			<Visible>true</Visible> 
+			<SupportsSinglePlayer>true</SupportsSinglePlayer> 
+			<SupportsMultiplayer>true</SupportsMultiplayer> 
+		</Row>
 	</GameOptions> 
 
 	<Table name="GameSpeed_Turns">
