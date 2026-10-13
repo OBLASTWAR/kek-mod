@@ -232,6 +232,8 @@ void CvGame::init(HandicapTypes eHandicap)
 		setOption(GAMEOPTION_SIMULTANEOUS_TURNS, false);
 		setOption(GAMEOPTION_DYNAMIC_TURNS, false);
 		setOption(GAMEOPTION_PITBOSS, false);
+		// kek: the turn timer is MP-only and has no toggle in the single player setup screen
+		setOption(GAMEOPTION_END_TURN_TIMER_ENABLED, false);
 	}
 
 	// If this is a hot seat game, simultaneous turns is always off
