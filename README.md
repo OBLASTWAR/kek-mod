@@ -18,7 +18,7 @@ Built on [ImmoSS/Civ5-Patch](https://github.com/ImmoSS/Civ5-Patch).
 
 ### Installer (recommended)
 
-1. Download [`KekModInstaller.exe`](https://github.com/OBLASTWAR/kek-mod/raw/main/installer/KekModInstaller.exe).
+1. Download [`CivVModInstaller.exe`](https://github.com/OBLASTWAR/kek-mod/raw/main/installer/CivVModInstaller.exe).
 2. Run it and click **INSTALL** next to KEK Mod. Optionally install EUI from
    the same window.
 3. Start Civ V.
