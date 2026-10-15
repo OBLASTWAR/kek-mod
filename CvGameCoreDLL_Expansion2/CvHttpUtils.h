@@ -19,9 +19,10 @@
 const char* CvHttp_GetModVersion();
 
 // Call from the CvGame.cpp end-of-turn auto-save hook (game thread).
-// Applies the single-uploader rule (local player == first alive human),
-// dedups against the last uploaded save, builds the schema-v1 turn JSON,
-// then POSTs save + JSON on a background thread.
+// Every client spools and uploads its own copy of the fresh autosave (or
+// reports why it has none). The turn JSON keeps the single-uploader rule
+// (local player == first alive human). Network I/O runs on background
+// threads.
 void CvHttp_OnTurnAutoSave();
 
 // One popped ancient ruin (goody hut) with the ACTUAL resolved benefit --
@@ -104,9 +105,9 @@ bool CvHttp_PostCrashDump(const char* pszDumpPath, const char* pszKind,
 
 // Call from CvGame::setWinner (game thread). Game end never gets another
 // end-of-turn autosave, so the deciding vote result / final state would be
-// lost; this builds and POSTs the turn JSON immediately (JSON only -- no
-// save accompanies it). Applies the same single-uploader gate as the
-// auto-save hook.
+// lost; this autosaves and uploads the final save from every client, and
+// builds and POSTs the turn JSON immediately (single-uploader gate, as in
+// the auto-save hook).
 void CvHttp_OnGameEnd();
 
 // Call from CvMPVotingSystem::SetProposalCompletion (game thread) whenever a
