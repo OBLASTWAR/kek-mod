@@ -1661,7 +1661,7 @@ void CvGame::CheckPlayerTurnDeactivate()
 						if (iI == iFirstAlivePlayer)  // save just before first player deactivation
 						{
 							gDLL->AutoSave(false, true);
-							CvHttp_OnTurnAutoSave();   // kekmod 1.5: upload save + turn JSON (single-uploader gated)
+							CvHttp_OnTurnAutoSave();   // kekmod: every client uploads its save; turn JSON single-uploader
 						}
 #endif
 						kPlayer.setTurnActive(false);
