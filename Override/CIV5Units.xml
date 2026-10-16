@@ -219634,6 +219634,11 @@
 			<Type>REPLAYEVENT_YieldChanged</Type> 
 			<Description>YieldChanged</Description> 
 		</Row> 
+		<Row> 
+			<ID>110</ID> 
+			<Type>REPLAYEVENT_CityAcquired</Type> 
+			<Description>CityAcquired</Description> 
+		</Row> 
 	</ReplayEvents>
 	<Table name="ReplayEventCategories">
 		<Column name="ID" type="integer" primarykey="true" autoincrement="true" />
