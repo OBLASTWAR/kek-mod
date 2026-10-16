@@ -44,6 +44,31 @@ ContextPtr:SetUpdate( Update );
 
 
 -----------------------------------------------------------------------
+-- KEK: the engine sends spurious "hide" events for tiles that are
+-- still on screen (panning, map wrap, zoom), which made yield icons
+-- vanish. Hides are only obeyed when yield icons are off or in
+-- strategic view; ignored ones are re-checked next frame, in case the
+-- yield option changes just after the engine sends its hides.
+-----------------------------------------------------------------------
+local g_IgnoredHides = {};
+local g_IsIgnoredHideCheckQueued = false;
+
+function IsHideWanted()
+	return not OptionsManager.GetYieldOn() or InStrategicView();
+end
+
+function CheckIgnoredHides()
+	ContextPtr:ClearUpdate();
+	g_IsIgnoredHideCheckQueued = false;
+	if( IsHideWanted() ) then
+		for index in pairs( g_IgnoredHides ) do
+			DestroyYield( index );
+		end
+	end
+	g_IgnoredHides = {};
+end
+
+-----------------------------------------------------------------------
 -----------------------------------------------------------------------
 function ShowHexYield( x, y, bShow )
 
@@ -51,13 +76,17 @@ function ShowHexYield( x, y, bShow )
     if( plot ~= nil ) then
 		local index = plot:GetPlotIndex();
 		if( bShow ) then
+			g_IgnoredHides[ index ] = nil;
 			DestroyYield( index );
 			BuildYield( x, y, index );
-		elseif( not OptionsManager.GetYieldOn() ) then
-			-- KEK: the engine sends spurious hides for visible tiles while panning, zooming
-			-- and wrapping, so icons vanished. Only honour a hide when yield icons are off
-			-- (toggled off, or the temporary worker/settler/city view display ending).
+		elseif( IsHideWanted() ) then
 			DestroyYield( index );
+		else
+			g_IgnoredHides[ index ] = true;
+			if( not g_IsIgnoredHideCheckQueued ) then
+				g_IsIgnoredHideCheckQueued = true;
+				ContextPtr:SetUpdate( CheckIgnoredHides );
+			end
 		end
 	end
  

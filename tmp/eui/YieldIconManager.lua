@@ -109,6 +109,41 @@ local function RecycleAnchorYields( anchor )
 end
 
 ------------------------------------------------------------------
+-- KEK: the engine sends spurious "hide" events for tiles that are
+-- still on screen (panning, map wrap, zoom), which made yield icons
+-- vanish. Hides are only obeyed when yield icons are off or in
+-- strategic view; ignored ones are re-checked next frame, in case the
+-- yield option changes just after the engine sends its hides.
+------------------------------------------------------------------
+local OptionsManager_GetYieldOn = OptionsManager.GetYieldOn
+local InStrategicView = InStrategicView
+local g_IgnoredHides = {}
+local g_IsIgnoredHideCheckQueued = false
+
+local function IsHideWanted()
+	return not OptionsManager_GetYieldOn() or InStrategicView()
+end
+
+local function HideAnchor( anchor )
+	anchor.Anchor:ChangeParent( Controls_Scrap )
+	anchor.IsVisible = false
+end
+
+local function CheckIgnoredHides()
+	ContextPtr:ClearUpdate()
+	g_IsIgnoredHideCheckQueued = false
+	if IsHideWanted() then
+		for index in pairs( g_IgnoredHides ) do
+			local anchor = g_ActiveAnchors[ index ]
+			if anchor then
+				HideAnchor( anchor )
+			end
+		end
+	end
+	g_IgnoredHides = {}
+end
+
+------------------------------------------------------------------
 -- Plot Yield Show / Hide
 ------------------------------------------------------------------
 Events.ShowHexYield.Add(
@@ -140,14 +175,20 @@ function( x, y, isShown )
 				BuildAnchorYields( plot, anchor )
 			end
 			anchor.IsVisible = true
+			g_IgnoredHides[ index ] = nil
 
-		elseif anchor and not OptionsManager.GetYieldOn() then
-			-- KEK: the engine sends spurious hides for visible tiles while panning, zooming
-			-- and wrapping, so icons vanished. Only honour a hide when yield icons are off
-			-- (toggled off, or the temporary worker/settler/city view display ending).
-			-- just hide it
-			anchor.Anchor:ChangeParent( Controls_Scrap )
-			anchor.IsVisible = false
+		elseif anchor then
+			-- KEK: only hide when yield icons are off (see above)
+			if IsHideWanted() then
+				-- just hide it
+				HideAnchor( anchor )
+			else
+				g_IgnoredHides[ index ] = true
+				if not g_IsIgnoredHideCheckQueued then
+					g_IsIgnoredHideCheckQueued = true
+					ContextPtr:SetUpdate( CheckIgnoredHides )
+				end
+			end
 		end
 	end
 
