@@ -259,6 +259,14 @@ IF EXIST "%cd%\%euifolder%\Improvements\WorldView.lua" (
   ECHO F | xcopy /s /y "%cd%\%patchfolder%\tmp\ui\WorldView.lua" "%cd%\%patchfolder%\UI\WorldView.lua"
 )
 REM -------------------------------------------------
+IF EXIST "%cd%\%euifolder%\Improvements\YieldIconManager.lua" (
+  ECHO YieldIconManager.lua: EUI version detected
+  ECHO F | xcopy /s /y "%cd%\%patchfolder%\tmp\eui\YieldIconManager.lua" "%cd%\%patchfolder%\UI\YieldIconManager.lua"
+) ELSE (
+  ECHO YieldIconManager.lua: no EUI, copying vanilla UI version
+  ECHO F | xcopy /s /y "%cd%\%patchfolder%\tmp\ui\YieldIconManager.lua" "%cd%\%patchfolder%\UI\YieldIconManager.lua"
+)
+REM -------------------------------------------------
 IF EXIST "%cd%\%euifolder%\TopPanel\TopPanel.xml" (
   ECHO TopPanel.xml: EUI version detected
   ECHO F | xcopy /s /y "%cd%\%patchfolder%\tmp\eui\TopPanel.xml" "%cd%\%patchfolder%\UI\TopPanel.xml"
