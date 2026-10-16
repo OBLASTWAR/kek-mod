@@ -479,6 +479,7 @@ static const char* const s_apszReplayEventTypeTokens[] =
     "REPLAYEVENT_RouteChanged",
     "REPLAYEVENT_TileOwnerChanged",
     "REPLAYEVENT_YieldChanged",
+    "REPLAYEVENT_CityAcquired",
 };
 #define KEKMOD_NUM_REPLAY_EVENT_TOKENS \
     (sizeof(s_apszReplayEventTypeTokens) / sizeof(s_apszReplayEventTypeTokens[0]))
@@ -2568,6 +2569,9 @@ void CvHttp_OnGameEnd()
     {
         char szGuid[40];
         FormatMapGuid(szGuid, sizeof(szGuid));
+#ifdef KEK_SAVE_DATA
+        GC.getGame().recordKekReplayData();
+#endif
         gDLL->AutoSave(false, true);
         CaptureTurnSave(entry.iTurn, szGuid, eActive, true);
     }

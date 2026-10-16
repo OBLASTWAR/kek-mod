@@ -472,6 +472,9 @@ public:
 	void clearReplayEventMap();
 	void addReplayEvent(int eType, std::vector<int> vNumArgs, CvString strArg = "");
 	void addReplayEvent(int eType, PlayerTypes ePlayer, std::vector<int> vNumArgs, CvString strArg = "");
+#ifdef KEK_SAVE_DATA
+	void recordKekReplayData();
+#endif
 	uint getNumReplayEvents() const;
 	const CvReplayEvent* getReplayEvent(uint i) const;
 #endif
@@ -977,6 +980,11 @@ enum ReplayEventTypes
 	REPLAYEVENT_RouteChanged,
 	REPLAYEVENT_TileOwnerChanged,
 	REPLAYEVENT_YieldChanged,
+
+	// kek: a city changed owner (KEK_SAVE_DATA). Args: x, y, fromSlot, toSlot,
+	// capital (was the loser's current capital), originalCapitalOf (-1 none),
+	// conquest, gift.
+	REPLAYEVENT_CityAcquired,
 
 	NUM_REPLAYEVENTS
 };
