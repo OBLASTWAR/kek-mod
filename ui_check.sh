@@ -72,6 +72,7 @@ else ui CityBannerManager.lua; ui CityBannerManager.xml; fi
 
 if [[ -f "$E/NotificationPanel/DiploCorner.xml" ]]; then eui DiploCorner.lua; eui DiploCorner.xml; else ui DiploCorner.lua; ui DiploCorner.xml; fi
 [[ -f "$E/Improvements/WorldView.lua" ]] && eui WorldView.lua || ui WorldView.lua
+[[ -f "$E/Improvements/YieldIconManager.lua" ]] && eui YieldIconManager.lua || ui YieldIconManager.lua
 [[ -f "$E/TopPanel/TopPanel.xml" ]] && eui TopPanel.xml
 [[ -f "$E/CityView/CityView.xml" ]] && eui CityView.xml || ui CityView.xml
 [[ -f "$E/CityView/CityView_small.xml" ]] && eui CityView_small.xml || ui CityView_small.xml

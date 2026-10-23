@@ -3,12 +3,14 @@
 //! \brief   Outbound HTTP for kek-mod 1.5: turn-end save upload + compact
 //!          JSON telemetry for the GDR bot.
 //!
-//! On each end-of-turn auto-save (hook in CvGame.cpp), EVERY client builds
-//! and buffers the turn payload, but exactly ONE client -- the one whose
-//! local player is the first alive human -- drains the queue and POSTs:
-//!   1. the fresh .Civ5Save            -> KEKMOD_SAVE_PATH  (octet-stream)
-//!   2. a schema-versioned JSON digest -> KEKMOD_TURNS_PATH (application/json)
-//! Standby clients keep the whole game buffered, so whichever client is
+//! On each end-of-turn auto-save (hook in CvGame.cpp):
+//!   1. EVERY client uploads its own copy of the fresh .Civ5Save
+//!      -> KEKMOD_SAVE_PATH (octet-stream), via a spool folder and its own
+//!      queue (see "Save upload (every client)" below);
+//!   2. EVERY client builds and buffers a schema-versioned JSON digest, but
+//!      exactly ONE client -- the one whose local player is the first alive
+//!      human -- drains that queue and POSTs it -> KEKMOD_TURNS_PATH.
+//! Standby clients keep the whole game's JSON buffered, so whichever client is
 //! promoted uploader (e.g. the old uploader quit) flushes any turns the old
 //! uploader never delivered; the server upserts by (gameGuid, turnNumber),
 //! so the redundant re-sends are no-ops.
@@ -258,6 +260,33 @@ static void FormatMapGuid(char* pszOut, size_t nLen)
         (unsigned)guid.Data4[6], (unsigned)guid.Data4[7]);
 }
 
+// Shared per-game id, 16 lowercase hex chars: the map random seed, then a hash
+// of both random seeds, the map size and the map script. The host picks the
+// seeds and every client gets them (they drive the synced RNGs); they are also
+// stored in the save, so every client of a game computes the same key and a
+// reloaded game keeps it. The map GUID above is NOT shared: each client's
+// engine makes its own, so two clients of one game upload under different
+// X-Game-Id values. The hash half keeps the key from repeating the seed when
+// the host gave both seeds the same value.
+static void FormatGameKey(char* pszOut, size_t nLen)
+{
+    const unsigned uMapSeed  = (unsigned)CvPreGame::mapRandomSeed();
+    const unsigned uSyncSeed = (unsigned)CvPreGame::syncRandomSeed();
+
+    unsigned uHash = 2166136261u;   // FNV-1a
+    const unsigned auInts[4] = { uMapSeed, uSyncSeed,
+                                 (unsigned)GC.getMap().getGridWidth(),
+                                 (unsigned)GC.getMap().getGridHeight() };
+    for (int i = 0; i < 4; i++)
+        for (int iByte = 0; iByte < 4; iByte++)
+            uHash = (uHash ^ ((auInts[i] >> (8 * iByte)) & 0xFF)) * 16777619u;
+    const std::string strScript = CvPreGame::mapScriptName();
+    for (size_t i = 0; i < strScript.size(); i++)
+        uHash = (uHash ^ (unsigned char)strScript[i]) * 16777619u;
+
+    _snprintf_s(pszOut, nLen, _TRUNCATE, "%08x%08x", uMapSeed, uHash);
+}
+
 
 // ---------------------------------------------------------------------------
 // Event buffers (GAME THREAD ONLY)
@@ -477,6 +506,7 @@ static const char* const s_apszReplayEventTypeTokens[] =
     "REPLAYEVENT_RouteChanged",
     "REPLAYEVENT_TileOwnerChanged",
     "REPLAYEVENT_YieldChanged",
+    "REPLAYEVENT_CityAcquired",
 };
 #define KEKMOD_NUM_REPLAY_EVENT_TOKENS \
     (sizeof(s_apszReplayEventTypeTokens) / sizeof(s_apszReplayEventTypeTokens[0]))
@@ -713,6 +743,9 @@ static void BuildTurnJson(std::string& out, PlayerTypes eUploader)
         char szGuid[40];
         FormatMapGuid(szGuid, sizeof(szGuid));
         JsonAppendFmt(out, "\"gameId\":\"%s\",", szGuid);
+        char szGameKey[24];
+        FormatGameKey(szGameKey, sizeof(szGameKey));
+        JsonAppendFmt(out, "\"gameKey\":\"%s\",", szGameKey);
     }
 
     out += "\"uploaderSteamId\":\"";
@@ -1439,11 +1472,8 @@ static void BuildTurnJson(std::string& out, PlayerTypes eUploader)
 // worker. Game-end payloads are special: no future turn will heal them, so a
 // drain still holding one retries with backoff before giving up.
 //
-// Save files are queued by PATH, not contents: autosaves persist on disk,
-// and if Civ has rotated the file away by flush time the JSON (the crucial
-// part) still goes out alone. The write time captured at enqueue guards the
-// other rotation hazard -- a reused autosave NAME now holding a newer turn's
-// bytes -- by skipping the save when the times no longer match.
+// This queue carries the turn JSON only; saves have their own queue, drained
+// by every client (see "Save upload (every client)" below).
 // ---------------------------------------------------------------------------
 
 struct PendingUpload
@@ -1453,14 +1483,10 @@ struct PendingUpload
     std::string strJson;       // built on the game thread
     std::string strSteamId;    // builder (= sender when this client uploads)
     std::string strGameId;     // map GUID hex
-    std::string strSavePath;   // "" = JSON-only payload
-    std::string strSaveName;
-    FILETIME    saveWriteTime; // as observed at enqueue; mismatch = rotated
+    std::string strGameKey;    // shared by every client of the game
 
     PendingUpload() : iTurn(0), bGameEnd(false)
     {
-        saveWriteTime.dwLowDateTime  = 0;
-        saveWriteTime.dwHighDateTime = 0;
     }
 };
 
@@ -1547,9 +1573,7 @@ enum SendResult
     SEND_DROP     // permanently rejected (4xx) -- pop and move on
 };
 
-// Sends one queued payload: save first (best-effort), then the turn JSON.
-// The JSON is the crucial part -- its outcome decides the entry's fate.
-// BACKGROUND THREAD ONLY.
+// Sends one queued turn JSON. BACKGROUND THREAD ONLY.
 static SendResult SendPendingUpload(HINTERNET hConnect, const PendingUpload& entry)
 {
     // Shared headers (built narrow, converted once).
@@ -1558,108 +1582,18 @@ static SendResult SendPendingUpload(HINTERNET hConnect, const PendingUpload& ent
                 "X-Mod-Version: %s\r\n"
                 "X-Turn-Number: %d\r\n"
                 "X-Game-Id: %s\r\n"
+                "X-Game-Key: %s\r\n"
                 "X-Uploader-Steam-Id: %s\r\n"
                 "%s%s%s",
                 KEKMOD_MOD_VERSION, entry.iTurn,
-                entry.strGameId.c_str(), entry.strSteamId.c_str(),
+                entry.strGameId.c_str(), entry.strGameKey.c_str(), entry.strSteamId.c_str(),
                 KEKMOD_API_KEY[0] ? "X-Api-Key: " : "",
                 KEKMOD_API_KEY[0] ? KEKMOD_API_KEY : "",
                 KEKMOD_API_KEY[0] ? "\r\n" : "");
 
     wchar_t wszHeaders[2048];
 
-    // -- 1. POST the save (skipped if the file has been rotated away) --------
-    if (!entry.strSavePath.empty())
-    {
-        char* pFileBuf = NULL;
-        DWORD dwRead   = 0;
-        HANDLE hFile = CreateFileA(
-            entry.strSavePath.c_str(), GENERIC_READ,
-            FILE_SHARE_READ | FILE_SHARE_WRITE,   // don't block Civ V if it reopens it
-            NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-        if (hFile != INVALID_HANDLE_VALUE)
-        {
-            // Autosave rotation can REUSE a filename for a newer turn's bytes;
-            // a stale queued entry must not upload them under its old turn
-            // number. Skip the save unless the write time still matches.
-            FILETIME ftNow = {0, 0};
-            if (GetFileTime(hFile, NULL, NULL, &ftNow) &&
-                CompareFileTime(&ftNow, &entry.saveWriteTime) != 0)
-            {
-                WriteLog("[kekmod_http] save '%s' rewritten since turn %d was"
-                         " queued -- sending turn JSON only",
-                         entry.strSaveName.c_str(), entry.iTurn);
-            }
-            else
-            {
-                LARGE_INTEGER liSize;
-                ZeroMemory(&liSize, sizeof(liSize));
-                GetFileSizeEx(hFile, &liSize);
-                DWORD dwFileSize = (DWORD)liSize.QuadPart;
-                pFileBuf = new char[dwFileSize];
-                if (!ReadFile(hFile, pFileBuf, dwFileSize, &dwRead, NULL))
-                    dwRead = 0;
-            }
-            CloseHandle(hFile);
-        }
-        else
-        {
-            WriteLog("[kekmod_http] save '%s' no longer readable (error=%u) --"
-                     " sending turn %d JSON only",
-                     entry.strSavePath.c_str(), GetLastError(), entry.iTurn);
-        }
-
-        if (pFileBuf && dwRead > 0)
-        {
-            swprintf_s(wszHeaders, _countof(wszHeaders),
-                       L"Content-Type: application/octet-stream\r\n"
-                       L"X-Save-Filename: %hs\r\n%hs",
-                       entry.strSaveName.c_str(), szCommon);
-            DWORD dwStatus = 0;
-            bool bSent = HttpPost(hConnect, KEKMOD_SAVE_PATH, wszHeaders,
-                                  pFileBuf, dwRead, &dwStatus);
-            delete[] pFileBuf;
-
-            if (!bSent || dwStatus >= 500)
-            {
-                WriteLog("[kekmod_http] save POST turn %d failed (%s=%u); kept queued",
-                         entry.iTurn, bSent ? "status" : "WinHTTP error",
-                         bSent ? dwStatus : GetLastError());
-                return SEND_RETRY;
-            }
-            if (dwStatus == 401 || dwStatus == 403)
-            {
-                // Auth rejection is a config problem (key mismatch with the
-                // server), not a bad payload: keep everything queued so the
-                // data survives until the server side is fixed.
-                WriteLog("[kekmod_http] save POST turn %d auth-rejected (status=%u);"
-                         " check KEKMOD_API_KEY vs the server's kek.api-key --"
-                         " kept queued", entry.iTurn, dwStatus);
-                return SEND_RETRY;
-            }
-            if (dwStatus == 429)
-            {
-                // Rate-limited at the edge (a backlog flush can outrun the
-                // Cloudflare per-IP limit). The payload is fine -- keep it
-                // queued and let the next turn's kick resume the drain.
-                WriteLog("[kekmod_http] save POST turn %d rate-limited (status=429);"
-                         " kept queued", entry.iTurn);
-                return SEND_RETRY;
-            }
-            if (dwStatus >= 400)
-                WriteLog("[kekmod_http] save POST turn %d rejected (status=%u);"
-                         " dropping the save, keeping the JSON", entry.iTurn, dwStatus);
-            else
-                WriteLog("[kekmod_http] save POST '%s' (%u bytes) -> status=%u",
-                         entry.strSaveName.c_str(), dwRead, dwStatus);
-        }
-        else
-        {
-            delete[] pFileBuf;
-        }
-    }
-
-    // -- 2. POST the JSON digest ----------------------------------------------
+    // -- POST the JSON digest -------------------------------------------------
     if (!entry.strJson.empty())
     {
         swprintf_s(wszHeaders, _countof(wszHeaders),
@@ -1685,7 +1619,7 @@ static SendResult SendPendingUpload(HINTERNET hConnect, const PendingUpload& ent
         }
         if (dwStatus == 429)
         {
-            // Rate-limited at the edge -- same handling as the save POST.
+            // Rate-limited at the edge: the payload is fine, keep it queued.
             WriteLog("[kekmod_http] turn JSON turn %d rate-limited (status=429);"
                      " kept queued", entry.iTurn);
             return SEND_RETRY;
@@ -1946,6 +1880,631 @@ static void EnqueueUpload(const PendingUpload& entry, bool bKickWorker)
 
 
 // ---------------------------------------------------------------------------
+// Save upload (every client)
+//
+// Unlike the turn JSON, the save has no single-uploader rule: EVERY client
+// uploads its own copy of each turn's autosave. GDR keeps every copy (one
+// per player per turn), so a turn is only lost if every client fails, and a
+// desync can be looked at from each player's side.
+//
+// Capture happens on the game thread right after the end-of-turn AutoSave:
+// the newest autosave is COPIED into this client's spool folder
+// (KEKMOD_SPOOL_SUBPATH\<map guid>\<turn>_<name>), which Civ never rotates,
+// so a stalled queue still has its saves when it drains. A spool file is
+// deleted once GDR has it. On a game change the other games' spool folders
+// are deleted; spool files of the CURRENT game left over from an earlier
+// session (crash, quit with a backlog) are re-queued, and GDR drops any it
+// already has as byte-identical duplicates.
+//
+// When a client has no save for a turn, it says so: an empty-body POST with
+// X-Save-Status (no_file / unchanged / stale / wrong_turn / copy_failed /
+// spool_missing)
+// and X-Save-Detail, which GDR records. Before giving up on a turn whose
+// autosave wasn't on disk yet at hook time, the worker polls briefly for it
+// ("late capture"), in case the engine wrote it after the hook ran.
+//
+// One background worker per client drains the save queue FIFO, with the
+// same retry rules as the JSON queue.
+// ---------------------------------------------------------------------------
+
+// Spool folder, relative to the Documents folder.
+#define KEKMOD_SPOOL_SUBPATH          "\\My Games\\Sid Meier's Civilization 5\\kekmod\\save_spool"
+// Spooled turns kept per game when the queue can't drain; oldest go first.
+#define KEKMOD_SPOOL_MAX_TURNS        60
+// An autosave older than this at hook time is not this turn's save.
+#define KEKMOD_SAVE_MAX_AGE_SECONDS   600
+// Late capture: only for entries this recent, polling for this long.
+#define KEKMOD_LATE_CAPTURE_WINDOW_MS 60000
+#define KEKMOD_LATE_CAPTURE_POLL_MS   15000
+
+struct PendingSave
+{
+    unsigned int uSeq;         // unique per entry (pop guard)
+    int          iTurn;
+    int          iSlot;        // local player's slot
+    bool         bGameEnd;     // final save -> backoff retries
+    std::string  strGameId;    // map GUID hex
+    std::string  strGameKey;   // shared by every client of the game
+    std::string  strSteamId;   // local player
+    std::string  strSpoolPath; // "" = no save (see strStatus)
+    std::string  strSaveName;  // original autosave name, for X-Save-Filename
+    std::string  strStatus;    // "" = save captured; else why there's none
+    std::string  strDetail;
+    FILETIME     hookTime;     // when the hook ran (UTC)
+    std::string  strSeenName;  // newest autosave at hook time (late capture
+    FILETIME     seenWriteTime;//   must find a different, newer one)
+
+    PendingSave() : uSeq(0), iTurn(0), iSlot(-1), bGameEnd(false)
+    {
+        hookTime.dwLowDateTime = hookTime.dwHighDateTime = 0;
+        seenWriteTime.dwLowDateTime = seenWriteTime.dwHighDateTime = 0;
+    }
+};
+
+static std::deque<PendingSave> s_pendingSaves;          // guarded by s_saveQueueLock
+static std::string             s_pendingSavesGameId;    // guarded by s_saveQueueLock
+static CRITICAL_SECTION        s_saveQueueLock;
+static bool                    s_bSaveQueueLockInit = false;  // init on game thread
+static volatile LONG           s_lSaveWorkerBusy    = 0;
+static unsigned int            s_uNextSaveSeq       = 1;      // game thread only
+// The last autosave captured, by the hook or by a late capture: the next
+// turn must find a different file. Guarded by s_saveQueueLock.
+static std::string             s_strLastCapturedName;
+static FILETIME                s_lastCapturedWriteTime = {0, 0};
+
+static unsigned __int64 FileTimeToU64(const FILETIME& ft)
+{
+    ULARGE_INTEGER li;
+    li.LowPart  = ft.dwLowDateTime;
+    li.HighPart = ft.dwHighDateTime;
+    return li.QuadPart;
+}
+
+// Seconds from ftThen to now (UTC); negative if ftThen is in the future.
+static __int64 SecondsSince(const FILETIME& ftThen)
+{
+    FILETIME ftNow;
+    GetSystemTimeAsFileTime(&ftNow);
+    return ((__int64)FileTimeToU64(ftNow) - (__int64)FileTimeToU64(ftThen)) / 10000000;
+}
+
+static const char* BaseName(const char* pszPath)
+{
+    const char* pszBase = strrchr(pszPath, '\\');
+    return pszBase ? pszBase + 1 : pszPath;
+}
+
+// <Documents>\...\kekmod\save_spool, created if missing. Empty on failure.
+static std::string GetSpoolRoot()
+{
+    char szDocuments[MAX_PATH] = {0};
+    if (!GetDocumentsPath(szDocuments, sizeof(szDocuments)))
+        return std::string();
+
+    // Create each level; the Civ folder itself always exists by now.
+    std::string strKekmod = std::string(szDocuments) +
+        "\\My Games\\Sid Meier's Civilization 5\\kekmod";
+    std::string strRoot = std::string(szDocuments) + KEKMOD_SPOOL_SUBPATH;
+    CreateDirectoryA(strKekmod.c_str(), NULL);
+    CreateDirectoryA(strRoot.c_str(), NULL);
+    DWORD dwAttr = GetFileAttributesA(strRoot.c_str());
+    if (dwAttr == INVALID_FILE_ATTRIBUTES || !(dwAttr & FILE_ATTRIBUTE_DIRECTORY))
+        return std::string();
+    return strRoot;
+}
+
+static void DeleteFolderFiles(const std::string& strDir)
+{
+    WIN32_FIND_DATAA fd;
+    HANDLE hFind = FindFirstFileA((strDir + "\\*").c_str(), &fd);
+    if (hFind == INVALID_HANDLE_VALUE)
+        return;
+    do
+    {
+        if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
+            DeleteFileA((strDir + "\\" + fd.cFileName).c_str());
+    } while (FindNextFileA(hFind, &fd));
+    FindClose(hFind);
+}
+
+// Spool file name for a turn: "0124_AutoSave_Post_0124 AD-1280.Civ5Save",
+// or "0124_end_..." for the game-end save.
+static std::string SpoolFileName(int iTurn, bool bGameEnd, const char* pszSaveName)
+{
+    char szPrefix[32];
+    _snprintf_s(szPrefix, sizeof(szPrefix), _TRUNCATE, "%04d_%s",
+                iTurn, bGameEnd ? "end_" : "");
+    return std::string(szPrefix) + pszSaveName;
+}
+
+// Copies pszSavePath into the spool as this turn's save. Fills the entry's
+// spool path and save name on success; status/detail on failure.
+static bool SpoolSave(PendingSave& entry, const char* pszSavePath)
+{
+    std::string strRoot = GetSpoolRoot();
+    if (strRoot.empty())
+    {
+        entry.strStatus = "copy_failed";
+        entry.strDetail = "spool folder unavailable";
+        return false;
+    }
+    std::string strDir = strRoot + "\\" + entry.strGameId;
+    CreateDirectoryA(strDir.c_str(), NULL);
+
+    const char* pszName = BaseName(pszSavePath);
+    std::string strTarget = strDir + "\\" + SpoolFileName(entry.iTurn, entry.bGameEnd, pszName);
+    if (!CopyFileA(pszSavePath, strTarget.c_str(), FALSE))
+    {
+        char szDetail[64];
+        _snprintf_s(szDetail, sizeof(szDetail), _TRUNCATE, "CopyFile error=%u", GetLastError());
+        entry.strStatus = "copy_failed";
+        entry.strDetail = szDetail;
+        return false;
+    }
+    entry.strSpoolPath = strTarget;
+    entry.strSaveName  = pszName;
+    entry.strStatus.clear();
+    entry.strDetail.clear();
+    return true;
+}
+
+// The engine names its post-turn autosaves "AutoSave_Post_<turn>...". A save
+// whose name carries a different turn is some other turn's file.
+static bool SaveNameContradictsTurn(const char* pszName, int iTurn)
+{
+    const char* pszPost = strstr(pszName, "_Post_");
+    if (!pszPost)
+        return false;
+    pszPost += 6;
+    if (pszPost[0] < '0' || pszPost[0] > '9')
+        return false;
+    return atoi(pszPost) != iTurn;
+}
+
+static bool IsLastCaptured(const char* pszName, const FILETIME& writeTime)
+{
+    EnterCriticalSection(&s_saveQueueLock);
+    bool bSame = s_strLastCapturedName == pszName &&
+                 CompareFileTime(&writeTime, &s_lastCapturedWriteTime) == 0;
+    LeaveCriticalSection(&s_saveQueueLock);
+    return bSame;
+}
+
+static void SetLastCaptured(const char* pszName, const FILETIME& writeTime)
+{
+    EnterCriticalSection(&s_saveQueueLock);
+    s_strLastCapturedName   = pszName;
+    s_lastCapturedWriteTime = writeTime;
+    LeaveCriticalSection(&s_saveQueueLock);
+}
+
+static void EnsureSaveQueueLock()
+{
+    if (!s_bSaveQueueLockInit)
+    {
+        InitializeCriticalSection(&s_saveQueueLock);
+        s_bSaveQueueLockInit = true;
+    }
+}
+
+// On a game change: drop the old game's queue, delete other games' spool
+// folders, and re-queue this game's spool files left from an earlier
+// session. GAME THREAD ONLY.
+static void SwitchSaveQueueToGame(const std::string& strGameId, const std::string& strSteamId,
+                                  int iSlot)
+{
+    EnsureSaveQueueLock();
+
+    char szGameKey[24];
+    FormatGameKey(szGameKey, sizeof(szGameKey));
+
+    size_t nStale = 0;
+    EnterCriticalSection(&s_saveQueueLock);
+    bool bChanged = (s_pendingSavesGameId != strGameId);
+    if (bChanged)
+    {
+        nStale = s_pendingSaves.size();
+        s_pendingSaves.clear();
+        s_pendingSavesGameId = strGameId;
+    }
+    LeaveCriticalSection(&s_saveQueueLock);
+    if (!bChanged)
+        return;
+    if (nStale > 0)
+        WriteLog("[kekmod_http] game changed -- discarded %u queued save(s) from the"
+                 " previous game", (unsigned)nStale);
+
+    std::string strRoot = GetSpoolRoot();
+    if (strRoot.empty())
+        return;
+
+    std::deque<PendingSave> leftovers;
+    WIN32_FIND_DATAA fd;
+    HANDLE hFind = FindFirstFileA((strRoot + "\\*").c_str(), &fd);
+    if (hFind != INVALID_HANDLE_VALUE)
+    {
+        do
+        {
+            if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) ||
+                strcmp(fd.cFileName, ".") == 0 || strcmp(fd.cFileName, "..") == 0)
+                continue;
+            std::string strDir = strRoot + "\\" + fd.cFileName;
+            if (strGameId != fd.cFileName)
+            {
+                DeleteFolderFiles(strDir);
+                RemoveDirectoryA(strDir.c_str());
+                continue;
+            }
+
+            // This game's spool from an earlier session: queue it again.
+            WIN32_FIND_DATAA fs;
+            HANDLE hSaves = FindFirstFileA((strDir + "\\*.Civ5Save").c_str(), &fs);
+            if (hSaves == INVALID_HANDLE_VALUE)
+                continue;
+            do
+            {
+                // "<turn>_[end_]<name>"
+                const char* pszUnderscore = strchr(fs.cFileName, '_');
+                if (!pszUnderscore || pszUnderscore == fs.cFileName)
+                    continue;
+                PendingSave entry;
+                entry.iTurn        = atoi(fs.cFileName);
+                entry.bGameEnd     = strncmp(pszUnderscore + 1, "end_", 4) == 0;
+                entry.iSlot        = iSlot;
+                entry.strGameId    = strGameId;
+                entry.strGameKey   = szGameKey;
+                entry.strSteamId   = strSteamId;
+                entry.strSpoolPath = strDir + "\\" + fs.cFileName;
+                entry.strSaveName  = pszUnderscore + 1 + (entry.bGameEnd ? 4 : 0);
+                GetSystemTimeAsFileTime(&entry.hookTime);
+                leftovers.push_back(entry);
+            } while (FindNextFileA(hSaves, &fs));
+            FindClose(hSaves);
+        } while (FindNextFileA(hFind, &fd));
+        FindClose(hFind);
+    }
+
+    if (leftovers.empty())
+        return;
+    // FindFirstFile order is not guaranteed: oldest turn first.
+    for (size_t i = 1; i < leftovers.size(); ++i)
+        for (size_t j = i; j > 0 && leftovers[j - 1].iTurn > leftovers[j].iTurn; --j)
+            std::swap(leftovers[j - 1], leftovers[j]);
+    EnterCriticalSection(&s_saveQueueLock);
+    for (size_t i = 0; i < leftovers.size(); ++i)
+    {
+        leftovers[i].uSeq = s_uNextSaveSeq++;
+        s_pendingSaves.push_back(leftovers[i]);
+    }
+    LeaveCriticalSection(&s_saveQueueLock);
+    WriteLog("[kekmod_http] re-queued %u spooled save(s) of this game from an earlier"
+             " session", (unsigned)leftovers.size());
+}
+
+// The engine may finish writing the autosave after the hook ran: poll for a
+// save written since the hook that isn't the one seen then. BACKGROUND
+// THREAD ONLY.
+static bool TryLateCapture(PendingSave& entry)
+{
+    if (SecondsSince(entry.hookTime) * 1000 > KEKMOD_LATE_CAPTURE_WINDOW_MS)
+        return false;
+
+    // Allow a little clock slack between the hook time and the file time.
+    unsigned __int64 uNotBefore = FileTimeToU64(entry.hookTime) - 2ULL * 10000000ULL;
+    for (DWORD dwWaited = 0; dwWaited <= KEKMOD_LATE_CAPTURE_POLL_MS; dwWaited += 500)
+    {
+        char     szPath[MAX_PATH] = {0};
+        FILETIME writeTime        = {0, 0};
+        if (FindMostRecentSave(szPath, sizeof(szPath), &writeTime) &&
+            FileTimeToU64(writeTime) >= uNotBefore &&
+            !SaveNameContradictsTurn(BaseName(szPath), entry.iTurn) &&
+            !IsLastCaptured(BaseName(szPath), writeTime) &&
+            (entry.strSeenName != BaseName(szPath) ||
+             CompareFileTime(&writeTime, &entry.seenWriteTime) != 0))
+        {
+            std::string strOldStatus = entry.strStatus;
+            if (SpoolSave(entry, szPath))
+            {
+                SetLastCaptured(BaseName(szPath), writeTime);
+                WriteLog("[kekmod_http] turn %d save captured late (%s at hook time,"
+                         " found after %ums): '%s'", entry.iTurn, strOldStatus.c_str(),
+                         (unsigned)dwWaited, entry.strSaveName.c_str());
+                return true;
+            }
+            return false;   // copy failed: status/detail say why
+        }
+        Sleep(500);
+    }
+    entry.strDetail += " (none after late wait)";
+    return false;
+}
+
+// Header values must be single-line printable ASCII.
+static std::string HeaderSafe(const std::string& str, size_t nMax)
+{
+    std::string out;
+    for (size_t i = 0; i < str.size() && out.size() < nMax; ++i)
+    {
+        unsigned char c = (unsigned char)str[i];
+        out += (c >= 0x20 && c < 0x7f) ? (char)c : '?';
+    }
+    return out;
+}
+
+// POSTs one save, or the no-save report. BACKGROUND THREAD ONLY.
+static SendResult SendPendingSave(HINTERNET hConnect, PendingSave& entry)
+{
+    char* pFileBuf = NULL;
+    DWORD dwRead   = 0;
+    if (entry.strStatus.empty())
+    {
+        HANDLE hFile = CreateFileA(entry.strSpoolPath.c_str(), GENERIC_READ,
+                                   FILE_SHARE_READ, NULL, OPEN_EXISTING,
+                                   FILE_ATTRIBUTE_NORMAL, NULL);
+        if (hFile != INVALID_HANDLE_VALUE)
+        {
+            LARGE_INTEGER liSize;
+            ZeroMemory(&liSize, sizeof(liSize));
+            GetFileSizeEx(hFile, &liSize);
+            DWORD dwFileSize = (DWORD)liSize.QuadPart;
+            pFileBuf = new char[dwFileSize > 0 ? dwFileSize : 1];
+            if (!ReadFile(hFile, pFileBuf, dwFileSize, &dwRead, NULL) || dwRead == 0)
+                dwRead = 0;
+            CloseHandle(hFile);
+        }
+        if (dwRead == 0)
+        {
+            char szDetail[64];
+            _snprintf_s(szDetail, sizeof(szDetail), _TRUNCATE, "error=%u", GetLastError());
+            entry.strStatus = "spool_missing";
+            entry.strDetail = szDetail;
+            delete[] pFileBuf;
+            pFileBuf = NULL;
+        }
+    }
+
+    std::string strHeaders;
+    char szCommon[1024];
+    _snprintf_s(szCommon, sizeof(szCommon), _TRUNCATE,
+                "Content-Type: application/octet-stream\r\n"
+                "X-Mod-Version: %s\r\n"
+                "X-Turn-Number: %d\r\n"
+                "X-Game-Id: %s\r\n"
+                "X-Game-Key: %s\r\n"
+                "X-Uploader-Steam-Id: %s\r\n"
+                "X-Player-Slot: %d\r\n"
+                "%s%s%s",
+                KEKMOD_MOD_VERSION, entry.iTurn,
+                entry.strGameId.c_str(), entry.strGameKey.c_str(), entry.strSteamId.c_str(), entry.iSlot,
+                KEKMOD_API_KEY[0] ? "X-Api-Key: " : "",
+                KEKMOD_API_KEY[0] ? KEKMOD_API_KEY : "",
+                KEKMOD_API_KEY[0] ? "\r\n" : "");
+    strHeaders = szCommon;
+    if (pFileBuf)
+        strHeaders += "X-Save-Filename: " + HeaderSafe(entry.strSaveName, 400) + "\r\n";
+    else
+    {
+        strHeaders += "X-Save-Status: " + HeaderSafe(entry.strStatus, 32) + "\r\n";
+        if (!entry.strDetail.empty())
+            strHeaders += "X-Save-Detail: " + HeaderSafe(entry.strDetail, 400) + "\r\n";
+    }
+
+    std::wstring wstrHeaders(strHeaders.begin(), strHeaders.end());   // ASCII only
+    DWORD dwStatus = 0;
+    bool bSent = HttpPost(hConnect, KEKMOD_SAVE_PATH, wstrHeaders.c_str(),
+                          pFileBuf, dwRead, &dwStatus);
+    delete[] pFileBuf;
+
+    const char* pszWhat = dwRead ? "save" : "no-save report";
+    if (!bSent || dwStatus >= 500)
+    {
+        WriteLog("[kekmod_http] %s POST turn %d failed (%s=%u); kept queued", pszWhat,
+                 entry.iTurn, bSent ? "status" : "WinHTTP error",
+                 bSent ? dwStatus : GetLastError());
+        return SEND_RETRY;
+    }
+    if (dwStatus == 401 || dwStatus == 403 || dwStatus == 429)
+    {
+        // Auth (config) or rate limiting: the payload is fine, keep it.
+        WriteLog("[kekmod_http] %s POST turn %d refused (status=%u); kept queued",
+                 pszWhat, entry.iTurn, dwStatus);
+        return SEND_RETRY;
+    }
+    if (dwStatus >= 400)
+    {
+        WriteLog("[kekmod_http] %s POST turn %d rejected (status=%u); dropped",
+                 pszWhat, entry.iTurn, dwStatus);
+        return SEND_DROP;
+    }
+    if (dwRead)
+        WriteLog("[kekmod_http] save POST '%s' turn %d (%u bytes, game key %s) -> status=%u",
+                 entry.strSaveName.c_str(), entry.iTurn, dwRead, entry.strGameKey.c_str(), dwStatus);
+    else
+        WriteLog("[kekmod_http] no-save report turn %d (%s: %s) -> status=%u",
+                 entry.iTurn, entry.strStatus.c_str(), entry.strDetail.c_str(), dwStatus);
+    return SEND_OK;
+}
+
+static DWORD WINAPI SaveQueueWorkerProc(LPVOID)
+{
+    for (;;)
+    {
+        HINTERNET hSession = NULL;
+        HINTERNET hConnect = NULL;
+        OpenConnection(&hSession, &hConnect);
+
+        int  iBackoffStep  = 0;
+        bool bDrainStopped = false;
+        for (;;)
+        {
+            PendingSave entry;
+            bool bHaveEntry = false;
+            EnterCriticalSection(&s_saveQueueLock);
+            if (!s_pendingSaves.empty())
+            {
+                entry      = s_pendingSaves.front();
+                bHaveEntry = true;
+            }
+            LeaveCriticalSection(&s_saveQueueLock);
+            if (!bHaveEntry)
+                break;
+
+            if (!entry.strStatus.empty() && entry.strSpoolPath.empty() &&
+                entry.strStatus != "copy_failed")
+            {
+                TryLateCapture(entry);
+                // Keep the outcome if this entry has to wait for a retry.
+                EnterCriticalSection(&s_saveQueueLock);
+                if (!s_pendingSaves.empty() && s_pendingSaves.front().uSeq == entry.uSeq)
+                    s_pendingSaves.front() = entry;
+                LeaveCriticalSection(&s_saveQueueLock);
+            }
+
+            SendResult eResult = hConnect ? SendPendingSave(hConnect, entry) : SEND_RETRY;
+
+            if (eResult == SEND_RETRY)
+            {
+                if (entry.bGameEnd && iBackoffStep < (int)_countof(s_adwGameEndBackoffMs))
+                {
+                    Sleep(s_adwGameEndBackoffMs[iBackoffStep]);
+                    iBackoffStep++;
+                    if (hConnect) { WinHttpCloseHandle(hConnect); hConnect = NULL; }
+                    if (hSession) { WinHttpCloseHandle(hSession); hSession = NULL; }
+                    OpenConnection(&hSession, &hConnect);
+                    continue;
+                }
+                bDrainStopped = true;
+                break;
+            }
+
+            // Delivered or dropped: either way the spool copy is done with.
+            if (!entry.strSpoolPath.empty())
+                DeleteFileA(entry.strSpoolPath.c_str());
+            EnterCriticalSection(&s_saveQueueLock);
+            if (!s_pendingSaves.empty() && s_pendingSaves.front().uSeq == entry.uSeq)
+                s_pendingSaves.pop_front();
+            LeaveCriticalSection(&s_saveQueueLock);
+            iBackoffStep = 0;
+        }
+
+        if (hConnect) WinHttpCloseHandle(hConnect);
+        if (hSession) WinHttpCloseHandle(hSession);
+
+        InterlockedExchange(&s_lSaveWorkerBusy, 0);
+        if (bDrainStopped)
+            return 0;   // the next turn's capture re-kicks the worker
+
+        bool bMore = false;
+        EnterCriticalSection(&s_saveQueueLock);
+        bMore = !s_pendingSaves.empty();
+        LeaveCriticalSection(&s_saveQueueLock);
+        if (!bMore || InterlockedCompareExchange(&s_lSaveWorkerBusy, 1, 0) != 0)
+            return 0;
+    }
+}
+
+static void KickSaveWorker()
+{
+    if (InterlockedCompareExchange(&s_lSaveWorkerBusy, 1, 0) == 0)
+    {
+        HANDLE hThread = CreateThread(NULL, 0, SaveQueueWorkerProc, NULL, 0, NULL);
+        if (hThread)
+            CloseHandle(hThread);
+        else
+        {
+            InterlockedExchange(&s_lSaveWorkerBusy, 0);
+            WriteLog("[kekmod_http] CreateThread (saves) failed: error=%u -- saves stay"
+                     " queued for the next turn", GetLastError());
+        }
+    }
+}
+
+// Captures this turn's autosave into the spool (or records why there is
+// none) and queues it for upload. Runs on EVERY client, right after the
+// AutoSave call. GAME THREAD ONLY.
+static void CaptureTurnSave(int iTurn, const char* pszGameId, PlayerTypes eActive,
+                            bool bGameEnd)
+{
+    PendingSave entry;
+    entry.iTurn      = iTurn;
+    entry.iSlot      = (int)eActive;
+    entry.bGameEnd   = bGameEnd;
+    entry.strGameId  = pszGameId;
+    {
+        char szGameKey[24];
+        FormatGameKey(szGameKey, sizeof(szGameKey));
+        entry.strGameKey = szGameKey;
+    }
+    entry.strSteamId = SteamIdFromNickname(CvPreGame::nickname(eActive));
+    GetSystemTimeAsFileTime(&entry.hookTime);
+
+    SwitchSaveQueueToGame(entry.strGameId, entry.strSteamId, entry.iSlot);
+
+    // The newest autosave is this turn's only if it's new since the last
+    // capture, was written just now and isn't named for another turn;
+    // anything else is reported instead.
+    char     szPath[MAX_PATH] = {0};
+    FILETIME writeTime        = {0, 0};
+    if (!FindMostRecentSave(szPath, sizeof(szPath), &writeTime))
+    {
+        entry.strStatus = "no_file";
+        entry.strDetail = std::string("no .Civ5Save in <Documents>") + KEKMOD_SAVES_SUBPATH;
+    }
+    else
+    {
+        entry.strSeenName   = BaseName(szPath);
+        entry.seenWriteTime = writeTime;
+        __int64 iAge = SecondsSince(writeTime);
+        char szDetail[MAX_PATH + 64];
+        _snprintf_s(szDetail, sizeof(szDetail), _TRUNCATE, "newest='%s' age=%ds",
+                    entry.strSeenName.c_str(), (int)iAge);
+        if (IsLastCaptured(entry.strSeenName.c_str(), writeTime))
+        {
+            entry.strStatus = "unchanged";
+            entry.strDetail = szDetail;
+        }
+        else if (iAge > KEKMOD_SAVE_MAX_AGE_SECONDS)
+        {
+            entry.strStatus = "stale";
+            entry.strDetail = szDetail;
+        }
+        else if (SaveNameContradictsTurn(entry.strSeenName.c_str(), iTurn))
+        {
+            entry.strStatus = "wrong_turn";
+            entry.strDetail = szDetail;
+        }
+        else if (SpoolSave(entry, szPath))
+        {
+            SetLastCaptured(entry.strSeenName.c_str(), writeTime);
+        }
+    }
+    if (!entry.strStatus.empty())
+        WriteLog("[kekmod_http] turn %d: no fresh save to upload yet (%s: %s)",
+                 iTurn, entry.strStatus.c_str(), entry.strDetail.c_str());
+
+    size_t nDropped = 0;
+    EnterCriticalSection(&s_saveQueueLock);
+    entry.uSeq = s_uNextSaveSeq++;
+    s_pendingSaves.push_back(entry);
+    // A queue that can't drain keeps only the newest turns. Never drop the
+    // front: the worker may be sending it right now.
+    while (s_pendingSaves.size() > KEKMOD_SPOOL_MAX_TURNS + 1)
+    {
+        if (!s_pendingSaves[1].strSpoolPath.empty())
+            DeleteFileA(s_pendingSaves[1].strSpoolPath.c_str());
+        s_pendingSaves.erase(s_pendingSaves.begin() + 1);
+        nDropped++;
+    }
+    LeaveCriticalSection(&s_saveQueueLock);
+    if (nDropped > 0)
+        WriteLog("[kekmod_http] save queue full -- dropped %u oldest spooled save(s)",
+                 (unsigned)nDropped);
+
+    KickSaveWorker();
+}
+
+
+// ---------------------------------------------------------------------------
 // Public API -- called from the CvGame.cpp end-of-turn auto-save hook
 // (GAME THREAD).
 // ---------------------------------------------------------------------------
@@ -2014,33 +2573,16 @@ void CvHttp_OnTurnAutoSave()
     s_strLastGameId = szGuid;
     s_iLastTurn     = iTurn;
 
+    // Every client uploads its own copy of this turn's autosave.
+    CaptureTurnSave(iTurn, szGuid, eActive, false);
+
     PendingUpload entry;
     entry.iTurn     = iTurn;
     entry.strGameId = szGuid;
-
-    // Attach the fresh autosave; if the newest file+time is what we already
-    // attached (or autosaves are off on this client), the JSON goes alone.
-    static char     s_szLastPath[MAX_PATH] = {0};
-    static FILETIME s_lastWriteTime        = {0, 0};
-    char     szPath[MAX_PATH] = {0};
-    FILETIME writeTime        = {0, 0};
-    if (FindMostRecentSave(szPath, sizeof(szPath), &writeTime))
     {
-        if (strcmp(szPath, s_szLastPath) != 0 ||
-            CompareFileTime(&writeTime, &s_lastWriteTime) != 0)
-        {
-            strncpy_s(s_szLastPath, sizeof(s_szLastPath), szPath, _TRUNCATE);
-            s_lastWriteTime = writeTime;
-            entry.strSavePath   = szPath;
-            entry.saveWriteTime = writeTime;
-            const char* pszBase = strrchr(szPath, '\\');
-            entry.strSaveName   = pszBase ? pszBase + 1 : szPath;
-        }
-    }
-    else
-    {
-        WriteLog("[kekmod_http] no .Civ5Save found in %s -- sending turn %d"
-                 " JSON only", KEKMOD_SAVES_SUBPATH, iTurn);
+        char szGameKey[24];
+        FormatGameKey(szGameKey, sizeof(szGameKey));
+        entry.strGameKey = szGameKey;
     }
 
     // Game-state reads happen HERE, on the game thread. Enqueuing is the
@@ -2070,6 +2612,18 @@ void CvHttp_OnGameEnd()
     entry.bGameEnd = true;   // no later turn heals this -> backoff retries
     entry.iTurn = GC.getGame().getGameTurn();
 
+    // No end-of-turn autosave follows a game end: save the final state now
+    // and upload it from every client, like any other turn.
+    {
+        char szGuid[40];
+        FormatMapGuid(szGuid, sizeof(szGuid));
+#ifdef KEK_SAVE_DATA
+        GC.getGame().recordKekReplayData();
+#endif
+        gDLL->AutoSave(false, true);
+        CaptureTurnSave(entry.iTurn, szGuid, eActive, true);
+    }
+
     // Game-state reads happen HERE, on the game thread. The winner block and
     // any buffered vote-result events ride along in this payload; a repeat
     // flush is healed by server-side upsert idempotency.
@@ -2079,6 +2633,9 @@ void CvHttp_OnGameEnd()
         char szGuid[40];
         FormatMapGuid(szGuid, sizeof(szGuid));
         entry.strGameId = szGuid;
+        char szGameKey[24];
+        FormatGameKey(szGameKey, sizeof(szGameKey));
+        entry.strGameKey = szGameKey;
     }
 
     if (bLocalIsUploader)
@@ -2111,6 +2668,9 @@ void CvHttp_OnProposalResolved()
         char szGuid[40];
         FormatMapGuid(szGuid, sizeof(szGuid));
         entry.strGameId = szGuid;
+        char szGameKey[24];
+        FormatGameKey(szGameKey, sizeof(szGameKey));
+        entry.strGameKey = szGameKey;
     }
 
     EnqueueUpload(entry, bLocalIsUploader);

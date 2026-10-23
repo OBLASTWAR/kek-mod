@@ -91674,7 +91674,7 @@
 			<Type>GAMEOPTION_END_TURN_TIMER_ENABLED</Type>
 			<Description>TXT_KEY_GAME_OPTION_END_TURN_TIMER_ENABLED</Description>
 			<Help>TXT_KEY_GAME_OPTION_END_TURN_TIMER_ENABLED_HELP</Help>
-			<Default>true</Default>
+			<Default>false</Default>
 			<Visible>true</Visible> 
 			<SupportsSinglePlayer>false</SupportsSinglePlayer> 
 			<SupportsMultiplayer>true</SupportsMultiplayer> 
@@ -92110,6 +92110,16 @@
 			<Default>false</Default> 
 			<Visible>true</Visible> 
 			<SupportsSinglePlayer>true</SupportsSinglePlayer> 
+			<SupportsMultiplayer>true</SupportsMultiplayer> 
+		</Row>
+		<Row> 
+			<ID>60</ID> 
+			<Type>GAMEOPTION_ALTERNATE_SCRAP</Type> 
+			<Description>TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP</Description> 
+			<Help>TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP_HELP</Help> 
+			<Default>false</Default> 
+			<Visible>true</Visible> 
+			<SupportsSinglePlayer>false</SupportsSinglePlayer> 
 			<SupportsMultiplayer>true</SupportsMultiplayer> 
 		</Row>
 	</GameOptions> 
@@ -219633,6 +219643,11 @@
 			<ID>109</ID> 
 			<Type>REPLAYEVENT_YieldChanged</Type> 
 			<Description>YieldChanged</Description> 
+		</Row> 
+		<Row> 
+			<ID>110</ID> 
+			<Type>REPLAYEVENT_CityAcquired</Type> 
+			<Description>CityAcquired</Description> 
 		</Row> 
 	</ReplayEvents>
 	<Table name="ReplayEventCategories">

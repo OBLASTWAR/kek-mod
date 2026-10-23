@@ -125244,6 +125244,16 @@ The ship has weather'd every rack; the prize we sought is won."
 				Other players' unit flags dim when their units are out of moves, just like your own. When off, only your own team's flags dim, as in the base game.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP"> 
+			<Text>
+				Alternate Scrap
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP_HELP"> 
+			<Text>
+				If everyone but one player votes to Scrap, the Scrap passes and the one player who voted against it wins the game. When off, a Scrap needs every vote.
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_OXFORD_UNIVERSITY"> 
 			<Text>
 				Ban Oxford University
@@ -128292,6 +128302,16 @@ The ship has weather'd every rack; the prize we sought is won."
 				Die Einheitenflaggen anderer Spieler werden abgedunkelt, wenn deren Einheiten keine Bewegungspunkte mehr haben, genau wie Ihre eigenen. Wenn deaktiviert, werden nur die Flaggen Ihres eigenen Teams abgedunkelt, wie im Grundspiel.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP"> 
+			<Text>
+				Alternativer Abbruch
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP_HELP"> 
+			<Text>
+				Stimmen alle bis auf einen Spieler für den Abbruch, wird der Abbruch angenommen und der eine Spieler, der dagegen gestimmt hat, gewinnt das Spiel. Wenn deaktiviert, braucht ein Abbruch alle Stimmen.
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_OXFORD_UNIVERSITY"> 
 			<Text>
 				Ban Oxford University
@@ -130683,6 +130703,16 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS_HELP"> 
 			<Text>
 				Las banderas de las unidades de otros jugadores se atenúan cuando sus unidades no tienen movimientos, igual que las tuyas. Si está desactivado, solo se atenúan las banderas de tu equipo, como en el juego base.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP"> 
+			<Text>
+				Abandono alternativo
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP_HELP"> 
+			<Text>
+				Si todos menos un jugador votan por abandonar la partida, el abandono se aprueba y el único jugador que votó en contra gana la partida. Si está desactivado, el abandono necesita todos los votos.
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_OXFORD_UNIVERSITY"> 
@@ -133078,6 +133108,16 @@ The ship has weather'd every rack; the prize we sought is won."
 				Les drapeaux des unités des autres joueurs s'assombrissent quand leurs unités n'ont plus de mouvements, comme les vôtres. Désactivé : seuls les drapeaux de votre équipe s'assombrissent, comme dans le jeu de base.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP"> 
+			<Text>
+				Abandon alternatif
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP_HELP"> 
+			<Text>
+				Si tous les joueurs sauf un votent pour l'abandon, l'abandon est adopté et le seul joueur qui a voté contre remporte la partie. Désactivé : l'abandon exige tous les votes.
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_OXFORD_UNIVERSITY"> 
 			<Text>
 				Ban Oxford University
@@ -135469,6 +135509,16 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS_HELP"> 
 			<Text>
 				Le bandiere delle unità degli altri giocatori si oscurano quando le loro unità hanno esaurito i movimenti, come le tue. Se disattivato, si oscurano solo le bandiere della tua squadra, come nel gioco base.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP"> 
+			<Text>
+				Abbandono alternativo
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP_HELP"> 
+			<Text>
+				Se tutti i giocatori tranne uno votano per l'abbandono, l'abbandono viene approvato e l'unico giocatore che ha votato contro vince la partita. Se disattivato, l'abbandono richiede tutti i voti.
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_OXFORD_UNIVERSITY"> 
@@ -137864,6 +137914,16 @@ The ship has weather'd every rack; the prize we sought is won."
 				他のプレイヤーのユニットが移動力を使い切ると、自分のユニットと同様にそのフラグが暗くなります。オフの場合は、基本ゲームと同様に自チームのフラグのみが暗くなります。
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP"> 
+			<Text>
+				代替スクラップ
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP_HELP"> 
+			<Text>
+				1人を除く全員がスクラップに賛成した場合、スクラップが可決され、反対した1人がゲームに勝利します。オフの場合、スクラップには全員の賛成が必要です。
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_OXFORD_UNIVERSITY"> 
 			<Text>
 				Ban Oxford University
@@ -140257,6 +140317,16 @@ The ship has weather'd every rack; the prize we sought is won."
 				다른 플레이어의 유닛이 이동력을 모두 사용하면 내 유닛처럼 깃발이 어둡게 표시됩니다. 끄면 기본 게임처럼 내 팀의 깃발만 어둡게 표시됩니다.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP"> 
+			<Text>
+				대체 스크랩
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP_HELP"> 
+			<Text>
+				한 명을 제외한 모든 플레이어가 스크랩에 찬성하면 스크랩이 통과되고, 반대한 한 명이 게임에서 승리합니다. 끄면 스크랩에는 모든 표가 필요합니다.
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_OXFORD_UNIVERSITY"> 
 			<Text>
 				Ban Oxford University
@@ -142648,6 +142718,16 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS_HELP"> 
 			<Text>
 				Flagi jednostek innych graczy są przyciemniane, gdy ich jednostki nie mają już ruchów, tak jak Twoje. Gdy wyłączone, przyciemniane są tylko flagi Twojej drużyny, jak w podstawowej grze.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP"> 
+			<Text>
+				Alternatywne zakończenie gry
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP_HELP"> 
+			<Text>
+				Jeśli wszyscy gracze poza jednym zagłosują za zakończeniem gry (Scrap), wniosek przechodzi, a jedyny gracz, który głosował przeciw, wygrywa grę. Gdy wyłączone, Scrap wymaga wszystkich głosów.
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_OXFORD_UNIVERSITY"> 
@@ -145077,6 +145157,16 @@ The ship has weather'd every rack; the prize we sought is won."
 				Флаги юнитов других игроков затемняются, когда у этих юнитов не осталось очков передвижения, как и ваши. Если выключено, затемняются только флаги вашей команды, как в базовой игре.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP"> 
+			<Text>
+				Альтернативный Scrap
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP_HELP"> 
+			<Text>
+				Если все игроки, кроме одного, проголосуют за Scrap, он принимается, а единственный игрок, голосовавший против, побеждает в игре. Если выключено, для Scrap нужны все голоса.
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_OXFORD_UNIVERSITY"> 
 			<Text>
 				Запретить постройку Оксфордского Университета
@@ -147483,6 +147573,16 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_GAME_OPTION_DIM_ENEMY_UNIT_FLAGS_HELP"> 
 			<Text>
 				其他玩家的單位用完移動力時，其旗幟會像你自己的一樣變暗。關閉時，只有你自己隊伍的旗幟會變暗，與原版遊戲相同。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP"> 
+			<Text>
+				替代廢棄投票
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP_HELP"> 
+			<Text>
+				如果除一名玩家外所有人都投票贊成廢棄，廢棄案通過，而唯一投反對票的玩家贏得遊戲。關閉時，廢棄需要所有人的票。
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_DISABLE_OXFORD_UNIVERSITY"> 

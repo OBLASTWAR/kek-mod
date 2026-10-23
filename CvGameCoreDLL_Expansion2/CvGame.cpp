@@ -232,6 +232,8 @@ void CvGame::init(HandicapTypes eHandicap)
 		setOption(GAMEOPTION_SIMULTANEOUS_TURNS, false);
 		setOption(GAMEOPTION_DYNAMIC_TURNS, false);
 		setOption(GAMEOPTION_PITBOSS, false);
+		// kek: the turn timer is MP-only and has no toggle in the single player setup screen
+		setOption(GAMEOPTION_END_TURN_TIMER_ENABLED, false);
 	}
 
 	// If this is a hot seat game, simultaneous turns is always off
@@ -1660,8 +1662,11 @@ void CvGame::CheckPlayerTurnDeactivate()
 						}
 						if (iI == iFirstAlivePlayer)  // save just before first player deactivation
 						{
+#ifdef KEK_SAVE_DATA
+							recordKekReplayData();
+#endif
 							gDLL->AutoSave(false, true);
-							CvHttp_OnTurnAutoSave();   // kekmod 1.5: upload save + turn JSON (single-uploader gated)
+							CvHttp_OnTurnAutoSave();   // kekmod: every client uploads its save; turn JSON single-uploader
 						}
 #endif
 						kPlayer.setTurnActive(false);
@@ -10262,6 +10267,31 @@ void CvGame::addReplayEvent(int eType, PlayerTypes ePlayer, std::vector<int> vNu
 	CvReplayEvent event(eType, ePlayer, vNumArgs, strArg);
 	m_listReplayEvents.push_back(event);
 }
+
+#ifdef KEK_SAVE_DATA
+//	--------------------------------------------------------------------------------
+/// Record the turn JSON's live per-player values as replay datasets, right
+/// before an autosave, so the save carries them. Every living major civ: the
+/// game's own per-turn datasets skip AI-run seats in multiplayer
+/// (ENHANCED_GRAPHS). Kept out of the replay viewer (not in ReplayDataSets).
+void CvGame::recordKekReplayData()
+{
+	const int iTurn = getGameTurn();
+	for (int iI = 0; iI < MAX_MAJOR_CIVS; iI++)
+	{
+		CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)iI);
+		if (!kPlayer.isAlive())
+			continue;
+
+		kPlayer.setReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_KEK_GOLDRATE"), iTurn, kPlayer.calculateGoldRate());
+		kPlayer.setReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_KEK_SCIENCE"), iTurn, kPlayer.GetScienceTimes100() / 100);
+		kPlayer.setReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_KEK_SCORE"), iTurn, kPlayer.GetScore());
+		kPlayer.setReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_KEK_CULTURERATE"), iTurn, kPlayer.GetTotalJONSCulturePerTurn());
+		kPlayer.setReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_KEK_HAPPINESS"), iTurn, kPlayer.GetExcessHappiness());
+		kPlayer.setReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_KEK_MILITARYMIGHT"), iTurn, kPlayer.GetMilitaryMight());
+	}
+}
+#endif
 
 //	--------------------------------------------------------------------------------
 uint CvGame::getNumReplayEvents() const

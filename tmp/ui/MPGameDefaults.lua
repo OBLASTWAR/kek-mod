@@ -64,6 +64,9 @@ function ResetMultiplayerOptions()
 	else
 		PreGame.SetGameOption("GAMEOPTION_DYNAMIC_TURNS", false);
 		PreGame.SetGameOption("GAMEOPTION_SIMULTANEOUS_TURNS", true);
+		-- kek: turn timer on by default for online games. Set here instead of the
+		-- GameOptions <Default> so it doesn't leak into single player games.
+		PreGame.SetGameOption("GAMEOPTION_END_TURN_TIMER_ENABLED", true);
 		-- kek: remap vote defaults to Unanimous (5, see MPGameOptions.lua g_RemapVoteValues)
 		PreGame.SetGameOption("GAMEOPTION_REMAP_VOTE", 5);
 	end

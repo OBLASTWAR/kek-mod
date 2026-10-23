@@ -1376,6 +1376,14 @@ void CvPlayer::reset(PlayerTypes eID, bool bConstructorCall)
 	// tutorial info
 	m_bEverPoppedGoody = false;
 
+#ifdef KEK_SAVE_DATA
+	// Replay data belongs to one game. Without this a new game kept the
+	// previous game's datasets (same session), and its saves carried values
+	// for turns it hadn't played yet. A load reads them right after reset().
+	m_ReplayDataSets.clear();
+	m_ReplayDataSetValues.clear();
+#endif
+
 	m_aiCityYieldChange.clear();
 	m_aiCityYieldChange.resize(NUM_YIELD_TYPES, 0);
 
@@ -2685,6 +2693,18 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bGift)
 			}
 		}
 		CvHttp_RecordCityCaptureEvent(kekEvt);
+#if defined(REPLAY_EVENTS) && defined(KEK_SAVE_DATA)
+		std::vector<int> vArgs;
+		vArgs.push_back(kekEvt.iX);
+		vArgs.push_back(kekEvt.iY);
+		vArgs.push_back(kekEvt.iFromSlot);
+		vArgs.push_back(kekEvt.iToSlot);
+		vArgs.push_back(kekEvt.iCapital);
+		vArgs.push_back(kekEvt.iOriginalCapitalOf);
+		vArgs.push_back(kekEvt.iConquest);
+		vArgs.push_back(kekEvt.iGift);
+		GC.getGame().addReplayEvent(REPLAYEVENT_CityAcquired, m_eID, vArgs);
+#endif
 	}
 
 	CvCivilizationInfo& playerCivilizationInfo = getCivilizationInfo();
@@ -7575,6 +7595,32 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit)
 		kekEvt.iBarbCount = iBarbCount;
 	}
 #ifdef REPLAY_EVENTS
+#ifdef KEK_SAVE_DATA
+	// Every player, not only humans: the save is GDR's record of ruins. The
+	// first two args are unchanged; the rest are the turn JSON's "ruins"
+	// fields, type names as FString hashes (0 = none), like the save's tables.
+	{
+		std::vector<int> vArgs;
+		vArgs.push_back(static_cast<int>(eGoody));
+		vArgs.push_back(pUnit ? static_cast<int>(pUnit->getUnitType()) : -1);
+		vArgs.push_back(kekEvt.iX);
+		vArgs.push_back(kekEvt.iY);
+		vArgs.push_back(kekEvt.iGold);
+		vArgs.push_back(kekEvt.iCulture);
+		vArgs.push_back(kekEvt.iFaith);
+		vArgs.push_back(kekEvt.iPopulation);
+		vArgs.push_back(kekEvt.iScience);
+		vArgs.push_back(kekEvt.iExperience);
+		vArgs.push_back(kekEvt.iHeal);
+		vArgs.push_back(kekEvt.iBarbCount);
+		vArgs.push_back(kekEvt.iMapReveal);
+		vArgs.push_back(kekEvt.szTech[0] ? (int)FString::Hash(kekEvt.szTech) : 0);
+		vArgs.push_back(kekEvt.szUnit[0] ? (int)FString::Hash(kekEvt.szUnit) : 0);
+		vArgs.push_back(kekEvt.szUpgradeUnit[0] ? (int)FString::Hash(kekEvt.szUpgradeUnit) : 0);
+		vArgs.push_back(kekEvt.szResource[0] ? (int)FString::Hash(kekEvt.szResource) : 0);
+		GC.getGame().addReplayEvent(REPLAYEVENT_GoodyHut, GetID(), vArgs);
+	}
+#else
 	if (isHuman())
 	{
 		std::vector<int> vArgs;
@@ -7582,6 +7628,7 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit)
 		vArgs.push_back(pUnit ? static_cast<int>(pUnit->getUnitType()) : -1);
 		GC.getGame().addReplayEvent(REPLAYEVENT_GoodyHut, GetID(), vArgs);
 	}
+#endif
 #endif
 
 	// kekmod 1.5: buffer the event; it ships with the next turn-end upload

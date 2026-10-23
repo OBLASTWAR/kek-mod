@@ -1031,6 +1031,11 @@
 ///
 // A more flexible alternative to Replay Messages; primarily for statistics purposes
 #define REPLAY_EVENTS
+// Save-based ingest (GiantDeathRobot reads the uploaded saves instead of the
+// turn JSON): records the JSON's live per-player values as replay datasets at
+// each autosave, logs every ruin with its rewards (for all players, not only
+// humans), and logs every change of a city's owner (REPLAYEVENT_CityAcquired).
+#define KEK_SAVE_DATA
 // Dev-only: dumps finished games to an external SQLite file (Civ5FinishedGameDatabase.db)
 // for cross-game analytics. Separate from REPLAY_EVENTS because this is the only piece
 // that actually needs winsqlite3.h from the Windows 10 SDK (10.0.15063+); the in-game
