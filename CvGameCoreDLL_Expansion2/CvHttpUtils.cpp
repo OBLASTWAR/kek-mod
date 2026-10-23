@@ -260,6 +260,17 @@ static void FormatMapGuid(char* pszOut, size_t nLen)
         (unsigned)guid.Data4[6], (unsigned)guid.Data4[7]);
 }
 
+// Shared per-game id: the map and sync random seeds as 16 lowercase hex chars.
+// Both are chosen by the host and carried to every client (they drive the
+// synced RNGs) and stored in the save, so every client of a game computes the
+// same key. The map GUID above is NOT shared: each client's engine makes its
+// own, so two clients of one game upload under different X-Game-Id values.
+static void FormatGameKey(char* pszOut, size_t nLen)
+{
+    _snprintf_s(pszOut, nLen, _TRUNCATE, "%08x%08x",
+        (unsigned)CvPreGame::mapRandomSeed(), (unsigned)CvPreGame::syncRandomSeed());
+}
+
 
 // ---------------------------------------------------------------------------
 // Event buffers (GAME THREAD ONLY)
@@ -716,6 +727,9 @@ static void BuildTurnJson(std::string& out, PlayerTypes eUploader)
         char szGuid[40];
         FormatMapGuid(szGuid, sizeof(szGuid));
         JsonAppendFmt(out, "\"gameId\":\"%s\",", szGuid);
+        char szGameKey[24];
+        FormatGameKey(szGameKey, sizeof(szGameKey));
+        JsonAppendFmt(out, "\"gameKey\":\"%s\",", szGameKey);
     }
 
     out += "\"uploaderSteamId\":\"";
@@ -1453,6 +1467,7 @@ struct PendingUpload
     std::string strJson;       // built on the game thread
     std::string strSteamId;    // builder (= sender when this client uploads)
     std::string strGameId;     // map GUID hex
+    std::string strGameKey;    // shared by every client of the game
 
     PendingUpload() : iTurn(0), bGameEnd(false)
     {
@@ -1551,10 +1566,11 @@ static SendResult SendPendingUpload(HINTERNET hConnect, const PendingUpload& ent
                 "X-Mod-Version: %s\r\n"
                 "X-Turn-Number: %d\r\n"
                 "X-Game-Id: %s\r\n"
+                "X-Game-Key: %s\r\n"
                 "X-Uploader-Steam-Id: %s\r\n"
                 "%s%s%s",
                 KEKMOD_MOD_VERSION, entry.iTurn,
-                entry.strGameId.c_str(), entry.strSteamId.c_str(),
+                entry.strGameId.c_str(), entry.strGameKey.c_str(), entry.strSteamId.c_str(),
                 KEKMOD_API_KEY[0] ? "X-Api-Key: " : "",
                 KEKMOD_API_KEY[0] ? KEKMOD_API_KEY : "",
                 KEKMOD_API_KEY[0] ? "\r\n" : "");
@@ -1892,6 +1908,7 @@ struct PendingSave
     int          iSlot;        // local player's slot
     bool         bGameEnd;     // final save -> backoff retries
     std::string  strGameId;    // map GUID hex
+    std::string  strGameKey;   // shared by every client of the game
     std::string  strSteamId;   // local player
     std::string  strSpoolPath; // "" = no save (see strStatus)
     std::string  strSaveName;  // original autosave name, for X-Save-Filename
@@ -2062,6 +2079,9 @@ static void SwitchSaveQueueToGame(const std::string& strGameId, const std::strin
 {
     EnsureSaveQueueLock();
 
+    char szGameKey[24];
+    FormatGameKey(szGameKey, sizeof(szGameKey));
+
     size_t nStale = 0;
     EnterCriticalSection(&s_saveQueueLock);
     bool bChanged = (s_pendingSavesGameId != strGameId);
@@ -2116,6 +2136,7 @@ static void SwitchSaveQueueToGame(const std::string& strGameId, const std::strin
                 entry.bGameEnd     = strncmp(pszUnderscore + 1, "end_", 4) == 0;
                 entry.iSlot        = iSlot;
                 entry.strGameId    = strGameId;
+                entry.strGameKey   = szGameKey;
                 entry.strSteamId   = strSteamId;
                 entry.strSpoolPath = strDir + "\\" + fs.cFileName;
                 entry.strSaveName  = pszUnderscore + 1 + (entry.bGameEnd ? 4 : 0);
@@ -2233,11 +2254,12 @@ static SendResult SendPendingSave(HINTERNET hConnect, PendingSave& entry)
                 "X-Mod-Version: %s\r\n"
                 "X-Turn-Number: %d\r\n"
                 "X-Game-Id: %s\r\n"
+                "X-Game-Key: %s\r\n"
                 "X-Uploader-Steam-Id: %s\r\n"
                 "X-Player-Slot: %d\r\n"
                 "%s%s%s",
                 KEKMOD_MOD_VERSION, entry.iTurn,
-                entry.strGameId.c_str(), entry.strSteamId.c_str(), entry.iSlot,
+                entry.strGameId.c_str(), entry.strGameKey.c_str(), entry.strSteamId.c_str(), entry.iSlot,
                 KEKMOD_API_KEY[0] ? "X-Api-Key: " : "",
                 KEKMOD_API_KEY[0] ? KEKMOD_API_KEY : "",
                 KEKMOD_API_KEY[0] ? "\r\n" : "");
@@ -2279,8 +2301,8 @@ static SendResult SendPendingSave(HINTERNET hConnect, PendingSave& entry)
         return SEND_DROP;
     }
     if (dwRead)
-        WriteLog("[kekmod_http] save POST '%s' turn %d (%u bytes) -> status=%u",
-                 entry.strSaveName.c_str(), entry.iTurn, dwRead, dwStatus);
+        WriteLog("[kekmod_http] save POST '%s' turn %d (%u bytes, game key %s) -> status=%u",
+                 entry.strSaveName.c_str(), entry.iTurn, dwRead, entry.strGameKey.c_str(), dwStatus);
     else
         WriteLog("[kekmod_http] no-save report turn %d (%s: %s) -> status=%u",
                  entry.iTurn, entry.strStatus.c_str(), entry.strDetail.c_str(), dwStatus);
@@ -2392,6 +2414,11 @@ static void CaptureTurnSave(int iTurn, const char* pszGameId, PlayerTypes eActiv
     entry.iSlot      = (int)eActive;
     entry.bGameEnd   = bGameEnd;
     entry.strGameId  = pszGameId;
+    {
+        char szGameKey[24];
+        FormatGameKey(szGameKey, sizeof(szGameKey));
+        entry.strGameKey = szGameKey;
+    }
     entry.strSteamId = SteamIdFromNickname(CvPreGame::nickname(eActive));
     GetSystemTimeAsFileTime(&entry.hookTime);
 
@@ -2536,6 +2563,11 @@ void CvHttp_OnTurnAutoSave()
     PendingUpload entry;
     entry.iTurn     = iTurn;
     entry.strGameId = szGuid;
+    {
+        char szGameKey[24];
+        FormatGameKey(szGameKey, sizeof(szGameKey));
+        entry.strGameKey = szGameKey;
+    }
 
     // Game-state reads happen HERE, on the game thread. Enqueuing is the
     // hand-off point: the event buffers drained into this JSON now live in
@@ -2585,6 +2617,9 @@ void CvHttp_OnGameEnd()
         char szGuid[40];
         FormatMapGuid(szGuid, sizeof(szGuid));
         entry.strGameId = szGuid;
+        char szGameKey[24];
+        FormatGameKey(szGameKey, sizeof(szGameKey));
+        entry.strGameKey = szGameKey;
     }
 
     if (bLocalIsUploader)
@@ -2617,6 +2652,9 @@ void CvHttp_OnProposalResolved()
         char szGuid[40];
         FormatMapGuid(szGuid, sizeof(szGuid));
         entry.strGameId = szGuid;
+        char szGameKey[24];
+        FormatGameKey(szGameKey, sizeof(szGameKey));
+        entry.strGameKey = szGameKey;
     }
 
     EnqueueUpload(entry, bLocalIsUploader);
