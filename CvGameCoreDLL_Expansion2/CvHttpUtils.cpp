@@ -260,15 +260,31 @@ static void FormatMapGuid(char* pszOut, size_t nLen)
         (unsigned)guid.Data4[6], (unsigned)guid.Data4[7]);
 }
 
-// Shared per-game id: the map and sync random seeds as 16 lowercase hex chars.
-// Both are chosen by the host and carried to every client (they drive the
-// synced RNGs) and stored in the save, so every client of a game computes the
-// same key. The map GUID above is NOT shared: each client's engine makes its
-// own, so two clients of one game upload under different X-Game-Id values.
+// Shared per-game id, 16 lowercase hex chars: the map random seed, then a hash
+// of both random seeds, the map size and the map script. The host picks the
+// seeds and every client gets them (they drive the synced RNGs); they are also
+// stored in the save, so every client of a game computes the same key and a
+// reloaded game keeps it. The map GUID above is NOT shared: each client's
+// engine makes its own, so two clients of one game upload under different
+// X-Game-Id values. The hash half keeps the key from repeating the seed when
+// the host gave both seeds the same value.
 static void FormatGameKey(char* pszOut, size_t nLen)
 {
-    _snprintf_s(pszOut, nLen, _TRUNCATE, "%08x%08x",
-        (unsigned)CvPreGame::mapRandomSeed(), (unsigned)CvPreGame::syncRandomSeed());
+    const unsigned uMapSeed  = (unsigned)CvPreGame::mapRandomSeed();
+    const unsigned uSyncSeed = (unsigned)CvPreGame::syncRandomSeed();
+
+    unsigned uHash = 2166136261u;   // FNV-1a
+    const unsigned auInts[4] = { uMapSeed, uSyncSeed,
+                                 (unsigned)GC.getMap().getGridWidth(),
+                                 (unsigned)GC.getMap().getGridHeight() };
+    for (int i = 0; i < 4; i++)
+        for (int iByte = 0; iByte < 4; iByte++)
+            uHash = (uHash ^ ((auInts[i] >> (8 * iByte)) & 0xFF)) * 16777619u;
+    const std::string strScript = CvPreGame::mapScriptName();
+    for (size_t i = 0; i < strScript.size(); i++)
+        uHash = (uHash ^ (unsigned char)strScript[i]) * 16777619u;
+
+    _snprintf_s(pszOut, nLen, _TRUNCATE, "%08x%08x", uMapSeed, uHash);
 }
 
 
