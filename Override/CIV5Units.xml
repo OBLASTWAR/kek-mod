@@ -91674,7 +91674,7 @@
 			<Type>GAMEOPTION_END_TURN_TIMER_ENABLED</Type>
 			<Description>TXT_KEY_GAME_OPTION_END_TURN_TIMER_ENABLED</Description>
 			<Help>TXT_KEY_GAME_OPTION_END_TURN_TIMER_ENABLED_HELP</Help>
-			<Default>true</Default>
+			<Default>false</Default>
 			<Visible>true</Visible> 
 			<SupportsSinglePlayer>false</SupportsSinglePlayer> 
 			<SupportsMultiplayer>true</SupportsMultiplayer> 
