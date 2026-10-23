@@ -54,7 +54,12 @@ local function onProposalResult( Id, expires, OwnerId, SubjectId, iType, Status)
 				Game.SetWinner(Players[SubjectId]:GetTeam(), GameInfoTypes.VICTORY_DIPLOMATIC); 
 			elseif iType ==1003 then
 				--Events.EndGameShow(-1, Players[Game.GetActivePlayer()]:GetTeam())  -- scrap screen
-				Game.SetWinner(Players[Game.GetActivePlayer()]:GetTeam(), GameInfoTypes.VICTORY_SCRAP);
+				if SubjectId >= 0 and Players[SubjectId] ~= nil then
+					-- alternate scrap: everyone else voted yes, so the one player who voted no wins
+					Game.SetWinner(Players[SubjectId]:GetTeam(), GameInfoTypes.VICTORY_DIPLOMATIC);
+				else
+					Game.SetWinner(Players[Game.GetActivePlayer()]:GetTeam(), GameInfoTypes.VICTORY_SCRAP);
+				end
 			elseif iType ==1004 then
 				-- remap: same game-ending path as scrap; players re-host on a new map
 				Game.SetWinner(Players[Game.GetActivePlayer()]:GetTeam(), GameInfoTypes.VICTORY_REMAP);

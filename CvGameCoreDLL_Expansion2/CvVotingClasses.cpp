@@ -11594,6 +11594,18 @@ void CvMPVotingSystem::DoUpdateProposalStatus(int iProposalID)
 			SetProposalStatus(iProposalID, STATUS_ACTIVE);
 		else if (yesVotes == maxVoters)
 			SetProposalStatus(iProposalID, STATUS_PASSED);
+		else if (eType == PROPOSAL_SCRAP && noVotes == 1 && GC.getGame().isOption("GAMEOPTION_ALTERNATE_SCRAP")) {
+			// kekmod 2.5 (Tournament Patch): everyone but one player voted to scrap, so the
+			// scrap passes and the lone no voter wins. The subject is the winner; the UI reads it.
+			for (uint i = 0; i < MAX_MAJOR_CIVS; i++) {
+				const Proposal& kProposal = m_vProposals.at(iProposalID);
+				if (kProposal.vIsEligible.at(i) && kProposal.vHasVoted.at(i) && !kProposal.vVotes.at(i)) {
+					SetProposalSubject(iProposalID, (PlayerTypes)i);
+					break;
+				}
+			}
+			SetProposalStatus(iProposalID, STATUS_PASSED);
+		}
 		else if (noVotes > 0)
 			SetProposalStatus(iProposalID, STATUS_FAILED);
 		else

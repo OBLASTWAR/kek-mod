@@ -92112,6 +92112,16 @@
 			<SupportsSinglePlayer>true</SupportsSinglePlayer> 
 			<SupportsMultiplayer>true</SupportsMultiplayer> 
 		</Row>
+		<Row> 
+			<ID>60</ID> 
+			<Type>GAMEOPTION_ALTERNATE_SCRAP</Type> 
+			<Description>TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP</Description> 
+			<Help>TXT_KEY_GAME_OPTION_ALTERNATE_SCRAP_HELP</Help> 
+			<Default>false</Default> 
+			<Visible>true</Visible> 
+			<SupportsSinglePlayer>false</SupportsSinglePlayer> 
+			<SupportsMultiplayer>true</SupportsMultiplayer> 
+		</Row>
 	</GameOptions> 
 
 	<Table name="GameSpeed_Turns">
