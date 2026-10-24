@@ -85143,12 +85143,12 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_MP_VERSION_MISMATCH_FOR_HOST"> 
 			<Text>
-				Version mismatch with player: {1_PlayerName}.
+				Version mismatch with player: {1_PlayerName}. They were removed: everyone in a game needs the same KEK Mod version (this game is KEK v@KEKMOD_VERSION@).
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_MP_VERSION_MISMATCH_FOR_PLAYER"> 
 			<Text>
-				Version mismatch with host.
+				Version mismatch with host. Everyone in a game needs the same KEK Mod version (you have KEK v@KEKMOD_VERSION@): update from the installer.
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_MULTIPLAYER"> 
