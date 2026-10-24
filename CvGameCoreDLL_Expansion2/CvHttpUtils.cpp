@@ -2551,6 +2551,25 @@ static bool ShouldSendTelemetry()
     return CountAliveHumanPlayers() > 1;
 }
 
+// Map GUID of the last game this session sent a regular turn for.
+static std::string s_strLiveTelemetryGameId;
+
+// A game's ending (victory, resolved vote) often comes just after the table
+// drops to one human: the losers quit to AI before the win lands, or the
+// winning capture kills the last other human. The session was still a real
+// multiplayer game, so its final flush goes out as long as one of its turns
+// did -- otherwise GDR never gets the winner block or the final save.
+static bool ShouldSendFinalTelemetry()
+{
+    if (ShouldSendTelemetry())
+        return true;
+    if (!GC.getGame().isNetworkMultiPlayer() || s_strLiveTelemetryGameId.empty())
+        return false;
+    char szGuid[40];
+    FormatMapGuid(szGuid, sizeof(szGuid));
+    return s_strLiveTelemetryGameId == szGuid;
+}
+
 void CvHttp_OnTurnAutoSave()
 {
     if (!ShouldSendTelemetry())
@@ -2565,6 +2584,7 @@ void CvHttp_OnTurnAutoSave()
     // one payload per (game, turn).
     char szGuid[40];
     FormatMapGuid(szGuid, sizeof(szGuid));
+    s_strLiveTelemetryGameId = szGuid;
     int iTurn = GC.getGame().getGameTurn();
     static std::string s_strLastGameId;
     static int         s_iLastTurn = -1;
@@ -2597,7 +2617,7 @@ void CvHttp_OnTurnAutoSave()
 
 void CvHttp_OnGameEnd()
 {
-    if (!ShouldSendTelemetry())
+    if (!ShouldSendFinalTelemetry())
         return;
 
     // setWinner runs on every client; every client buffers the final payload,
@@ -2646,7 +2666,7 @@ void CvHttp_OnGameEnd()
 
 void CvHttp_OnProposalResolved()
 {
-    if (!ShouldSendTelemetry())
+    if (!ShouldSendFinalTelemetry())
         return;
 
     // Same rationale as CvHttp_OnGameEnd: a resolved proposal (IRR kicking a
