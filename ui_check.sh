@@ -6,21 +6,59 @@
 #   ./ui_check.sh ["<...>/Assets/DLC/KEK Mod v2.1"]
 # Rebuilds UI/ from tmp/ui (vanilla) or tmp/eui (EUI) depending on which EUI
 # variant, if any, sits next to it in Assets/DLC.
+#
+# Every copy is verified and retried, failures are counted, and the result is
+# written to ui_check_result.txt in the KEK Mod folder. The exit code is the
+# number of files that failed (0 = OK); the last line printed is the summary.
 set -u
 P="$(cd "${1:-$(dirname "$0")}" && pwd)" || exit 1
 [[ -d "$P/tmp/ui" ]] || { echo "ui_check.sh: $P is not a KEK Mod DLC folder (no tmp/ui)" >&2; exit 1; }
 DLC="$(dirname "$P")"
 E="$DLC/UI_bc1"
 [[ ! -d "$E" && -d "$DLC/UI_bc1_xits" ]] && E="$DLC/UI_bc1_xits"
-T="$P/tmp"; U="$P/UI"
+# An EUI installed under another folder name (e.g. "UI_bc1 (2)" from a second
+# download) still loads in game, so find it by its package file.
+if [[ ! -f "$E/EUI_0.Civ5Pkg" ]]; then
+  for d in "$DLC"/*/; do [[ -f "${d}EUI_0.Civ5Pkg" ]] && E="${d%/}"; done
+fi
+T="$P/tmp"; U="$P/UI"; R="$P/ui_check_result.txt"
+expected=0; copied=0; fails=0; warns=0
+[[ -f "$E/EUI_0.Civ5Pkg" ]] && euiname="$(basename "$E")" || euiname="none (stock UI)"
+{ echo "KEK Mod ui_check, $(date '+%Y-%m-%d %H:%M:%S')"; echo "folder: $P"; echo "EUI: $euiname"; } >"$R"
+echo "KEK Mod ui_check: $(basename "$P")"
+echo "EUI: $euiname"
 
-cp_() { cp -f "$T/$1" "$U/$2" && echo "  $1 -> $2"; }
+warn() { warns=$((warns + 1)); echo "WARNING: $1"; echo "WARNING: $1" >>"$R"; }
+n=0; for d in "$DLC"/*/; do [[ -f "${d}EUI_0.Civ5Pkg" ]] && n=$((n + 1)); done
+(( n > 1 )) && warn "$n EUI folders in Assets/DLC. The game loads all of them, keep only one."
+for f in "$DLC"/*/UI_bc1/EUI_0.Civ5Pkg "$DLC"/*/UI_bc1_xits/EUI_0.Civ5Pkg; do
+  [[ -f "$f" ]] && warn "EUI is one folder too deep, move it up to Assets/DLC: $(dirname "$f")"
+done
+
+# cp_ SRC DST: copy tmp/SRC to UI/DST and verify it, retrying for a few seconds
+# in case something holds the file open.
+cp_() {
+  local what="$1" i
+  [[ "$(basename "$1")" != "$2" ]] && what="$1 as $2"
+  expected=$((expected + 1))
+  for i in 1 2 3 4 5 6; do
+    if cp -f "$T/$1" "$U/$2" 2>/dev/null && cmp -s "$T/$1" "$U/$2"; then
+      copied=$((copied + 1)); echo "  $what"; echo "$what" >>"$R"; return 0
+    fi
+    (( i < 6 )) && sleep 1
+  done
+  fails=$((fails + 1)); echo "  FAILED: $what"; echo "FAILED: $what" >>"$R"
+}
 ui()  { cp_ "ui/$1" "$1"; }
 eui() { cp_ "eui/$1" "$1"; }
 has() { grep -qF -- "$1" "$2" 2>/dev/null; }
 
 mkdir -p "$U"
-find "$U" -maxdepth 1 -type f -delete
+for i in 1 2 3 4 5 6; do
+  find "$U" -maxdepth 1 -type f -delete 2>/dev/null
+  [[ -z "$(find "$U" -maxdepth 1 -type f -print -quit)" ]] && break
+  if (( i < 6 )); then sleep 1; else warn "Old files in UI/ could not be deleted. Close Civilization V and run ui_check again."; fi
+done
 
 for f in CultureOverview.lua CultureOverview.xml EnemyUnitPanel.lua InGame.lua JoiningRoom.lua \
   VictoryProgress.xml VictoryProgress.lua MPList.lua MiniMapPanel.lua MiniMapPanel.xml \
@@ -76,4 +114,13 @@ if [[ -f "$E/NotificationPanel/DiploCorner.xml" ]]; then eui DiploCorner.lua; eu
 [[ -f "$E/TopPanel/TopPanel.xml" ]] && eui TopPanel.xml
 [[ -f "$E/CityView/CityView.xml" ]] && eui CityView.xml || ui CityView.xml
 [[ -f "$E/CityView/CityView_small.xml" ]] && eui CityView_small.xml || ui CityView_small.xml
-[[ -d "$E" ]] && echo "ui_check done (EUI: $(basename "$E"))" || echo "ui_check done (no EUI: vanilla UI)"
+echo
+if (( fails > 0 )); then
+  echo "result: FAILED, $fails of $expected files, $warns warnings" >>"$R"
+  echo "ui_check FAILED: $fails of $expected files could not be copied into UI/"
+else
+  echo "result: OK, $copied files, $warns warnings" >>"$R"
+  (( warns > 0 )) && echo "$warns warning(s) above."
+  echo "ui_check OK: $copied files in UI/ (EUI: $euiname)"
+fi
+exit $(( fails > 255 ? 255 : fails ))

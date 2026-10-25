@@ -4,3 +4,7 @@
 # Shell scripts must stay LF even on Windows checkouts: ui_check.sh and
 # install-linux.sh ship to Linux players, where CRLF breaks bash.
 *.sh text eol=lf
+
+# Batch files must be CRLF: with LF-only line endings cmd.exe can miss
+# "call :label" targets. ui_check.bat ships to Windows players.
+ui_check.bat text eol=crlf
