@@ -18,7 +18,10 @@ REM copy /y and del /q never prompt. The old "ECHO F | xcopy" / "ECHO Y | del" a
 REM prompts that are translated on non-English Windows.
 REM
 REM The exit code is the number of files that failed (0 = OK), and the result is
-REM written to ui_check_result.txt in this folder.
+REM written to ui_check_result.txt in this folder. The summary stays on screen for a few
+REM seconds for players who double-click it; the installer passes /nopause.
+set "nopause="
+if /i "%~1"=="/nopause" set "nopause=1"
 pushd "%~dp0"
 REM patchfolder = the name of the folder this script lives in (the deployed
 REM DLC folder, e.g. "KEK Mod v1.5-beta2") -- no version hardcoding.
@@ -487,12 +490,12 @@ if %fails% GTR 0 goto :summary_fail
 >> "%R%" echo result: OK, %copied% files, %warns% warnings
 if %warns% GTR 0 echo %warns% warning(s) above.
 echo ui_check OK: %copied% files in UI\ (EUI: %euiname%)
-ping -n 6 127.0.0.1 >nul
+if not defined nopause ping -n 6 127.0.0.1 >nul
 goto :eof
 :summary_fail
 >> "%R%" echo result: FAILED, %fails% of %expected% files, %warns% warnings
 echo ui_check FAILED: %fails% of %expected% files could not be copied into UI\
 echo Close Civilization V and run ui_check.bat again. If it still fails, send
 echo ui_check_result.txt from the KEK Mod folder to the KEK Mod team.
-ping -n 31 127.0.0.1 >nul
+if not defined nopause ping -n 31 127.0.0.1 >nul
 goto :eof
