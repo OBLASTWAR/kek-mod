@@ -114,6 +114,8 @@ if [[ -f "$E/NotificationPanel/DiploCorner.xml" ]]; then eui DiploCorner.lua; eu
 [[ -f "$E/TopPanel/TopPanel.xml" ]] && eui TopPanel.xml
 [[ -f "$E/CityView/CityView.xml" ]] && eui CityView.xml || ui CityView.xml
 [[ -f "$E/CityView/CityView_small.xml" ]] && eui CityView_small.xml || ui CityView_small.xml
+# UI/KekUiCheck.lua tells the lobby screens how this run went (no file: it never finished).
+echo "KekUiCheck = { fails = $fails, warns = $warns, files = $copied, expected = $expected }" >"$U/KekUiCheck.lua"
 echo
 if (( fails > 0 )); then
   echo "result: FAILED, $fails of $expected files, $warns warnings" >>"$R"

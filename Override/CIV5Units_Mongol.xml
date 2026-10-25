@@ -124829,6 +124829,21 @@ The ship has weather'd every rack; the prize we sought is won."
 				ui_check.bat was not launched
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_FAILED">
+			<Text>
+				ui_check.bat failed: {1_Num} UI files are missing. Close Civilization V and run ui_check.bat again.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_INCOMPLETE">
+			<Text>
+				ui_check.bat did not finish. Close Civilization V and run ui_check.bat again.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_WARNINGS">
+			<Text>
+				ui_check.bat finished with {1_Num} warning(s). See ui_check_result.txt in the KEK Mod folder.
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_TOGGLE_STREAMER_PANEL_OPEN"> 
 			<Text>
 				Open Streamer Panel
@@ -127110,6 +127125,21 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_UI_CHECK_BAT"> 
 			<Text>
 				ui_check.bat was not launched
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_FAILED">
+			<Text>
+				ui_check.bat ist fehlgeschlagen: {1_Num} UI-Dateien fehlen. Beende Civilization V und führe ui_check.bat erneut aus.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_INCOMPLETE">
+			<Text>
+				ui_check.bat wurde nicht abgeschlossen. Beende Civilization V und führe ui_check.bat erneut aus.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_WARNINGS">
+			<Text>
+				ui_check.bat wurde mit {1_Num} Warnung(en) beendet. Siehe ui_check_result.txt im KEK-Mod-Ordner.
 			</Text>
 		</Row>
 		<Replace Tag="TXT_KEY_DEAL_REJECTED"> 
@@ -129515,6 +129545,21 @@ The ship has weather'd every rack; the prize we sought is won."
 				ui_check.bat was not launched
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_FAILED">
+			<Text>
+				ui_check.bat ha fallado: faltan {1_Num} archivos de interfaz. Cierra Civilization V y vuelve a ejecutar ui_check.bat.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_INCOMPLETE">
+			<Text>
+				ui_check.bat no terminó. Cierra Civilization V y vuelve a ejecutar ui_check.bat.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_WARNINGS">
+			<Text>
+				ui_check.bat terminó con {1_Num} advertencia(s). Consulta ui_check_result.txt en la carpeta de KEK Mod.
+			</Text>
+		</Row>
 		<Replace Tag="TXT_KEY_DEAL_REJECTED"> 
 			<Text>
 				Offer Rejected
@@ -131916,6 +131961,21 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_UI_CHECK_BAT"> 
 			<Text>
 				ui_check.bat was not launched
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_FAILED">
+			<Text>
+				ui_check.bat a échoué : {1_Num} fichiers d'interface manquent. Fermez Civilization V et relancez ui_check.bat.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_INCOMPLETE">
+			<Text>
+				ui_check.bat ne s'est pas terminé. Fermez Civilization V et relancez ui_check.bat.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_WARNINGS">
+			<Text>
+				ui_check.bat s'est terminé avec {1_Num} avertissement(s). Voir ui_check_result.txt dans le dossier KEK Mod.
 			</Text>
 		</Row>
 		<Replace Tag="TXT_KEY_DEAL_REJECTED"> 
@@ -134321,6 +134381,21 @@ The ship has weather'd every rack; the prize we sought is won."
 				ui_check.bat was not launched
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_FAILED">
+			<Text>
+				ui_check.bat non è riuscito: mancano {1_Num} file dell'interfaccia. Chiudi Civilization V ed esegui di nuovo ui_check.bat.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_INCOMPLETE">
+			<Text>
+				ui_check.bat non è stato completato. Chiudi Civilization V ed esegui di nuovo ui_check.bat.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_WARNINGS">
+			<Text>
+				ui_check.bat è terminato con {1_Num} avviso/i. Vedi ui_check_result.txt nella cartella di KEK Mod.
+			</Text>
+		</Row>
 		<Replace Tag="TXT_KEY_DEAL_REJECTED"> 
 			<Text>
 				Offer Rejected
@@ -136722,6 +136797,21 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_UI_CHECK_BAT"> 
 			<Text>
 				ui_check.bat was not launched
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_FAILED">
+			<Text>
+				ui_check.bat が失敗しました：UIファイルが {1_Num} 個不足しています。Civilization V を終了して ui_check.bat を再実行してください。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_INCOMPLETE">
+			<Text>
+				ui_check.bat が完了しませんでした。Civilization V を終了して ui_check.bat を再実行してください。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_WARNINGS">
+			<Text>
+				ui_check.bat は {1_Num} 件の警告付きで終了しました。KEK Mod フォルダーの ui_check_result.txt を確認してください。
 			</Text>
 		</Row>
 		<Replace Tag="TXT_KEY_DEAL_REJECTED"> 
@@ -139127,6 +139217,21 @@ The ship has weather'd every rack; the prize we sought is won."
 				ui_check.bat was not launched
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_FAILED">
+			<Text>
+				ui_check.bat 실패: UI 파일 {1_Num}개가 없습니다. Civilization V를 종료하고 ui_check.bat를 다시 실행하세요.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_INCOMPLETE">
+			<Text>
+				ui_check.bat가 완료되지 않았습니다. Civilization V를 종료하고 ui_check.bat를 다시 실행하세요.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_WARNINGS">
+			<Text>
+				ui_check.bat가 경고 {1_Num}개와 함께 완료되었습니다. KEK Mod 폴더의 ui_check_result.txt를 확인하세요.
+			</Text>
+		</Row>
 		<Replace Tag="TXT_KEY_DEAL_REJECTED"> 
 			<Text>
 				Offer Rejected
@@ -141528,6 +141633,21 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_UI_CHECK_BAT"> 
 			<Text>
 				ui_check.bat was not launched
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_FAILED">
+			<Text>
+				ui_check.bat nie powiódł się: brakuje plików interfejsu ({1_Num}). Zamknij Civilization V i uruchom ponownie ui_check.bat.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_INCOMPLETE">
+			<Text>
+				ui_check.bat nie został ukończony. Zamknij Civilization V i uruchom ponownie ui_check.bat.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_WARNINGS">
+			<Text>
+				ui_check.bat zakończył się z ostrzeżeniami ({1_Num}). Zobacz ui_check_result.txt w folderze KEK Mod.
 			</Text>
 		</Row>
 		<Replace Tag="TXT_KEY_DEAL_REJECTED"> 
@@ -143967,6 +144087,21 @@ The ship has weather'd every rack; the prize we sought is won."
 				Не был запушен ui_check.bat
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_FAILED">
+			<Text>
+				Ошибка ui_check.bat: не хватает файлов интерфейса ({1_Num}). Закройте Civilization V и запустите ui_check.bat ещё раз.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_INCOMPLETE">
+			<Text>
+				ui_check.bat не завершился. Закройте Civilization V и запустите ui_check.bat ещё раз.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_WARNINGS">
+			<Text>
+				ui_check.bat завершился с предупреждениями ({1_Num}). Подробности в ui_check_result.txt в папке KEK Mod.
+			</Text>
+		</Row>
 		<Replace Tag="TXT_KEY_DEAL_REJECTED"> 
 			<Text>
 				Предложение отвергнуто
@@ -146383,6 +146518,21 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_UI_CHECK_BAT"> 
 			<Text>
 				ui_check.bat was not launched
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_FAILED">
+			<Text>
+				ui_check.bat 執行失敗：缺少 {1_Num} 個介面檔案。請關閉 Civilization V 並重新執行 ui_check.bat。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_INCOMPLETE">
+			<Text>
+				ui_check.bat 未執行完成。請關閉 Civilization V 並重新執行 ui_check.bat。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_UI_CHECK_BAT_WARNINGS">
+			<Text>
+				ui_check.bat 已執行完成，但有 {1_Num} 個警告。請查看 KEK Mod 資料夾中的 ui_check_result.txt。
 			</Text>
 		</Row>
 		<Replace Tag="TXT_KEY_DEAL_REJECTED"> 

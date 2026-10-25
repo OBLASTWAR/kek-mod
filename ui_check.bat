@@ -393,6 +393,10 @@ IF EXIST "%E%\CityView\CityView_small.xml" (
   call :check ui CityView_small.xml
 )
 REM -------------------------------------------------
+REM UI\KekUiCheck.lua tells the lobby screens how this run went (no file: it never
+REM finished). civ5-mod writes this line as is; on Windows :summary rewrites it
+REM with the real counts.
+echo KekUiCheck = { fails = 0, warns = 0 }> "%U%\KekUiCheck.lua"
 call :summary
 EXIT /b %fails%
 
@@ -477,6 +481,7 @@ echo WARNING: %~1
 goto :eof
 
 :summary
+> "%U%\KekUiCheck.lua" echo KekUiCheck = { fails = %fails%, warns = %warns%, files = %copied%, expected = %expected% }
 echo.
 if %fails% GTR 0 goto :summary_fail
 >> "%R%" echo result: OK, %copied% files, %warns% warnings
