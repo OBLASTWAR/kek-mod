@@ -677,6 +677,13 @@
 #define FIX_DO_ATTACK_SUBMARINES_IN_SHADOW_OF_WAR
 ///
 #define INVISIBILITY_OF_NUCLEAR_MISSILESS_ON_SUBMARINES
+// Submarines under ice. Ice was its own map area, so the "no torpedoes into
+// lakes" check (same area) stopped a submarine from attacking across the edge
+// of the ice, in either direction; it now compares bodies of water (landmass).
+// A ship under ice (only submarines can be there) can only be attacked by
+// submarines (units whose ranged attack stays in their domain): no aircraft,
+// missiles, ranged ships or cities.
+#define SUBMARINES_UNDER_ICE
 /// Don't draw other players notification dots on the minimap
 #define MINIMAP_FIX_DRAW_ONLY_SUITABLE_NOTIFICATIONS
 ///
