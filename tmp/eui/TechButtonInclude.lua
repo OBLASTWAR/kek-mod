@@ -657,3 +657,33 @@ function AddCallbackToSmallButtons( thisTechButtonInstance, maxSmallButtons, voi
 		end
 	end
 end
+
+-------------------------------------------------
+-- KEK: "Discovered by X of the Y civilizations you have met", appended to a
+-- tech's tooltip while the active team doesn't have it yet. Counts major civs
+-- met by the active team; teammates share our techs and are left out.
+-------------------------------------------------
+function GetTechKnownByMetText( techID )
+	local activeTeamID = Game.GetActiveTeam()
+	local activeTeam = Teams[ activeTeamID ]
+	if not activeTeam or activeTeam:IsHasTech( techID ) then
+		return ""
+	end
+	local numMet, numKnown = 0, 0
+	for playerID = 0, GameDefines.MAX_MAJOR_CIVS - 1 do
+		local player = Players[ playerID ]
+		if player and player:IsAlive() then
+			local teamID = player:GetTeam()
+			if teamID ~= activeTeamID and activeTeam:IsHasMet( teamID ) then
+				numMet = numMet + 1
+				if Teams[ teamID ]:IsHasTech( techID ) then
+					numKnown = numKnown + 1
+				end
+			end
+		end
+	end
+	if numMet == 0 then
+		return ""
+	end
+	return "[NEWLINE][NEWLINE]" .. Locale.ConvertTextKey( "TXT_KEY_KEK_TECH_KNOWN_BY_MET", numKnown, numMet )
+end
