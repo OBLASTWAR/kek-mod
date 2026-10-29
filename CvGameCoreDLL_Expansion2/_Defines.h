@@ -618,6 +618,10 @@
 #define NEW_CITIES_LIBERATION
 /// Recapturing a city originally owned by a player on the same team will properly no longer cause population losses or razed buildings
 #define AUI_PLAYER_FIX_ACQUIRE_CITY_NO_CITY_LOSSES_ON_RECAPTURE
+// A city a human player founds starts on Production Focus instead of the
+// default (balanced) focus. Captured and gifted cities and AI cities are
+// unchanged. The player can still switch focus in the city screen.
+#define NEW_CITY_PRODUCTION_FOCUS
 /// Adds a new field for minimum city yield that adjust said yield when the city is on hills (currently -1)
 // #define NQM_YIELD_MIN_CITY_ON_HILLS_ADJUST
 /// Time resistance of cities is half than normal
