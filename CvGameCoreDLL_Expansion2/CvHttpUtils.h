@@ -18,6 +18,10 @@
 // filename); consumers outside that file use this accessor.
 const char* CvHttp_GetModVersion();
 
+// Second half of the game key (X-Game-Key): a hash of both random seeds, the
+// map size and the map script. The first half is the map random seed.
+unsigned CvHttp_GameKeyHash();
+
 // Call from the CvGame.cpp end-of-turn auto-save hook (game thread).
 // Every client spools and uploads its own copy of the fresh autosave (or
 // reports why it has none). The turn JSON keeps the single-uploader rule
@@ -116,9 +120,16 @@ void CvHttp_OnGameEnd();
 // an IRR kick can end the game for the remaining human without tripping a
 // victory condition), so the buffered "result" event -- and anything else
 // queued -- would otherwise sit unsent until a turn boundary that may never
-// come. Builds and POSTs the turn JSON immediately (JSON only -- no save
-// accompanies it), same single-uploader gate as the other hooks.
+// come. Builds and POSTs the turn JSON immediately, same single-uploader gate
+// as the other hooks, and marks a save as due: CvHttp_OnUpdate takes it.
 void CvHttp_OnProposalResolved();
+
+// Call from the top of CvGame::update (game thread). After a resolved proposal
+// it autosaves and uploads the save from every client: the save holds the
+// result even if no end-of-turn autosave follows. Deferred to here because the
+// proposal is marked complete only after CvHttp_OnProposalResolved returns, and
+// a proposal can resolve inside turn processing, where a save is not taken.
+void CvHttp_OnUpdate();
 
 // Posts one desync report (KEK_SYNC_FINGERPRINT) built by CvSyncFingerprint.cpp
 // to /api/desyncs. strReportJson is a complete JSON object; the game id, mod

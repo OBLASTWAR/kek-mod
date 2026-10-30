@@ -1550,6 +1550,8 @@ void CvGame::update()
 				gDLL->AutoSave(true);
 			}
 
+			CvHttp_OnUpdate();   // kekmod: the save after a resolved proposal
+
 			// If there are no active players, move on to the AI
 			if(getNumGameTurnActive() == 0)
 			{
@@ -10274,9 +10276,31 @@ void CvGame::addReplayEvent(int eType, PlayerTypes ePlayer, std::vector<int> vNu
 /// before an autosave, so the save carries them. Every living major civ: the
 /// game's own per-turn datasets skip AI-run seats in multiplayer
 /// (ENHANCED_GRAPHS). Kept out of the replay viewer (not in ReplayDataSets).
+/// Also logs the game key (REPLAYEVENT_KEK_GameKey) when it is new or changed:
+/// the save holds the map seed but not the sync seed.
 void CvGame::recordKekReplayData()
 {
 	const int iTurn = getGameTurn();
+#ifdef REPLAY_EVENTS
+	{
+		std::vector<int> vKey;
+		vKey.push_back((int)(unsigned)CvPreGame::mapRandomSeed());
+		vKey.push_back((int)(unsigned)CvPreGame::syncRandomSeed());
+		vKey.push_back((int)CvHttp_GameKeyHash());
+		bool bLogged = false;
+		for (size_t i = m_listReplayEvents.size(); i > 0; --i)
+		{
+			const CvReplayEvent& kEvent = m_listReplayEvents[i - 1];
+			if (kEvent.m_eEventType == REPLAYEVENT_KEK_GameKey)
+			{
+				bLogged = kEvent.m_vNumericArgs == vKey;
+				break;
+			}
+		}
+		if (!bLogged)
+			addReplayEvent(REPLAYEVENT_KEK_GameKey, vKey);
+	}
+#endif
 	for (int iI = 0; iI < MAX_MAJOR_CIVS; iI++)
 	{
 		CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)iI);
@@ -10289,6 +10313,19 @@ void CvGame::recordKekReplayData()
 		kPlayer.setReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_KEK_CULTURERATE"), iTurn, kPlayer.GetTotalJONSCulturePerTurn());
 		kPlayer.setReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_KEK_HAPPINESS"), iTurn, kPlayer.GetExcessHappiness());
 		kPlayer.setReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_KEK_MILITARYMIGHT"), iTurn, kPlayer.GetMilitaryMight());
+
+		// The JSON's per-city yields, summed: the game's FOODPERTURN and
+		// PRODUCTIONPERTURN are recorded during turn processing, not at the save.
+		int iFood = 0;
+		int iProduction = 0;
+		int iLoop;
+		for (const CvCity* pCity = kPlayer.firstCity(&iLoop); pCity != NULL; pCity = kPlayer.nextCity(&iLoop))
+		{
+			iFood += pCity->getYieldRate(YIELD_FOOD, false);
+			iProduction += pCity->getYieldRate(YIELD_PRODUCTION, false);
+		}
+		kPlayer.setReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_KEK_FOODRATE"), iTurn, iFood);
+		kPlayer.setReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_KEK_PRODUCTIONRATE"), iTurn, iProduction);
 	}
 }
 #endif

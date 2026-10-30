@@ -262,13 +262,16 @@ static void FormatMapGuid(char* pszOut, size_t nLen)
 
 // Shared per-game id, 16 lowercase hex chars: the map random seed, then a hash
 // of both random seeds, the map size and the map script. The host picks the
-// seeds and every client gets them (they drive the synced RNGs); they are also
-// stored in the save, so every client of a game computes the same key and a
-// reloaded game keeps it. The map GUID above is NOT shared: each client's
-// engine makes its own, so two clients of one game upload under different
-// X-Game-Id values. The hash half keeps the key from repeating the seed when
-// the host gave both seeds the same value.
-static void FormatGameKey(char* pszOut, size_t nLen)
+// seeds and every client gets them (they drive the synced RNGs), so every
+// client of a game computes the same key. The map GUID above is NOT shared:
+// each client's engine makes its own, so two clients of one game upload under
+// different X-Game-Id values. The hash half keeps the key from repeating the
+// seed when the host gave both seeds the same value.
+//
+// The save holds the map seed but not the sync seed, and a game re-hosted from
+// a save gets a new sync seed, so the save can't rebuild the key on its own:
+// CvGame::recordKekReplayData logs it as REPLAYEVENT_KEK_GameKey.
+unsigned CvHttp_GameKeyHash()
 {
     const unsigned uMapSeed  = (unsigned)CvPreGame::mapRandomSeed();
     const unsigned uSyncSeed = (unsigned)CvPreGame::syncRandomSeed();
@@ -283,8 +286,13 @@ static void FormatGameKey(char* pszOut, size_t nLen)
     const std::string strScript = CvPreGame::mapScriptName();
     for (size_t i = 0; i < strScript.size(); i++)
         uHash = (uHash ^ (unsigned char)strScript[i]) * 16777619u;
+    return uHash;
+}
 
-    _snprintf_s(pszOut, nLen, _TRUNCATE, "%08x%08x", uMapSeed, uHash);
+static void FormatGameKey(char* pszOut, size_t nLen)
+{
+    _snprintf_s(pszOut, nLen, _TRUNCATE, "%08x%08x",
+                (unsigned)CvPreGame::mapRandomSeed(), CvHttp_GameKeyHash());
 }
 
 
@@ -507,6 +515,7 @@ static const char* const s_apszReplayEventTypeTokens[] =
     "REPLAYEVENT_TileOwnerChanged",
     "REPLAYEVENT_YieldChanged",
     "REPLAYEVENT_CityAcquired",
+    "REPLAYEVENT_KEK_GameKey",
 };
 #define KEKMOD_NUM_REPLAY_EVENT_TOKENS \
     (sizeof(s_apszReplayEventTypeTokens) / sizeof(s_apszReplayEventTypeTokens[0]))
@@ -1923,6 +1932,7 @@ struct PendingSave
     int          iTurn;
     int          iSlot;        // local player's slot
     bool         bGameEnd;     // final save -> backoff retries
+    bool         bProposal;    // save after a resolved proposal -> backoff retries
     std::string  strGameId;    // map GUID hex
     std::string  strGameKey;   // shared by every client of the game
     std::string  strSteamId;   // local player
@@ -1934,7 +1944,7 @@ struct PendingSave
     std::string  strSeenName;  // newest autosave at hook time (late capture
     FILETIME     seenWriteTime;//   must find a different, newer one)
 
-    PendingSave() : uSeq(0), iTurn(0), iSlot(-1), bGameEnd(false)
+    PendingSave() : uSeq(0), iTurn(0), iSlot(-1), bGameEnd(false), bProposal(false)
     {
         hookTime.dwLowDateTime = hookTime.dwHighDateTime = 0;
         seenWriteTime.dwLowDateTime = seenWriteTime.dwHighDateTime = 0;
@@ -2008,13 +2018,20 @@ static void DeleteFolderFiles(const std::string& strDir)
 }
 
 // Spool file name for a turn: "0124_AutoSave_Post_0124 AD-1280.Civ5Save",
-// or "0124_end_..." for the game-end save.
-static std::string SpoolFileName(int iTurn, bool bGameEnd, const char* pszSaveName)
+// "0124_end_..." for the game-end save, or "0124_vote_..." for the save after
+// a resolved proposal (the engine gives it the same name as the turn's own).
+static std::string SpoolFileName(const PendingSave& entry, const char* pszSaveName)
 {
     char szPrefix[32];
     _snprintf_s(szPrefix, sizeof(szPrefix), _TRUNCATE, "%04d_%s",
-                iTurn, bGameEnd ? "end_" : "");
+                entry.iTurn, entry.bGameEnd ? "end_" : entry.bProposal ? "vote_" : "");
     return std::string(szPrefix) + pszSaveName;
+}
+
+// Upload order of spooled saves: by turn, then proposal, turn, game end.
+static int SpoolOrder(const PendingSave& entry)
+{
+    return entry.iTurn * 3 + (entry.bProposal ? 0 : entry.bGameEnd ? 2 : 1);
 }
 
 // Copies pszSavePath into the spool as this turn's save. Fills the entry's
@@ -2032,7 +2049,7 @@ static bool SpoolSave(PendingSave& entry, const char* pszSavePath)
     CreateDirectoryA(strDir.c_str(), NULL);
 
     const char* pszName = BaseName(pszSavePath);
-    std::string strTarget = strDir + "\\" + SpoolFileName(entry.iTurn, entry.bGameEnd, pszName);
+    std::string strTarget = strDir + "\\" + SpoolFileName(entry, pszName);
     if (!CopyFileA(pszSavePath, strTarget.c_str(), FALSE))
     {
         char szDetail[64];
@@ -2143,19 +2160,20 @@ static void SwitchSaveQueueToGame(const std::string& strGameId, const std::strin
                 continue;
             do
             {
-                // "<turn>_[end_]<name>"
+                // "<turn>_[end_|vote_]<name>"
                 const char* pszUnderscore = strchr(fs.cFileName, '_');
                 if (!pszUnderscore || pszUnderscore == fs.cFileName)
                     continue;
                 PendingSave entry;
                 entry.iTurn        = atoi(fs.cFileName);
                 entry.bGameEnd     = strncmp(pszUnderscore + 1, "end_", 4) == 0;
+                entry.bProposal    = strncmp(pszUnderscore + 1, "vote_", 5) == 0;
                 entry.iSlot        = iSlot;
                 entry.strGameId    = strGameId;
                 entry.strGameKey   = szGameKey;
                 entry.strSteamId   = strSteamId;
                 entry.strSpoolPath = strDir + "\\" + fs.cFileName;
-                entry.strSaveName  = pszUnderscore + 1 + (entry.bGameEnd ? 4 : 0);
+                entry.strSaveName  = pszUnderscore + 1 + (entry.bGameEnd ? 4 : entry.bProposal ? 5 : 0);
                 GetSystemTimeAsFileTime(&entry.hookTime);
                 leftovers.push_back(entry);
             } while (FindNextFileA(hSaves, &fs));
@@ -2166,9 +2184,11 @@ static void SwitchSaveQueueToGame(const std::string& strGameId, const std::strin
 
     if (leftovers.empty())
         return;
-    // FindFirstFile order is not guaranteed: oldest turn first.
+    // FindFirstFile order is not guaranteed: oldest turn first, and within a
+    // turn in the order they were taken (proposal, turn, game end). GDR takes
+    // a later copy of a turn that differs as the newer state.
     for (size_t i = 1; i < leftovers.size(); ++i)
-        for (size_t j = i; j > 0 && leftovers[j - 1].iTurn > leftovers[j].iTurn; --j)
+        for (size_t j = i; j > 0 && SpoolOrder(leftovers[j - 1]) > SpoolOrder(leftovers[j]); --j)
             std::swap(leftovers[j - 1], leftovers[j]);
     EnterCriticalSection(&s_saveQueueLock);
     for (size_t i = 0; i < leftovers.size(); ++i)
@@ -2280,6 +2300,9 @@ static SendResult SendPendingSave(HINTERNET hConnect, PendingSave& entry)
                 KEKMOD_API_KEY[0] ? KEKMOD_API_KEY : "",
                 KEKMOD_API_KEY[0] ? "\r\n" : "");
     strHeaders = szCommon;
+    strHeaders += entry.bGameEnd ? "X-Save-Kind: game_end\r\n"
+                : entry.bProposal ? "X-Save-Kind: proposal\r\n"
+                : "X-Save-Kind: turn\r\n";
     if (pFileBuf)
         strHeaders += "X-Save-Filename: " + HeaderSafe(entry.strSaveName, 400) + "\r\n";
     else
@@ -2364,7 +2387,7 @@ static DWORD WINAPI SaveQueueWorkerProc(LPVOID)
 
             if (eResult == SEND_RETRY)
             {
-                if (entry.bGameEnd && iBackoffStep < (int)_countof(s_adwGameEndBackoffMs))
+                if ((entry.bGameEnd || entry.bProposal) && iBackoffStep < (int)_countof(s_adwGameEndBackoffMs))
                 {
                     Sleep(s_adwGameEndBackoffMs[iBackoffStep]);
                     iBackoffStep++;
@@ -2421,14 +2444,16 @@ static void KickSaveWorker()
 
 // Captures this turn's autosave into the spool (or records why there is
 // none) and queues it for upload. Runs on EVERY client, right after the
-// AutoSave call. GAME THREAD ONLY.
+// AutoSave call. GAME THREAD ONLY. A proposal save that isn't there is
+// dropped rather than reported: the turn's own save still comes.
 static void CaptureTurnSave(int iTurn, const char* pszGameId, PlayerTypes eActive,
-                            bool bGameEnd)
+                            bool bGameEnd, bool bProposal = false)
 {
     PendingSave entry;
     entry.iTurn      = iTurn;
     entry.iSlot      = (int)eActive;
     entry.bGameEnd   = bGameEnd;
+    entry.bProposal  = bProposal;
     entry.strGameId  = pszGameId;
     {
         char szGameKey[24];
@@ -2477,6 +2502,12 @@ static void CaptureTurnSave(int iTurn, const char* pszGameId, PlayerTypes eActiv
         {
             SetLastCaptured(entry.strSeenName.c_str(), writeTime);
         }
+    }
+    if (!entry.strStatus.empty() && bProposal)
+    {
+        WriteLog("[kekmod_http] turn %d: no proposal save to upload (%s: %s)",
+                 iTurn, entry.strStatus.c_str(), entry.strDetail.c_str());
+        return;
     }
     if (!entry.strStatus.empty())
         WriteLog("[kekmod_http] turn %d: no fresh save to upload yet (%s: %s)",
@@ -2615,8 +2646,12 @@ void CvHttp_OnTurnAutoSave()
     EnqueueUpload(entry, bLocalIsUploader);
 }
 
+// Set when a proposal resolves; CvHttp_OnUpdate takes the save.
+static bool s_bProposalSavePending = false;
+
 void CvHttp_OnGameEnd()
 {
+    s_bProposalSavePending = false;   // the game-end save below holds the result
     if (!ShouldSendFinalTelemetry())
         return;
 
@@ -2694,6 +2729,32 @@ void CvHttp_OnProposalResolved()
     }
 
     EnqueueUpload(entry, bLocalIsUploader);
+
+    // The save waits for the next update: this runs before the proposal is
+    // marked complete, and may run inside turn processing.
+    s_bProposalSavePending = true;
+}
+
+void CvHttp_OnUpdate()
+{
+    if (!s_bProposalSavePending)
+        return;
+    s_bProposalSavePending = false;
+    if (!ShouldSendFinalTelemetry())
+        return;
+    PlayerTypes eActive = GC.getGame().getActivePlayer();
+    if (eActive == NO_PLAYER)
+        return;
+
+    // Every client saves and uploads, like the turn's own autosave. It is
+    // filed under the current turn; that turn's end-of-turn save follows.
+    char szGuid[40];
+    FormatMapGuid(szGuid, sizeof(szGuid));
+#ifdef KEK_SAVE_DATA
+    GC.getGame().recordKekReplayData();
+#endif
+    gDLL->AutoSave(false, true);
+    CaptureTurnSave(GC.getGame().getGameTurn(), szGuid, eActive, false, true);
 }
 
 // ---------------------------------------------------------------------------
@@ -2818,10 +2879,12 @@ void CvHttp_PostDesyncReport(int iTurn, int iSlice, PlayerTypes eLocal, PlayerTy
 void CvHttp_OnTurnAutoSave() {}
 void CvHttp_OnGameEnd() {}
 void CvHttp_OnProposalResolved() {}
+void CvHttp_OnUpdate() {}
 void CvHttp_RecordRuinEvent(const KekRuinEvent&) {}
 void CvHttp_RecordVoteEvent(const KekVoteEvent&) {}
 void CvHttp_RecordCityCaptureEvent(const KekCityCaptureEvent&) {}
 const char* CvHttp_GetModVersion() { return ""; }
+unsigned CvHttp_GameKeyHash() { return 0; }
 void CvHttp_PostDesyncReport(int, int, PlayerTypes, PlayerTypes, const std::string&) {}
 
 #endif // _WIN32
