@@ -121,10 +121,11 @@ void CvHttp_OnGameEnd();
 // victory condition), so the buffered "result" event -- and anything else
 // queued -- would otherwise sit unsent until a turn boundary that may never
 // come. Builds and POSTs the turn JSON immediately, same single-uploader gate
-// as the other hooks, and marks a save as due: CvHttp_OnUpdate takes it.
-void CvHttp_OnProposalResolved();
+// as the other hooks. With bSave (a passed IRR) it also marks a save as due:
+// CvHttp_OnUpdate takes it. A passed CC or Scrap ends the game, which saves.
+void CvHttp_OnProposalResolved(bool bSave);
 
-// Call from the top of CvGame::update (game thread). After a resolved proposal
+// Call from the top of CvGame::update (game thread). After a passed IRR
 // it autosaves and uploads the save from every client: the save holds the
 // result even if no end-of-turn autosave follows. Deferred to here because the
 // proposal is marked complete only after CvHttp_OnProposalResolved returns, and

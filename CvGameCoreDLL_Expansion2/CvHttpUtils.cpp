@@ -2699,7 +2699,7 @@ void CvHttp_OnGameEnd()
     EnqueueUpload(entry, bLocalIsUploader);
 }
 
-void CvHttp_OnProposalResolved()
+void CvHttp_OnProposalResolved(bool bSave)
 {
     if (!ShouldSendFinalTelemetry())
         return;
@@ -2732,7 +2732,8 @@ void CvHttp_OnProposalResolved()
 
     // The save waits for the next update: this runs before the proposal is
     // marked complete, and may run inside turn processing.
-    s_bProposalSavePending = true;
+    if (bSave)
+        s_bProposalSavePending = true;
 }
 
 void CvHttp_OnUpdate()
@@ -2878,7 +2879,7 @@ void CvHttp_PostDesyncReport(int iTurn, int iSlice, PlayerTypes eLocal, PlayerTy
 // ---------------------------------------------------------------------------
 void CvHttp_OnTurnAutoSave() {}
 void CvHttp_OnGameEnd() {}
-void CvHttp_OnProposalResolved() {}
+void CvHttp_OnProposalResolved(bool) {}
 void CvHttp_OnUpdate() {}
 void CvHttp_RecordRuinEvent(const KekRuinEvent&) {}
 void CvHttp_RecordVoteEvent(const KekVoteEvent&) {}

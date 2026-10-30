@@ -1376,6 +1376,7 @@ public:
 	MPVotingSystemProposalStatus GetProposalStatus(int iProposalID);
 	PlayerTypes GetProposalOwner(int iProposalID);
 	PlayerTypes GetProposalSubject(int iProposalID);
+	PlayerTypes GetLastHumanAfterIrr(int iProposalID);
 	bool GetProposalCompletion(int iProposalID);
 	bool GetVoterEligibility(int iProposalID, PlayerTypes ePlayerID);
 	bool GetVoterHasVoted(int iProposalID, PlayerTypes ePlayerID);
