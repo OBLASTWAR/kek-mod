@@ -951,6 +951,27 @@ local function ScanMusician( player )
 	return gp
 end
 
+-- Science going into a tech each turn: ours plus that of teammates researching the same tech,
+-- as CvPlayerTechs::GetResearchTurnsLeft counts it (research progress is shared by the team)
+local function GetTeamResearchTimes100( techID )
+	local researchTimes100 = g_activePlayer:GetScienceTimes100()
+	for playerID = 0, GameDefines.MAX_MAJOR_CIVS - 1 do
+		local player = Players[ playerID ]
+		if playerID ~= g_activePlayerID and player:IsAlive() and player:GetTeam() == g_activeTeamID and player:GetCurrentResearch() == techID then
+			researchTimes100 = researchTimes100 + player:GetScienceTimes100()
+		end
+	end
+	return researchTimes100
+end
+
+-- Great General / Great Admiral come from combat experience, not from city specialists
+local g_combatGreatPeople = {
+	{ Name = "General", Class = "UNITCLASS_GREAT_GENERAL",
+		Scan = function( player ) return player:GetCombatExperience(), player:GreatGeneralThreshold() end },
+	{ Name = "Admiral", Class = "UNITCLASS_GREAT_ADMIRAL",
+		Scan = function( player ) return player:GetNavalCombatExperience(), player:GreatAdmiralThreshold() end },
+}
+
 -------------------------------------------------
 -- Top Panel Update
 -------------------------------------------------
@@ -989,7 +1010,7 @@ local function UpdateTopPanelNow()
 				if sciencePerTurnTimes100 > 0 then
 
 					Controls.ScienceBar:SetPercent( scienceProgress / scienceNeeded )
-					Controls.ScienceBarShadow:SetPercent( (scienceProgress*100 + sciencePerTurnTimes100) / scienceNeeded / 100 )
+					Controls.ScienceBarShadow:SetPercent( (scienceProgress*100 + GetTeamResearchTimes100( techID )) / scienceNeeded / 100 )
 					if sciencePerTurnTimes100 > 0 then
 						strScienceTurnsRemaining = g_activePlayer:GetResearchTurnsLeft(techID, true)
 					end
@@ -1293,6 +1314,21 @@ local function UpdateTopPanelNow()
 				Controls.MusicianIcon:SetHide(true)
 				Controls.MusicianTurns:SetText("")
 			end
+
+			-- Great General / Great Admiral, once there is some experience towards one
+			for _, combat in ipairs( g_combatGreatPeople ) do
+				local progress, threshold = combat.Scan( g_activePlayer )
+				local box, icon = Controls[ combat.Name .. "Box" ], Controls[ combat.Name .. "Icon" ]
+				if progress > 0 and threshold > 0 then
+					Controls[ combat.Name .. "Bar" ]:SetPercent( progress / threshold )
+					box:SetHide(false)
+					local gpUnit = GameInfo.Units[ GameInfo.UnitClasses[ combat.Class ].DefaultUnit ]
+					icon:SetHide(not (gpUnit and IconHookup(gpUnit.PortraitIndex, 45, gpUnit.IconAtlas, icon)))
+				else
+					box:SetHide(true)
+					icon:SetHide(true)
+				end
+			end
 		end
 
 		-----------------------------
@@ -1514,17 +1550,18 @@ g_toolTipHandler.SciencePerTurn = function()-- control )
 			tips:insert( tip )
 
 			if sciencePerTurnTimes100 > 0 then
-				local scienceOverflowTimes100 = sciencePerTurnTimes100 * researchTurnsLeft + (researchProgress - researchCost) * 100
+				local researchTimes100 = GetTeamResearchTimes100( techID )
+				local scienceOverflowTimes100 = researchTimes100 * researchTurnsLeft + (researchProgress - researchCost) * 100
 				local tip = g_scienceTextColor .. Locale.ToUpper( L( "TXT_KEY_STR_TURNS", researchTurnsLeft ) ) .. "[ENDCOLOR] " .. S( "%+g", scienceOverflowTimes100 / 100 ) .. "[ICON_RESEARCH]"
 				if researchTurnsLeft > 1 then
-					tip = L( "TXT_KEY_STR_TURNS", researchTurnsLeft -1 ) .. " " .. S( "%+g", (scienceOverflowTimes100 - sciencePerTurnTimes100) / 100 ) .. "[ICON_RESEARCH]  " .. tip
+					tip = L( "TXT_KEY_STR_TURNS", researchTurnsLeft -1 ) .. " " .. S( "%+g", (scienceOverflowTimes100 - researchTimes100) / 100 ) .. "[ICON_RESEARCH]  " .. tip
 				end
 				tips:insert( tip )
 			end
 -- todo: rationalize
 			local cost = g_activePlayer:GetResearchCost(techID) * 100
 			local progress = g_activePlayer:GetResearchProgress(techID) * 100
-			local change = g_activePlayer:GetScienceTimes100()
+			local change = GetTeamResearchTimes100( techID )
 			local loss = g_activePlayer:GetScienceFromBudgetDeficitTimes100()
 			local turnsRemaining = g_activePlayer:GetResearchTurnsLeft(techID, true)
 
@@ -2041,6 +2078,20 @@ if civ5_mode then
 		return setTextToolTip( tipText )
 	end
 	Controls.MusicianIcon:SetToolTipCallback( requestTextToolTip )
+
+	for _, combat in ipairs( g_combatGreatPeople ) do
+		local iconName = combat.Name .. "Icon"
+		local unitClass = GameInfo.UnitClasses[ combat.Class ]
+		Controls[ iconName ]:RegisterCallback( Mouse.eLClick, function() GamePopup( ButtonPopupTypes.BUTTONPOPUP_MILITARY_OVERVIEW ) end )
+		Controls[ iconName ]:RegisterCallback( Mouse.eRClick, function() GamePedia( GameInfo.Units[ unitClass.DefaultUnit ].Description ) end )
+		g_toolTipHandler[ iconName ] = function()-- control )
+			local progress, threshold = combat.Scan( Players[Game.GetActivePlayer()] )
+			local icon = GreatPeopleIcon( combat.Class )
+			return setTextToolTip( L( "TXT_KEY_PROGRESS_TOWARDS", "[COLOR_YIELD_FOOD]" .. Locale.ToUpper( unitClass.Description ) .. "[ENDCOLOR]" )
+				.. " " .. progress .. icon .. " / " .. threshold .. icon )
+		end
+		Controls[ iconName ]:SetToolTipCallback( requestTextToolTip )
+	end
 
 	-------------------------------------------------
 	-- Happiness Tooltip & Click Actions
