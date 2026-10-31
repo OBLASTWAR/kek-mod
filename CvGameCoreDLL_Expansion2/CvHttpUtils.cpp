@@ -1933,6 +1933,8 @@ struct PendingSave
     int          iSlot;        // local player's slot
     bool         bGameEnd;     // final save -> backoff retries
     bool         bProposal;    // save after a resolved proposal -> backoff retries
+    int          iHost;        // 1 = this client hosts, 0 = it doesn't, -1 = unknown
+                               //   (re-queued from an earlier session's spool)
     std::string  strGameId;    // map GUID hex
     std::string  strGameKey;   // shared by every client of the game
     std::string  strSteamId;   // local player
@@ -1944,7 +1946,7 @@ struct PendingSave
     std::string  strSeenName;  // newest autosave at hook time (late capture
     FILETIME     seenWriteTime;//   must find a different, newer one)
 
-    PendingSave() : uSeq(0), iTurn(0), iSlot(-1), bGameEnd(false), bProposal(false)
+    PendingSave() : uSeq(0), iTurn(0), iSlot(-1), bGameEnd(false), bProposal(false), iHost(-1)
     {
         hookTime.dwLowDateTime = hookTime.dwHighDateTime = 0;
         seenWriteTime.dwLowDateTime = seenWriteTime.dwHighDateTime = 0;
@@ -2303,6 +2305,11 @@ static SendResult SendPendingSave(HINTERNET hConnect, PendingSave& entry)
     strHeaders += entry.bGameEnd ? "X-Save-Kind: game_end\r\n"
                 : entry.bProposal ? "X-Save-Kind: proposal\r\n"
                 : "X-Save-Kind: turn\r\n";
+    // When copies of a turn disagree (a desync), GDR keeps the host's: a resync
+    // gives every client the host's game. A save left from an earlier session
+    // doesn't know, and says nothing.
+    if (entry.iHost >= 0)
+        strHeaders += entry.iHost ? "X-Is-Host: 1\r\n" : "X-Is-Host: 0\r\n";
     if (pFileBuf)
         strHeaders += "X-Save-Filename: " + HeaderSafe(entry.strSaveName, 400) + "\r\n";
     else
@@ -2454,6 +2461,7 @@ static void CaptureTurnSave(int iTurn, const char* pszGameId, PlayerTypes eActiv
     entry.iSlot      = (int)eActive;
     entry.bGameEnd   = bGameEnd;
     entry.bProposal  = bProposal;
+    entry.iHost      = gDLL->IsHost() ? 1 : 0;
     entry.strGameId  = pszGameId;
     {
         char szGameKey[24];
