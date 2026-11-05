@@ -197,7 +197,7 @@ public:
 
 	bool isVisible(TeamTypes eTeam, bool bDebug) const
 	{
-		if(bDebug && GC.getGame().isDebugMode())
+		if(bDebug && GC.getGame().isRevealAllView(eTeam))
 			return true;
 		else
 		{
@@ -580,7 +580,7 @@ public:
 
 	bool isRevealed(TeamTypes eTeam, bool bDebug) const
 	{
-		if(bDebug && GC.getGame().isDebugMode())
+		if(bDebug && GC.getGame().isRevealAllView(eTeam))
 			return true;
 		CvAssertMsg(eTeam >= 0, "eTeam is expected to be non-negative (invalid Index)");
 		CvAssertMsg(eTeam < MAX_TEAMS, "eTeam is expected to be within maximum bounds (invalid Index)");

@@ -80,6 +80,19 @@ function UpdateRangeStrikeIcon(cityBanner)
 	end
 end
 -------------------------------------------------
+-- End-game full view: once the game is over, every major civ's city gets the active
+-- team's banner (growth and production bars, turns to grow and build), so you can see
+-- what everyone was building. City states keep their own banner. Clicks and actions
+-- still check the city's owner.
+-------------------------------------------------
+function UseTeamBanner( team, iActiveTeam, playerID )
+	if (team == iActiveTeam) then
+		return true;
+	end
+	return Game.GetGameState() == GameplayGameStateTypes.GAMESTATE_OVER and not Players[playerID]:IsMinorCiv();
+end
+
+-------------------------------------------------
 -- Updates banner to reflect latest city info.
 -------------------------------------------------
 function RefreshCityBanner(cityBanner, iActiveTeam, iActivePlayer)
@@ -93,7 +106,7 @@ function RefreshCityBanner(cityBanner, iActiveTeam, iActivePlayer)
 	local team = Players[cityBanner.playerID]:GetTeam();
 	local isActivePlayerCity = (cityBanner.playerID == iActivePlayer);
 	local isActiveTeamCity = false;
-	if (iActiveTeam == team) then
+	if (UseTeamBanner(team, iActiveTeam, cityBanner.playerID)) then
 		isActiveTeamCity = true;
 	end	
 		
@@ -195,7 +208,7 @@ function RefreshCityBanner(cityBanner, iActiveTeam, iActivePlayer)
 			else
 				strToolTip = Locale.ConvertTextKey("TXT_KEY_CITY_ENTER_CITY_SCREEN");		
 			end
-		elseif (isActiveTeamCity) then
+		elseif (iActiveTeam == team) then -- real team: isActiveTeamCity is also true for every city after the game ends
 			strToolTip = Locale.ConvertTextKey("TXT_KEY_CITY_TEAMMATE");
 		elseif (Game.IsOption( GameOptionTypes.GAMEOPTION_ALWAYS_WAR )) then
 			strToolTip = Locale.ConvertTextKey("TXT_KEY_ALWAYS_AT_WAR_WITH_CITY");
@@ -492,6 +505,9 @@ function RefreshCityBanner(cityBanner, iActiveTeam, iActivePlayer)
     			controls.CityBannerProductionButton:RegisterCallback( Mouse.eLClick, OnProdClick );
     			controls.CityBannerProductionButton:SetVoids( city:GetID(), nil );
     			controls.BannerButton:SetDisabled( false );
+			else
+				-- a reused banner must not keep a callback for one of our cities
+				controls.CityBannerProductionButton:ClearCallback( Mouse.eLClick );
 			end
 			
 		end
@@ -609,7 +625,7 @@ function OnCityCreated( hexPos, playerID, cityID, cultureType, eraType, continen
     local gridPosX, gridPosY = ToGridFromHex( hexPos.x, hexPos.y );
 		
 	local isActiveType = false;
-	if(iActiveTeam ~= team) then
+	if(not UseTeamBanner(team, iActiveTeam, playerID)) then
 	    controlTable = g_OtherIM:GetInstance();
 	    controlTable.BannerButton:RegisterCallback( Mouse.eLClick, OnBannerClick );
 	    controlTable.BannerButton:SetVoid1( gridPosX );
@@ -674,7 +690,7 @@ function CheckCityBannerRebuild( instance, iActiveTeam, iActivePlayer )
 	local cityTeam = Players[instance.playerID]:GetTeam();		
 	
     -- If the city banner was instanced for the active team and now its not or vice versa, rebuild the banner
-	local bWantActive = cityTeam == iActiveTeam;	
+	local bWantActive = UseTeamBanner(cityTeam, iActiveTeam, instance.playerID);	
 	if (instance.IsActiveType ~= bWantActive) then
 		-- rebuild the banner
 		local controlTable = {};
@@ -818,7 +834,7 @@ function OnCityDestroyed(hexPos, playerID, cityID, newPlayerID)
 	local active_team = Players[Game.GetActivePlayer()]:GetTeam();
 	local team = Players[playerID]:GetTeam();
 	
-	if(active_team ~= team) 
+	if(not banner.IsActiveType) 
 	then
 	    g_OtherIM:ReleaseInstance( banner.SubControls );
     else
@@ -1147,7 +1163,7 @@ function GarrisonComplete( cityBanner, pCity )
 	local team = Players[cityBanner.playerID]:GetTeam();
 	
 	local controls = cityBanner.SubControls;
-	if active_team == team then
+	if UseTeamBanner(team, active_team, cityBanner.playerID) then
 		controls.GarrisonFrame:SetHide(false);
 	end	
 end
@@ -1251,6 +1267,13 @@ function OnCityBannerActivePlayerChanged( iActivePlayer, iPrevActivePlayer )
 end
 Events.GameplaySetActivePlayer.Add(OnCityBannerActivePlayerChanged);
 
+----------------------------------------------------------------
+-- The game just ended: switch every city to the team banner
+----------------------------------------------------------------
+Events.EndGameShow.Add( function()
+	OnCityBannerActivePlayerChanged( Game.GetActivePlayer(), Game.GetActivePlayer() );
+end);
+
 ------------------------------------------------------------
 ------------------------------------------------------------
 function HideGarrisonRing(iX, iY, bHide)
@@ -1266,7 +1289,7 @@ function HideGarrisonRing(iX, iY, bHide)
 				local eActiveTeam = Players[Game.GetActivePlayer()]:GetTeam();
 				local eCityTeam = Players[playerID]:GetTeam();
 	
-				if eActiveTeam == eCityTeam then			
+				if UseTeamBanner(eCityTeam, eActiveTeam, playerID) then			
 					local playerTable = Instances[ playerID ];
 					if playerTable then
 						local pBannerInstance = playerTable[ cityID ];

@@ -291,6 +291,7 @@ public:
 	Localization::String GetDiploResponse(const char* szLeader, const char* szResponse, const Localization::String& strOptionalKey1, const Localization::String& strOptionalKey2);
 
 	bool isDebugMode() const;
+	bool isRevealAllView(TeamTypes eTeam);
 	void setDebugMode(bool bDebugMode);
 	void toggleDebugMode();
 	void updateDebugModeCache();

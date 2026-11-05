@@ -10790,7 +10790,7 @@ void CvCity::setEverOwned(PlayerTypes eIndex, bool bNewValue)
 bool CvCity::isRevealed(TeamTypes eIndex, bool bDebug) const
 {
 	VALIDATE_OBJECT
-	if(bDebug && GC.getGame().isDebugMode())
+	if(bDebug && GC.getGame().isRevealAllView(eIndex))
 	{
 		return true;
 	}
