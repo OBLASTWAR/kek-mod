@@ -45,8 +45,9 @@ local function onProposalResult( Id, expires, OwnerId, SubjectId, iType, Status)
 	if (pActivePlayer ~= nil) then
 		if (Status == 1) then
 			if iType == 1001 then
-				-- defeat screen comes with NetworkKickedPopup
-				if Matchmaking.IsHost() then
+				-- defeat screen comes with NetworkKickedPopup. An IRR that left one
+				-- human ended the game for them instead (CvMPVotingSystem): no kick.
+				if Matchmaking.IsHost() and Game.GetWinner() == -1 then
 					Matchmaking.KickPlayer(SubjectId)
 				end
 			elseif iType ==1002 then

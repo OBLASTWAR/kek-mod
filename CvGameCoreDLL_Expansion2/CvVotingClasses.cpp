@@ -11460,8 +11460,9 @@ void CvMPVotingSystem::SetProposalCompletion(int iProposalID, bool bValue)
 
 		// Flush now: a resolved proposal (esp. an IRR kick) may be the last
 		// thing that happens this session, and nothing guarantees another
-		// end-of-turn autosave will follow to drain the buffered event.
-		CvHttp_OnProposalResolved();
+		// end-of-turn autosave will follow to drain the buffered event. A
+		// passed IRR also gets a save; CC and Scrap end the game, which saves.
+		CvHttp_OnProposalResolved(kProposal.eType == PROPOSAL_IRR && kProposal.eStatus == STATUS_PASSED);
 	}
 
 	m_vProposals.at(iProposalID).bComplete = bValue;
@@ -11621,6 +11622,24 @@ void CvMPVotingSystem::DoUpdateProposalStatus(int iProposalID)
 		PlayerTypes eActivePlayer = GC.getGame().getActivePlayer();
 		CvPlayerAI& kActivePlayer = GET_PLAYER(eActivePlayer);
 		DLLUI->AddMessage(0, CvPreGame::activePlayer(), true, GC.getEVENT_MESSAGE_TIME(), GetLocalizedText("TXT_KEY_MESSAGE_MP_PROPOSAL_FINISHED"));
+#ifdef REPLAY_EVENTS
+		// kekmod: before the UI hook, which ends the game on a passed CC or
+		// Scrap: the game-end save has to hold the result with its turn.
+		std::vector<int> vArgs;
+		vArgs.push_back(iProposalID);
+		vArgs.push_back(static_cast<int>(GetProposalType(iProposalID)));
+		vArgs.push_back(static_cast<int>(GetProposalSubject(iProposalID)));
+		vArgs.push_back(GetProposalStatus(iProposalID) == STATUS_PASSED);
+		GC.getGame().addReplayEvent(REPLAYEVENT_MPProposalResult, GetProposalOwner(iProposalID), vArgs);
+#endif
+		// kekmod 2.5: an IRR that leaves one human in the game wins it for
+		// them, like a CC. The UI hook then skips the kick (EndGameMenu shows).
+		PlayerTypes eLastStanding = GetLastHumanAfterIrr(iProposalID);
+		if (eLastStanding != NO_PLAYER && GC.getGame().getWinner() == NO_TEAM)
+		{
+			GC.getGame().setWinner(GET_PLAYER(eLastStanding).getTeam(),
+			                       (VictoryTypes)GC.getInfoTypeForString("VICTORY_DIPLOMATIC"));
+		}
 		if (pkScriptSystem)  // inform UI
 		{
 			args->Push(GetProposalUIid(iProposalID));
@@ -11631,18 +11650,45 @@ void CvMPVotingSystem::DoUpdateProposalStatus(int iProposalID)
 			args->Push((int)GetProposalStatus(iProposalID));
 			LuaSupport::CallHook(pkScriptSystem, "MPVotingSystemProposalResult", args.get(), bResult);
 		}
-#ifdef REPLAY_EVENTS
-		std::vector<int> vArgs;
-		vArgs.push_back(iProposalID);
-		vArgs.push_back(static_cast<int>(GetProposalType(iProposalID)));
-		vArgs.push_back(static_cast<int>(GetProposalSubject(iProposalID)));
-		vArgs.push_back(GetProposalStatus(iProposalID) == STATUS_PASSED);
-		GC.getGame().addReplayEvent(REPLAYEVENT_MPProposalResult, GetProposalOwner(iProposalID), vArgs);
-#endif
 
 		kActivePlayer.GetNotifications()->Dismiss(GetProposalUIid(iProposalID), false);
 		AddResultNotification(iProposalID);
 	}
+}
+
+// The one human left in the game once a passed IRR's subject steps aside, or
+// NO_PLAYER. Seats whose own IRR passed earlier count as gone even if they
+// are still seated. GDR's "IRR (1v1)" win reads the same rule.
+PlayerTypes CvMPVotingSystem::GetLastHumanAfterIrr(int iProposalID)
+{
+	const Proposal& kIrr = m_vProposals.at(iProposalID);
+	if (kIrr.eType != PROPOSAL_IRR || kIrr.eStatus != STATUS_PASSED)
+		return NO_PLAYER;
+
+	PlayerTypes eLast = NO_PLAYER;
+	for (int i = 0; i < MAX_MAJOR_CIVS; i++)
+	{
+		PlayerTypes ePlayer = (PlayerTypes)i;
+		CvPlayerAI& kPlayer = GET_PLAYER(ePlayer);
+		if (ePlayer == kIrr.eProposalSubject || !kPlayer.isHuman() || !kPlayer.isAlive() || kPlayer.isObserver())
+			continue;
+		bool bSteppedAside = false;
+		for (ProposalList::iterator it = m_vProposals.begin(); it != m_vProposals.end(); ++it)
+		{
+			if (it->iID != iProposalID && it->eType == PROPOSAL_IRR && it->eStatus == STATUS_PASSED &&
+			    it->bComplete && it->eProposalSubject == ePlayer)
+			{
+				bSteppedAside = true;
+				break;
+			}
+		}
+		if (bSteppedAside)
+			continue;
+		if (eLast != NO_PLAYER)
+			return NO_PLAYER;   // two or more left: the game goes on
+		eLast = ePlayer;
+	}
+	return eLast;
 }
 
 // Adds the active player's "vote on this" notification for an active proposal

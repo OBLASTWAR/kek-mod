@@ -986,6 +986,12 @@ enum ReplayEventTypes
 	// conquest, gift.
 	REPLAYEVENT_CityAcquired,
 
+	// kek: the game key (KEK_SAVE_DATA), recorded at the first autosave and
+	// whenever it changes (a game re-hosted from a save gets a new sync seed).
+	// Args: mapRandomSeed, syncRandomSeed, key hash (the key's second half),
+	// all unsigned stored as int.
+	REPLAYEVENT_KEK_GameKey,
+
 	NUM_REPLAYEVENTS
 };
 #endif
