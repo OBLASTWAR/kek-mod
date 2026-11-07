@@ -422,6 +422,14 @@ void CvCity::init(int iID, PlayerTypes eOwner, int iX, int iY, bool bBumpUnits, 
 	// Free food from things (e.g. Policies)
 	int iFreeFood = growthThreshold() * GET_PLAYER(getOwner()).GetFreeFoodBox();
 	changeFoodTimes100(iFreeFood);
+
+#ifdef NEW_CITY_PRODUCTION_FOCUS
+	// A city a human founds starts on Production Focus (captured and gifted cities keep the default)
+	if (bInitialFounding && owningPlayer.isHuman())
+	{
+		GetCityCitizens()->SetFocusType(CITY_AI_FOCUS_TYPE_PRODUCTION);
+	}
+#endif
 	
 	if (bInitialFounding)
 	{
