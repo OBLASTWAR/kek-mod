@@ -1119,6 +1119,8 @@ public:
 	bool canRangeStrikeAt(int iX, int iY, bool bNeedWar = true, bool bNoncombatAllowed = true) const;
 #ifdef SUBMARINES_UNDER_ICE
 	bool IsShieldedByIceFrom(const CvUnit* pAttacker) const;
+	void SurfaceIfLaunchingFromIce();
+	bool IsSurfacedByLaunch() const;
 #endif
 
 	bool IsAirSweepCapable() const;
@@ -1528,6 +1530,9 @@ protected:
 #endif
 #ifdef PROMOTION_INSTA_HEAL_LOCKED
 	bool m_bInstaHealLocked;
+#endif
+#ifdef SUBMARINES_UNDER_ICE
+	int m_iSurfacedTurn;
 #endif
 
 	mutable CvPathNodeArray m_kLastPath;

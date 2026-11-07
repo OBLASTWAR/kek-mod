@@ -279,6 +279,9 @@ CvUnit::CvUnit() :
 #ifdef PROMOTION_INSTA_HEAL_LOCKED
 	, m_bInstaHealLocked(false)
 #endif
+#ifdef SUBMARINES_UNDER_ICE
+	, m_iSurfacedTurn(0)
+#endif
 	, m_bPromotionReady("CvUnit::m_bPromotionReady", m_syncArchive)
 	, m_bDeathDelay("CvUnit::m_bDeathDelay", m_syncArchive)
 	, m_bCombatFocus("CvUnit::m_bCombatFocus", m_syncArchive)
@@ -991,6 +994,9 @@ void CvUnit::reset(int iID, UnitTypes eUnit, PlayerTypes eOwner, bool bConstruct
 #endif
 #ifdef PROMOTION_INSTA_HEAL_LOCKED
 	m_bInstaHealLocked = false;
+#endif
+#ifdef SUBMARINES_UNDER_ICE
+	m_iSurfacedTurn = 0;
 #endif
 	m_strNameIAmNotSupposedToBeUsedAnyMoreBecauseThisShouldNotBeCheckedAndWeNeedToPreserveSaveGameCompatibility = "";
 	m_strScriptData ="";
@@ -18794,6 +18800,20 @@ void CvUnit::read(FDataStream& kStream)
 	}
 # endif
 #endif
+#ifdef SUBMARINES_UNDER_ICE
+# ifdef SAVE_BACKWARDS_COMPATIBILITY
+	if (uiVersion >= 1002)
+	{
+# endif
+		kStream >> m_iSurfacedTurn;
+# ifdef SAVE_BACKWARDS_COMPATIBILITY
+	}
+	else
+	{
+		m_iSurfacedTurn = 0;
+	}
+# endif
+#endif
 
 	//  Read mission queue
 	UINT uSize;
@@ -18921,6 +18941,9 @@ void CvUnit::write(FDataStream& kStream) const
 #endif
 #ifdef PROMOTION_INSTA_HEAL_LOCKED
 	kStream << m_bInstaHealLocked;
+#endif
+#ifdef SUBMARINES_UNDER_ICE
+	kStream << m_iSurfacedTurn;
 #endif
 
 	//  Write mission list
@@ -21272,7 +21295,33 @@ bool CvUnit::IsShieldedByIceFrom(const CvUnit* pAttacker) const
 		return false;
 	}
 
+	if(IsSurfacedByLaunch())
+	{
+		return false;
+	}
+
 	return pAttacker == NULL || !pAttacker->getUnitInfo().IsRangeAttackOnlyInDomain();
+}
+
+//	--------------------------------------------------------------------------------
+/// A missile launched from a submarine under ice breaks through it: the submarine uses up all its
+/// movement and loses the ice shield for the rest of this turn. Called on the missile.
+void CvUnit::SurfaceIfLaunchingFromIce()
+{
+	VALIDATE_OBJECT
+	CvUnit* pTransport = getTransportUnit();
+	if(pTransport != NULL && pTransport->getDomainType() == DOMAIN_SEA && pTransport->plot()->getFeatureType() == FEATURE_ICE)
+	{
+		pTransport->m_iSurfacedTurn = GC.getGame().getGameTurn();
+		pTransport->finishMoves();
+	}
+}
+
+//	--------------------------------------------------------------------------------
+bool CvUnit::IsSurfacedByLaunch() const
+{
+	VALIDATE_OBJECT
+	return m_iSurfacedTurn > 0 && GC.getGame().getGameTurn() == m_iSurfacedTurn;
 }
 #endif
 
