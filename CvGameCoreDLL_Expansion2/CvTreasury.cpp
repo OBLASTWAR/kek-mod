@@ -89,6 +89,15 @@ void CvTreasury::DoGold()
 		ChangeGoldTimes100(iGoldChange);
 	}
 
+	// kekmod: GPT from deals is paid here with the rest of the per-turn gold,
+	// so add this turn's deal GPT to the running totals
+#ifdef EG_REPLAYDATASET_GPTGIVENINDEALS
+	m_pPlayer->ChangeGPTGivenInDeals(m_pPlayer->GetGPTGivenInDealsRate());
+#endif
+#ifdef EG_REPLAYDATASET_GPTRECEIVEDINDEALS
+	m_pPlayer->ChangeGPTReceivedInDeals(m_pPlayer->GetGPTReceivedInDealsRate());
+#endif
+
 	// Update the amount of gold grossed across lifetime of game
 	int iGrossGoldChange = CalculateGrossGold();
 	if(iGrossGoldChange > 0)

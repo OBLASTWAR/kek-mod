@@ -9887,6 +9887,9 @@ void CvMinorCivAI::DoGoldGiftFromMajor(PlayerTypes ePlayer, int iGold)
 		GET_PLAYER(ePlayer).GetTreasury()->ChangeGold(-iGold);
 		
 		ChangeNumGoldGifted(ePlayer, iGold);
+#ifdef EG_REPLAYDATASET_GOLDGIFTEDTOCS
+		GET_PLAYER(ePlayer).ChangeGoldGiftedToMinors(iGold);
+#endif
 		
 		ChangeFriendshipWithMajor(ePlayer, iFriendshipChange);
 

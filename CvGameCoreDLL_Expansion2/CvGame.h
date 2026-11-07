@@ -992,6 +992,9 @@ enum ReplayEventTypes
 	// all unsigned stored as int.
 	REPLAYEVENT_KEK_GameKey,
 
+	// Deal events
+	REPLAYEVENT_DealGoldItem,
+
 	NUM_REPLAYEVENTS
 };
 #endif
