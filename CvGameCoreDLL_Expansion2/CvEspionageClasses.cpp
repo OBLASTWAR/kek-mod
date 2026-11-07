@@ -1296,6 +1296,12 @@ bool CvPlayerEspionage::CanEverMoveSpyTo(CvCity* pCity)
 		return true;
 	}
 
+	// KEK: AI spies may not enter city-states
+	if(!m_pPlayer->isHuman() && GET_PLAYER(pCity->getOwner()).isMinorCiv())
+	{
+		return false;
+	}
+
 	CvPlot* pPlot = pCity->plot();
 	CvAssertMsg(pPlot, "No plot() for pCity");
 	if(!pPlot)
@@ -2135,6 +2141,12 @@ int CvPlayerEspionage::GetCoupChanceOfSuccess(uint uiSpyIndex)
 /// AttemptCoup - Have a spy try to overthrow a city state. If success, the spy's owner becomes the ally. If failure, the spy dies.
 bool CvPlayerEspionage::AttemptCoup(uint uiSpyIndex)
 {
+	// KEK: AI players may not stage coups in city-states
+	if(!m_pPlayer->isHuman())
+	{
+		return false;
+	}
+
 	// if you're not allowed to stage a coup here, the coup fails
 	if(!CanStageCoup(uiSpyIndex))
 	{

@@ -1254,7 +1254,9 @@ bool CvMinorCivQuest::DoFinishQuest()
 	PlayerTypes eOldAlly = pMinor->GetMinorCivAI()->GetAlly();
 	int iOldInf = pMinor->GetMinorCivAI()->GetEffectiveFriendshipWithMajor(m_eAssignedPlayer);
 
-	pMinor->GetMinorCivAI()->ChangeFriendshipWithMajor(m_eAssignedPlayer, GetInfluenceReward(), /*bFromQuest*/ true);
+	// KEK: AI players get no influence from city-state quests
+	if(GET_PLAYER(m_eAssignedPlayer).isHuman())
+		pMinor->GetMinorCivAI()->ChangeFriendshipWithMajor(m_eAssignedPlayer, GetInfluenceReward(), /*bFromQuest*/ true);
 	
 	bool bNowFriends = pMinor->GetMinorCivAI()->IsFriends(m_eAssignedPlayer);
 	bool bNowAllies = pMinor->GetMinorCivAI()->IsAllies(m_eAssignedPlayer);
@@ -3376,7 +3378,7 @@ WeightedCivsList CvMinorCivAI::CalculateFriendshipFromQuests()
 			QuestListForPlayer::iterator itr_quest;
 			for (itr_quest = m_QuestsGiven[eMajorLoop].begin(); itr_quest != m_QuestsGiven[eMajorLoop].end(); itr_quest++)
 			{
-				if (itr_quest->IsComplete())
+				if (itr_quest->IsComplete() && GET_PLAYER(eMajorLoop).isHuman())
 				{
 					iInfTimes100 += (itr_quest->GetInfluenceReward() * 100);
 				}
@@ -9872,6 +9874,10 @@ void CvMinorCivAI::ChangeNumGoldGifted(PlayerTypes ePlayer, int iChange)
 /// Major Civ gifted some Gold to this Minor
 void CvMinorCivAI::DoGoldGiftFromMajor(PlayerTypes ePlayer, int iGold)
 {
+	// KEK: AI players may not buy city-state influence with gold
+	if(!GET_PLAYER(ePlayer).isHuman())
+		return;
+
 	if(GET_PLAYER(ePlayer).GetTreasury()->GetGold() >= iGold)
 	{
 		int iFriendshipChange = GetFriendshipFromGoldGift(ePlayer, iGold);
