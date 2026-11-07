@@ -1739,4 +1739,11 @@
 //#define KEK_SYNC_FINGERPRINT
 #define KEK_SYNC_SLICE_INTERVAL 20
 
+// An embarked ranged land unit (Machine Gun, Gatling Gun, Archer...) used its
+// full ranged strength against air strikes, both for the damage it took and the
+// damage it dealt back, because GetAirCombatDamage / GetAirStrikeDefenseDamage
+// never checked for embarkation. Ranged ship and city attacks already used the
+// embarked defense. Air strikes now use it too.
+#define EMBARKED_UNITS_USE_EMBARK_DEFENSE_VS_AIR
+
 #endif

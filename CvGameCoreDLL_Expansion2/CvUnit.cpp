@@ -11728,8 +11728,17 @@ int CvUnit::GetAirCombatDamage(const CvUnit* pDefender, CvCity* pCity, bool bInc
 	// Unit is Defender
 	if(pCity == NULL)
 	{
+#ifdef EMBARKED_UNITS_USE_EMBARK_DEFENSE_VS_AIR
+		if (pDefender->isEmbarked())
+		{
+			iDefenderStrength = pDefender->GetEmbarkedUnitDefense();
+		}
+		// Use Ranged combat value for defender, UNLESS it's a boat
+		else if(pDefender->GetMaxRangedCombatStrength(this, /*pCity*/ NULL, false, /*bForRangedAttack*/ false) > 0 && !pDefender->getDomainType() == DOMAIN_SEA)
+#else
 		// Use Ranged combat value for defender, UNLESS it's a boat
 		if(pDefender->GetMaxRangedCombatStrength(this, /*pCity*/ NULL, false, /*bForRangedAttack*/ false) > 0 && !pDefender->getDomainType() == DOMAIN_SEA)
+#endif
 		{
 			iDefenderStrength = pDefender->GetMaxRangedCombatStrength(this, /*pCity*/ NULL, false, /*bForRangedAttack*/ false);
 		}
@@ -11917,8 +11926,15 @@ int CvUnit::GetAirStrikeDefenseDamage(const CvUnit* pAttacker, bool bIncludeRand
 	int iAttackerStrength = pAttacker->GetMaxRangedCombatStrength(this, /*pCity*/ NULL, true, /*bForRangedAttack*/ false);
 	int iDefenderStrength = 0;
 
+#ifdef EMBARKED_UNITS_USE_EMBARK_DEFENSE_VS_AIR
+	if (isEmbarked())
+		iDefenderStrength = GetEmbarkedUnitDefense();
+	// Use Ranged combat value for defender, UNLESS it's a boat
+	else if(GetMaxRangedCombatStrength(this, /*pCity*/ NULL, false, false) > 0 && !getDomainType() == DOMAIN_SEA)
+#else
 	// Use Ranged combat value for defender, UNLESS it's a boat
 	if(GetMaxRangedCombatStrength(this, /*pCity*/ NULL, false, false) > 0 && !getDomainType() == DOMAIN_SEA)
+#endif
 		iDefenderStrength = GetMaxRangedCombatStrength(pAttacker, /*pCity*/ NULL, false, false);
 	else
 		iDefenderStrength = GetMaxDefenseStrength(plot(), pAttacker);
