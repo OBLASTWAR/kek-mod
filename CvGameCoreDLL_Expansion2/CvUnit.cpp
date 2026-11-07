@@ -1827,6 +1827,14 @@ void CvUnit::doTurn()
 		setInstaHealLocked(true);
 	}
 #endif
+#ifdef SUBMARINES_UNDER_ICE
+	// The turn it broke through the ice is over: hide the submarine again (graphics only)
+	if(m_iSurfacedTurn > 0 && !IsSurfacedByLaunch())
+	{
+		m_iSurfacedTurn = 0;
+		plot()->updateVisibility();
+	}
+#endif
 	testPromotionReady();
 
 	FeatureTypes eFeature = plot()->getFeatureType();
@@ -12798,6 +12806,14 @@ bool CvUnit::isInvisible(TeamTypes eTeam, bool bDebug, bool bCheckCargo) const
 		return false;
 	}
 
+#ifdef SUBMARINES_UNDER_ICE
+	// A submarine that broke through the ice to launch a missile is seen like any other unit.
+	if(IsSurfacedByLaunch())
+	{
+		return false;
+	}
+#endif
+
 	if(bCheckCargo)
 	{
 		if((m_transportUnit.eOwner >= 0) && m_transportUnit.eOwner < MAX_PLAYERS)
@@ -21314,6 +21330,8 @@ void CvUnit::SurfaceIfLaunchingFromIce()
 	{
 		pTransport->m_iSurfacedTurn = GC.getGame().getGameTurn();
 		pTransport->finishMoves();
+		// Show the submarine now (graphics only)
+		pTransport->plot()->updateVisibility();
 	}
 }
 
