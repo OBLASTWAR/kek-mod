@@ -1,6 +1,7 @@
 ----------------------------------------------------------------        
 -- Globals
 ----------------------------------------------------------------   
+pcall( include, "KekUiCheck" );	-- kekmod: ui_check result, see OnConnectionCompete
 local g_joinFailed = false;		-- Are we attempting to close this page after a join failure?
 															-- Used to prevent the ActivateAllowedDLC mechanic in ShowHideHander 
 															-- from restoring the page after a join failed.  This can occur
@@ -127,6 +128,15 @@ function OnConnectionCompete()
 
     -- TOURNAMENT MOD:
     Network.SendChat(Locale.ConvertTextKey("TXT_KEY_MULTIPLAYER_STAGING_ROOM"))
+
+    -- kekmod: tell the lobby when ui_check.bat failed or didn't finish here, like the
+    -- "not launched" line the shipped UI\JoiningRoom.lua sends. ui_check writes
+    -- UI\KekUiCheck.lua when it finishes (see StagingRoom.lua).
+    if( KekUiCheck == nil ) then
+        Network.SendChat( "[COLOR_NEGATIVE_TEXT]" .. Locale.ConvertTextKey( "TXT_KEY_UI_CHECK_BAT_INCOMPLETE" ) .. "[ENDCOLOR]" )
+    elseif( (KekUiCheck.fails or 0) > 0 ) then
+        Network.SendChat( "[COLOR_NEGATIVE_TEXT]" .. Locale.ConvertTextKey( "TXT_KEY_UI_CHECK_BAT_FAILED", KekUiCheck.fails ) .. "[ENDCOLOR]" )
+    end
 
 end
 

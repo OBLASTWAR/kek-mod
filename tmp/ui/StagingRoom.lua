@@ -1332,6 +1332,21 @@ if( string.sub( KEKMOD_VERSION, 1, 1 ) == "@" ) then
 end
 local m_bKekVersionAnnounced = false;
 
+-- kekmod: ui_check.bat/.sh writes UI\KekUiCheck.lua when it finishes. This copy of
+-- StagingRoom.lua is installed by ui_check itself, so no file means the run stopped
+-- partway. Returns the red/yellow chat line to show, or nil when the run was clean.
+pcall( include, "KekUiCheck" );
+local function KekUiCheckLine()
+	if( KekUiCheck == nil ) then
+		return "[COLOR_NEGATIVE_TEXT]" .. Locale.ConvertTextKey( "TXT_KEY_UI_CHECK_BAT_INCOMPLETE" ) .. "[ENDCOLOR]";
+	elseif( (KekUiCheck.fails or 0) > 0 ) then
+		return "[COLOR_NEGATIVE_TEXT]" .. Locale.ConvertTextKey( "TXT_KEY_UI_CHECK_BAT_FAILED", KekUiCheck.fails ) .. "[ENDCOLOR]";
+	elseif( (KekUiCheck.warns or 0) > 0 ) then
+		return "[COLOR_YELLOW]" .. Locale.ConvertTextKey( "TXT_KEY_UI_CHECK_BAT_WARNINGS", KekUiCheck.warns ) .. "[ENDCOLOR]";
+	end
+	return nil;
+end
+
 function ShowHideHandler( bIsHide, bIsInit )
 
 		--print("ShowHideHandler Hide: " .. tostring(bIsHide) .. " Init: " .. tostring(bIsInit));
@@ -1411,6 +1426,10 @@ function ShowHideHandler( bIsHide, bIsInit )
 		-- kekmod: announce the running mod version in the local chat log
 		if( not m_bKekVersionAnnounced ) then
 			KekAddSystemChat( "[COLOR_POSITIVE_TEXT]KEK Mod v" .. KEKMOD_VERSION .. "[ENDCOLOR]" );
+			local strUiCheck = KekUiCheckLine();
+			if( strUiCheck ~= nil ) then
+				KekAddSystemChat( strUiCheck );
+			end
 			m_bKekVersionAnnounced = true;
 		end
 	end
