@@ -1098,7 +1098,8 @@ bool CvPlayerTechs::CanEverResearch(TechTypes eTech) const
 }
 
 /// Accessor: Is it possible to research this tech?
-bool CvPlayerTechs::CanResearch(TechTypes eTech, bool bTrade) const
+/// Can we research this tech? Everything but the PlayerCanResearch Lua game event
+bool CvPlayerTechs::CanResearchNoEvents(TechTypes eTech, bool bTrade) const
 {
 	bool bFoundPossible;
 	bool bFoundValid;
@@ -1170,6 +1171,16 @@ bool CvPlayerTechs::CanResearch(TechTypes eTech, bool bTrade) const
 		return false;
 	}
 
+	return true;
+}
+
+/// Can we research this tech? Also asks the PlayerCanResearch Lua game event
+bool CvPlayerTechs::CanResearch(TechTypes eTech, bool bTrade) const
+{
+	if(!CanResearchNoEvents(eTech, bTrade))
+	{
+		return false;
+	}
 	ICvEngineScriptSystem1* pkScriptSystem = gDLL->GetScriptSystem();
 	if(pkScriptSystem)
 	{
@@ -1406,7 +1417,9 @@ int CvPlayerTechs::GetNumTechsCanBeResearched() const
 
 	for(int iTechLoop = 0; iTechLoop < GetTechs()->GetNumTechs(); iTechLoop++)
 	{
-		if(CanResearch((TechTypes)iTechLoop))
+		// KEK: no Lua event here, this runs from the notification expiry check (crash reports 115 and 116
+		// died in a Lua call under it, ~87 techs per notification per check). KEK registers no handler.
+		if(CanResearchNoEvents((TechTypes)iTechLoop))
 		{
 			rtnValue++;
 		}
