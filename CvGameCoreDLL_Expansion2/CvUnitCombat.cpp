@@ -3072,10 +3072,6 @@ CvUnitCombat::ATTACK_RESULT CvUnitCombat::AttackAir(CvUnit& kAttacker, CvPlot& t
 		return eResult;
 	}
 
-#ifdef SUBMARINES_UNDER_ICE
-	kAttacker.SurfaceIfLaunchingFromIce();
-#endif
-
 #ifdef MP_ALWAYS_QUICK_COMBAT_AND_MOVEMENT
 	bool bDoImmediate = (CvPreGame::quickCombat() || GC.getGame().isNetworkMultiPlayer());
 #else
@@ -3374,10 +3370,6 @@ CvUnitCombat::ATTACK_RESULT CvUnitCombat::AttackNuclear(CvUnit& kAttacker, int i
 	CvPlot* pPlot = GC.getMap().plot(iX, iY);
 	if(NULL == pPlot)
 		return eResult;
-
-#ifdef SUBMARINES_UNDER_ICE
-	kAttacker.SurfaceIfLaunchingFromIce();
-#endif
 
 #ifdef MP_ALWAYS_QUICK_COMBAT_AND_MOVEMENT
 	bool bDoImmediate = (CvPreGame::quickCombat() || GC.getGame().isNetworkMultiPlayer());

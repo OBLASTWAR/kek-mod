@@ -684,11 +684,6 @@
 // Submarines under ice. Ice was its own map area, so the "no torpedoes into
 // lakes" check (same area) stopped a submarine from attacking across the edge
 // of the ice, in either direction; it now compares bodies of water (landmass).
-// A ship under ice (only submarines can be there) can only be attacked by
-// submarines (units whose ranged attack stays in their domain): no aircraft,
-// missiles, ranged ships or cities. A submarine that launches a missile (guided
-// or nuclear) from under the ice breaks through it: the submarine uses up all its
-// movement and loses the shield for the rest of that turn.
 #define SUBMARINES_UNDER_ICE
 /// Don't draw other players notification dots on the minimap
 #define MINIMAP_FIX_DRAW_ONLY_SUITABLE_NOTIFICATIONS
@@ -887,8 +882,7 @@
 # define BUMP_SAVE_VERSION_TRAITS 1000
 // 1000: v7.0 (initial)
 // 1001: v8.0 (adds NEW_WRITERS_CULTURE_BOMB)
-// 1002: adds SUBMARINES_UNDER_ICE (m_iSurfacedTurn)
-# define BUMP_SAVE_VERSION_UNIT 1002
+# define BUMP_SAVE_VERSION_UNIT 1001
 // 1000: v7.1 (starts versioning, adds iCreationTurn) -- incompatible with 7.0 (vanilla is ok though)
 # define BUMP_SAVE_VERSION_MP_VOTING_SYSTEM 1000
 // 1000: v7.2 (initial, adds m_iTimeMilliseconds)

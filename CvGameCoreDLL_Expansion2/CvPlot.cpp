@@ -570,18 +570,6 @@ void CvPlot::updateFog(bool bDefer)
 	}
 }
 
-#ifdef SUBMARINES_UNDER_ICE
-static bool IsUnitSurfacedByLaunch(const CvUnit* pUnit)
-{
-	return pUnit->IsSurfacedByLaunch();
-}
-#else
-static bool IsUnitSurfacedByLaunch(const CvUnit*)
-{
-	return false;
-}
-#endif
-
 //	---------------------------------------------------------------------------
 void CvPlot::updateVisibility()
 {
@@ -610,7 +598,7 @@ void CvPlot::updateVisibility()
 				{
 					// This unit has visibility rules, send a message that it needs to update itself.
 					auto_ptr<ICvUnit1> pDllUnit(new CvDllUnit(pLoopUnit));
-					gDLL->GameplayUnitVisibility(pDllUnit.get(), (pLoopUnit->getTeam() == eActiveTeam)?true:(IsUnitSurfacedByLaunch(pLoopUnit) || isInvisibleVisible(eActiveTeam, eInvisibleType)), true, 0.01f);
+					gDLL->GameplayUnitVisibility(pDllUnit.get(), (pLoopUnit->getTeam() == eActiveTeam)?true:isInvisibleVisible(eActiveTeam, eInvisibleType), true, 0.01f);
 				}
 			}
 		}
@@ -631,7 +619,7 @@ void CvPlot::updateVisibility()
 					{
 						// This unit has visibility rules, send a message that it needs to update itself.
 						auto_ptr<ICvUnit1> pDllUnit(new CvDllUnit(pLoopUnit));
-						gDLL->GameplayUnitVisibility(pDllUnit.get(), (pLoopUnit->getTeam() == eActiveTeam)?true:(IsUnitSurfacedByLaunch(pLoopUnit) || isInvisibleVisible(eActiveTeam, eInvisibleType)), true, 0.01f);
+						gDLL->GameplayUnitVisibility(pDllUnit.get(), (pLoopUnit->getTeam() == eActiveTeam)?true:isInvisibleVisible(eActiveTeam, eInvisibleType), true, 0.01f);
 					}
 				}
 			}
