@@ -516,6 +516,7 @@ static const char* const s_apszReplayEventTypeTokens[] =
     "REPLAYEVENT_YieldChanged",
     "REPLAYEVENT_CityAcquired",
     "REPLAYEVENT_KEK_GameKey",
+    "REPLAYEVENT_DealGoldItem",
 };
 #define KEKMOD_NUM_REPLAY_EVENT_TOKENS \
     (sizeof(s_apszReplayEventTypeTokens) / sizeof(s_apszReplayEventTypeTokens[0]))
@@ -1292,8 +1293,23 @@ static void BuildTurnJson(std::string& out, PlayerTypes eUploader)
 #ifdef EG_REPLAYDATASET_NUMGOLDONUPGRADES
         JsonAppendFmt(out, ",\"goldSpentOnUnitUpgrades\":%d", kPlayer.getReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_NUMGOLDONUPGRADES"), kGame.getGameTurn()));
 #endif
-#ifdef EG_REPLAYDATASET_GOLDFROMKILLS
+#ifdef EG_REPLAYDATASET_GOLDEFROMKILLS
         JsonAppendFmt(out, ",\"goldFromKills\":%d", kPlayer.getReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_GOLDFROMKILLS"), kGame.getGameTurn()));
+#endif
+#ifdef EG_REPLAYDATASET_GOLDGIFTEDTOCS
+        JsonAppendFmt(out, ",\"goldGiftedToCityStates\":%d", kPlayer.getReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_GOLDGIFTEDTOCS"), kGame.getGameTurn()));
+#endif
+#ifdef EG_REPLAYDATASET_GOLDGIVENINDEALS
+        JsonAppendFmt(out, ",\"goldGivenInDeals\":%d", kPlayer.getReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_GOLDGIVENINDEALS"), kGame.getGameTurn()));
+#endif
+#ifdef EG_REPLAYDATASET_GOLDRECEIVEDINDEALS
+        JsonAppendFmt(out, ",\"goldReceivedInDeals\":%d", kPlayer.getReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_GOLDRECEIVEDINDEALS"), kGame.getGameTurn()));
+#endif
+#ifdef EG_REPLAYDATASET_GPTGIVENINDEALS
+        JsonAppendFmt(out, ",\"gptGivenInDeals\":%d", kPlayer.getReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_GPTGIVENINDEALS"), kGame.getGameTurn()));
+#endif
+#ifdef EG_REPLAYDATASET_GPTRECEIVEDINDEALS
+        JsonAppendFmt(out, ",\"gptReceivedInDeals\":%d", kPlayer.getReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_GPTRECEIVEDINDEALS"), kGame.getGameTurn()));
 #endif
 #ifdef EG_REPLAYDATASET_CULTUREFROMKILLS
         JsonAppendFmt(out, ",\"cultureFromKills\":%d", kPlayer.getReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_CULTUREFROMKILLS"), kGame.getGameTurn()));

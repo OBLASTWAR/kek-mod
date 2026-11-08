@@ -15804,11 +15804,7 @@ CvUnit* CvCity::rangedStrikeTarget(CvPlot* pPlot)
 
 	if(pDefender)
 	{
-#ifdef SUBMARINES_UNDER_ICE
-		if(!pDefender->IsDead() && !pDefender->IsShieldedByIceFrom(NULL))
-#else
 		if(!pDefender->IsDead())
-#endif
 		{
 			return pDefender.pointer();
 		}

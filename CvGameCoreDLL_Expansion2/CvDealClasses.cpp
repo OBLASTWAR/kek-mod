@@ -2222,6 +2222,22 @@ bool CvGameDeals::FinalizeDeal(PlayerTypes eFromPlayer, PlayerTypes eToPlayer, b
 
 			for(it = kDeal.m_TradedItems.begin(); it != kDeal.m_TradedItems.end(); ++it)
 			{
+#ifdef REPLAY_EVENTS
+				// kekmod: record who gave how much gold / GPT to whom, one event per
+				// gold or GPT item. Renewed items are logged too (last arg = 1): they
+				// are not restarted below, but the renewal is a new GPT commitment.
+				if(it->m_eItemType == TRADE_ITEM_GOLD || it->m_eItemType == TRADE_ITEM_GOLD_PER_TURN)
+				{
+					std::vector<int> vArgs;
+					vArgs.push_back(it->m_eFromPlayer);
+					vArgs.push_back(kDeal.GetOtherPlayer(it->m_eFromPlayer));
+					vArgs.push_back(it->m_eItemType);
+					vArgs.push_back(it->m_iData1);
+					vArgs.push_back(it->m_iDuration);
+					vArgs.push_back(it->m_bToRenewed);
+					GC.getGame().addReplayEvent(REPLAYEVENT_DealGoldItem, it->m_eFromPlayer, vArgs);
+				}
+#endif
 				// if the deal is renewed do not start it up
 				if(it->m_bToRenewed)
 				{
@@ -2245,6 +2261,12 @@ bool CvGameDeals::FinalizeDeal(PlayerTypes eFromPlayer, PlayerTypes eToPlayer, b
 					int iGoldAmount = it->m_iData1;
 					GET_PLAYER(eAcceptedFromPlayer).GetTreasury()->ChangeGold(-iGoldAmount);
 					GET_PLAYER(eAcceptedToPlayer).GetTreasury()->ChangeGold(iGoldAmount);
+#ifdef EG_REPLAYDATASET_GOLDGIVENINDEALS
+					GET_PLAYER(eAcceptedFromPlayer).ChangeGoldGivenInDeals(iGoldAmount);
+#endif
+#ifdef EG_REPLAYDATASET_GOLDRECEIVEDINDEALS
+					GET_PLAYER(eAcceptedToPlayer).ChangeGoldReceivedInDeals(iGoldAmount);
+#endif
 				}
 				// Gold Per Turn
 				else if(it->m_eItemType == TRADE_ITEM_GOLD_PER_TURN)
@@ -2252,6 +2274,14 @@ bool CvGameDeals::FinalizeDeal(PlayerTypes eFromPlayer, PlayerTypes eToPlayer, b
 					int iGoldPerTurn = it->m_iData1;
 					GET_PLAYER(eAcceptedFromPlayer).GetTreasury()->ChangeGoldPerTurnFromDiplomacy(-iGoldPerTurn);
 					GET_PLAYER(eAcceptedToPlayer).GetTreasury()->ChangeGoldPerTurnFromDiplomacy(iGoldPerTurn);
+					// kekmod: the GPT totals are summed per turn in CvTreasury::DoGold;
+					// keep the deal GPT rates in step with GoldPerTurnFromDiplomacy
+#ifdef EG_REPLAYDATASET_GPTGIVENINDEALS
+					GET_PLAYER(eAcceptedFromPlayer).ChangeGPTGivenInDealsRate(iGoldPerTurn);
+#endif
+#ifdef EG_REPLAYDATASET_GPTRECEIVEDINDEALS
+					GET_PLAYER(eAcceptedToPlayer).ChangeGPTReceivedInDealsRate(iGoldPerTurn);
+#endif
 				}
 				// Resource
 				else if(it->m_eItemType == TRADE_ITEM_RESOURCES)
@@ -2850,6 +2880,12 @@ void CvGameDeals::DoEndTradedItem(CvTradedItem* pItem, PlayerTypes eToPlayer, bo
 		int iGoldPerTurn = pItem->m_iData1;
 		fromPlayer.GetTreasury()->ChangeGoldPerTurnFromDiplomacy(iGoldPerTurn);
 		toPlayer.GetTreasury()->ChangeGoldPerTurnFromDiplomacy(-iGoldPerTurn);
+#ifdef EG_REPLAYDATASET_GPTGIVENINDEALS
+		fromPlayer.ChangeGPTGivenInDealsRate(-iGoldPerTurn);
+#endif
+#ifdef EG_REPLAYDATASET_GPTRECEIVEDINDEALS
+		toPlayer.ChangeGPTReceivedInDealsRate(-iGoldPerTurn);
+#endif
 
 		pNotifications = GET_PLAYER(eFromPlayer).GetNotifications();
 		if(pNotifications)
@@ -3175,11 +3211,23 @@ void CvGameDeals::PrepareRenewDeal(CvDeal* pOldDeal, const CvDeal* pNewDeal)
 					{
 						fromPlayer.GetTreasury()->ChangeGoldPerTurnFromDiplomacy(-iGoldPerTurnDelta);
 						toPlayer.GetTreasury()->ChangeGoldPerTurnFromDiplomacy(iGoldPerTurnDelta);
+#ifdef EG_REPLAYDATASET_GPTGIVENINDEALS
+						fromPlayer.ChangeGPTGivenInDealsRate(iGoldPerTurnDelta);
+#endif
+#ifdef EG_REPLAYDATASET_GPTRECEIVEDINDEALS
+						toPlayer.ChangeGPTReceivedInDealsRate(iGoldPerTurnDelta);
+#endif
 					}
 					else
 					{
 						toPlayer.GetTreasury()->ChangeGoldPerTurnFromDiplomacy(-iGoldPerTurnDelta);
 						fromPlayer.GetTreasury()->ChangeGoldPerTurnFromDiplomacy(iGoldPerTurnDelta);
+#ifdef EG_REPLAYDATASET_GPTGIVENINDEALS
+						toPlayer.ChangeGPTGivenInDealsRate(iGoldPerTurnDelta);
+#endif
+#ifdef EG_REPLAYDATASET_GPTRECEIVEDINDEALS
+						fromPlayer.ChangeGPTReceivedInDealsRate(iGoldPerTurnDelta);
+#endif
 					}
 				}
 			}
