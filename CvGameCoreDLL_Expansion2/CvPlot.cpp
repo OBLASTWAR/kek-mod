@@ -531,7 +531,7 @@ FogOfWarModeTypes CvPlot::GetActiveFogOfWarMode() const
 
 	FogOfWarModeTypes eFOWMode = FOGOFWARMODE_UNEXPLORED;
 
-	bool bIsDebug = Game.isDebugMode();
+	bool bIsDebug = Game.isRevealAllView(activeTeam);
 	if(bIsDebug || activeTeam != NO_TEAM)
 	{
 		if(isRevealed(activeTeam, bIsDebug))
@@ -8166,7 +8166,7 @@ PlotVisibilityChangeResult CvPlot::changeVisibilityCount(TeamTypes eTeam, int iC
 //	--------------------------------------------------------------------------------
 PlayerTypes CvPlot::getRevealedOwner(TeamTypes eTeam, bool bDebug) const
 {
-	if(bDebug && GC.getGame().isDebugMode())
+	if(bDebug && GC.getGame().isRevealAllView(eTeam))
 	{
 		return getOwner();
 	}
@@ -8884,7 +8884,7 @@ int CvPlot::getNumAdjacentNonrevealed(TeamTypes eTeam) const
 //	--------------------------------------------------------------------------------
 ImprovementTypes CvPlot::getRevealedImprovementType(TeamTypes eTeam, bool bDebug) const
 {
-	if(bDebug && GC.getGame().isDebugMode())
+	if(bDebug && GC.getGame().isRevealAllView(eTeam))
 	{
 		return getImprovementType();
 	}
@@ -8939,7 +8939,7 @@ bool CvPlot::setRevealedImprovementType(TeamTypes eTeam, ImprovementTypes eNewVa
 //	--------------------------------------------------------------------------------
 RouteTypes CvPlot::getRevealedRouteType(TeamTypes eTeam, bool bDebug) const
 {
-	if(bDebug && GC.getGame().isDebugMode())
+	if(bDebug && GC.getGame().isRevealAllView(eTeam))
 	{
 		return getRouteType();
 	}
@@ -10193,6 +10193,10 @@ enum eRoadTypes
 void CvPlot::updateLayout(bool bDebug)
 {
 	TeamTypes eActiveTeam = GC.getGame().getActiveTeam();
+
+	// End-game full view: draw the real improvement and route on every plot
+	if(GC.getGame().isRevealAllView(eActiveTeam))
+		bDebug = true;
 
 	FogOfWarModeTypes eFOWMode = GetActiveFogOfWarMode();
 

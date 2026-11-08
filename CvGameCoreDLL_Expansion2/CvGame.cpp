@@ -5836,6 +5836,25 @@ bool CvGame::isDebugMode() const
 }
 
 //	--------------------------------------------------------------------------------
+// End-game full view: once the game is over, this machine draws the whole map with no fog of
+// war for its own team (units, improvements, roads, borders, city banners), so players can
+// see what everyone was doing. Debug mode still reveals as stock.
+// Display only: it feeds the bDebug view queries (fog drawing, revealed owner/improvement/
+// route, city reveal), never the real visibility counts or revealed bits, so game state is
+// identical on every machine.
+bool CvGame::isRevealAllView(TeamTypes eTeam)
+{
+	if(isDebugMode())
+		return true;
+
+#ifdef REVEAL_MAP_GAME_OVER
+	return eTeam != NO_TEAM && eTeam == getActiveTeam() && getGameState() == GAMESTATE_OVER;
+#else
+	return false;
+#endif
+}
+
+//	--------------------------------------------------------------------------------
 void CvGame::setFOW(bool bMode)
 {
 	m_bFOW = bMode;
@@ -7417,6 +7436,19 @@ void CvGame::setGameState(GameStateTypes eNewValue)
 							pLoopPlot->setLayoutDirty(true);
 						}
 					}
+				}
+			}
+
+			// Full view: drop the fog and redraw every plot's units, improvements, roads and borders
+			GC.getMap().updateVisibility();
+			for (int iJ = 0; iJ < GC.getMap().numPlots(); iJ++)
+			{
+				CvPlot* pLoopPlot = GC.getMap().plotByIndexUnchecked(iJ);
+				pLoopPlot->setLayoutDirty(true);
+				if (pLoopPlot->getOwner() != NO_PLAYER)
+				{
+					auto_ptr<ICvPlot1> pDllPlot = GC.WrapPlotPointer(pLoopPlot);
+					GC.GetEngineUserInterface()->UpdateCountryBorder(pDllPlot.get());
 				}
 			}
 #endif

@@ -814,6 +814,13 @@ end
 -------------------------------------------------
 -- Update banners to reflect latest city info
 -------------------------------------------------
+-- End-game full view: once the game is over, every major civ's city gets the active
+-- team's banner (growth and production bars, turns to grow and build), so you can see
+-- what everyone was building. City states keep their own banner.
+local function IsGameOverView( cityOwner )
+	return Game.GetGameState() == GameplayGameStateTypes.GAMESTATE_OVER and not cityOwner:IsMinorCiv()
+end
+
 local function RefreshCityBannersNow()
 --	if IsGameCoreBusy() then
 --		return
@@ -830,7 +837,7 @@ local function RefreshCityBannersNow()
 		if city then
 			local cityOwnerID = city:GetOwner()
 			local cityOwner = Players[ cityOwnerID ]
-			local isActiveType = isDebug or city:GetTeam() == g_activeTeamID
+			local isActiveType = isDebug or city:GetTeam() == g_activeTeamID or IsGameOverView( cityOwner )
 			local isActivePlayerCity = cityOwnerID == g_activePlayerID
 
 			-- Incompatible banner type ? Destroy !
@@ -1455,7 +1462,7 @@ end)
 -- 'Active' (local human) player has changed:
 -- Check for City Banner Active Type change
 -------------------------------------------------
-Events.GameplaySetActivePlayer.Add( function( activePlayerID, previousActivePlayerID )
+local function RebuildAllCityBanners( activePlayerID, previousActivePlayerID )
 	-- update globals
 
 	g_activePlayerID = Game.GetActivePlayer()
@@ -1473,7 +1480,7 @@ Events.GameplaySetActivePlayer.Add( function( activePlayerID, previousActivePlay
 				local isRevealed = plot:IsRevealed( g_activeTeamID, true )
 				local plotIndex = plot:GetPlotIndex()
 				local instance = g_cityBanners[ plotIndex ]
-				local isActiveType = isDebug or city:GetTeam() == g_activeTeamID
+				local isActiveType = isDebug or city:GetTeam() == g_activeTeamID or IsGameOverView( player )
 
 				-- If city banner is hidden or type no longer matches, destroy the banner
 				if instance and not(isRevealed and isActiveType == instance[1]) then
@@ -1483,7 +1490,10 @@ Events.GameplaySetActivePlayer.Add( function( activePlayerID, previousActivePlay
 			end
 		end
 	end
-end)
+end
+Events.GameplaySetActivePlayer.Add( RebuildAllCityBanners )
+-- The game just ended: switch every city to the team banner
+Events.EndGameShow.Add( function() RebuildAllCityBanners() end )
 
 -------------------------------------------------
 -- Hide Garrisson Ring during Animated Combat
