@@ -19075,13 +19075,6 @@ bool CvUnit::canRangeStrikeAt(int iX, int iY, bool bNeedWar, bool bNoncombatAllo
 
 				TeamTypes loopTeam = pLoopUnit->getTeam();
 
-#ifdef SUBMARINES_UNDER_ICE
-				if(pLoopUnit->IsShieldedByIceFrom(this))
-				{
-					continue;
-				}
-#endif
-
 				// Make sure it's a valid Team
 				if(myTeam.isAtWar(loopTeam) || myTeam.canDeclareWar(loopTeam))
 				{
@@ -21247,11 +21240,7 @@ CvUnit* CvUnit::airStrikeTarget(CvPlot& targetPlot, bool bNoncombatAllowed) cons
 
 	if(pDefender)
 	{
-#ifdef SUBMARINES_UNDER_ICE
-		if(!pDefender->IsDead() && !pDefender->IsShieldedByIceFrom(this))
-#else
 		if(!pDefender->IsDead())
-#endif
 		{
 			return pDefender.pointer();
 		}
@@ -21259,22 +21248,6 @@ CvUnit* CvUnit::airStrikeTarget(CvPlot& targetPlot, bool bNoncombatAllowed) cons
 
 	return NULL;
 }
-
-#ifdef SUBMARINES_UNDER_ICE
-//	--------------------------------------------------------------------------------
-/// A ship under ice (only submarines can get there) can only be attacked by submarines.
-/// pAttacker is NULL for a city.
-bool CvUnit::IsShieldedByIceFrom(const CvUnit* pAttacker) const
-{
-	VALIDATE_OBJECT
-	if(getDomainType() != DOMAIN_SEA || plot()->getFeatureType() != FEATURE_ICE)
-	{
-		return false;
-	}
-
-	return pAttacker == NULL || !pAttacker->getUnitInfo().IsRangeAttackOnlyInDomain();
-}
-#endif
 
 //	--------------------------------------------------------------------------------
 bool CvUnit::CanWithdrawFromMelee(CvUnit& attacker)
