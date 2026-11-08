@@ -726,6 +726,18 @@ void CvDllNetMessageHandler::ResponseFaithPurchase(PlayerTypes ePlayer, FaithPur
 	kPlayer.SetFaithPurchaseIndex(iFaithPurchaseIndex);
 }
 //------------------------------------------------------------------------------
+// KEK: a league net message can arrive when there is no league (or no game yet: GetGameLeagues() is
+// NULL until the game is set up, crash report 118 in GetLeague, turn 0 in the front end). Ignore it.
+static CvLeague* KekGetLeague(LeagueTypes eLeague)
+{
+	CvGameLeagues* pLeagues = GC.getGame().GetGameLeagues();
+	if(pLeagues == NULL)
+	{
+		return NULL;
+	}
+	return pLeagues->GetLeague(eLeague);
+}
+//------------------------------------------------------------------------------
 void CvDllNetMessageHandler::ResponseLeagueVoteEnact(LeagueTypes eLeague, int iResolutionID, PlayerTypes eVoter, int iNumVotes, int iChoice)
 {
 #ifdef REPLAY_EVENTS
@@ -739,7 +751,11 @@ void CvDllNetMessageHandler::ResponseLeagueVoteEnact(LeagueTypes eLeague, int iR
 	CvAssertMsg(eLeague != NO_LEAGUE, "eLeague invalid");
 	CvAssertMsg(eVoter != NO_PLAYER, "eVoter invalid");
 
-	CvLeague* pLeague = GC.getGame().GetGameLeagues()->GetLeague(eLeague);
+	CvLeague* pLeague = KekGetLeague(eLeague);
+	if(pLeague == NULL)
+	{
+		return;
+	}
 	CvAssertMsg(pLeague->CanVote(eVoter), "eVoter not allowed to vote. Please send Anton your save file and version.");
 	pLeague->DoVoteEnact(iResolutionID, eVoter, iNumVotes, iChoice);
 }
@@ -757,7 +773,11 @@ void CvDllNetMessageHandler::ResponseLeagueVoteRepeal(LeagueTypes eLeague, int i
 	CvAssertMsg(eLeague != NO_LEAGUE, "eLeague invalid");
 	CvAssertMsg(eVoter != NO_PLAYER, "eVoter invalid");
 
-	CvLeague* pLeague = GC.getGame().GetGameLeagues()->GetLeague(eLeague);
+	CvLeague* pLeague = KekGetLeague(eLeague);
+	if(pLeague == NULL)
+	{
+		return;
+	}
 	CvAssertMsg(pLeague->CanVote(eVoter), "eVoter not allowed to vote. Please send Anton your save file and version.");
 	pLeague->DoVoteRepeal(iResolutionID, eVoter, iNumVotes, iChoice);
 }
@@ -773,7 +793,11 @@ void CvDllNetMessageHandler::ResponseLeagueVoteAbstain(LeagueTypes eLeague, Play
 	CvAssertMsg(eLeague != NO_LEAGUE, "eLeague invalid");
 	CvAssertMsg(eVoter != NO_PLAYER, "eVoter invalid");
 
-	CvLeague* pLeague = GC.getGame().GetGameLeagues()->GetLeague(eLeague);
+	CvLeague* pLeague = KekGetLeague(eLeague);
+	if(pLeague == NULL)
+	{
+		return;
+	}
 	CvAssertMsg(pLeague->CanVote(eVoter), "eVoter not allowed to vote. Please send Anton your save file and version.");
 	pLeague->DoVoteAbstain(eVoter, iNumVotes);
 }
@@ -791,7 +815,11 @@ void CvDllNetMessageHandler::ResponseLeagueProposeEnact(LeagueTypes eLeague, Res
 	CvAssertMsg(eResolution != NO_RESOLUTION, "eResolution invalid");
 	CvAssertMsg(eProposer != NO_PLAYER, "eProposer invalid");
 
-	CvLeague* pLeague = GC.getGame().GetGameLeagues()->GetLeague(eLeague);
+	CvLeague* pLeague = KekGetLeague(eLeague);
+	if(pLeague == NULL)
+	{
+		return;
+	}
 	CvAssertMsg(pLeague->CanProposeEnact(eResolution, eProposer, iChoice), "eProposer not allowed to enact Resolution. Please send Anton your save file and version.");
 	pLeague->DoProposeEnact(eResolution, eProposer, iChoice);
 #ifdef ASSIGN_SECOND_PROPOSAL_PRIVILEGE
@@ -841,7 +869,11 @@ void CvDllNetMessageHandler::ResponseLeagueProposeRepeal(LeagueTypes eLeague, in
 	CvAssertMsg(eLeague != NO_LEAGUE, "eLeague invalid");
 	CvAssertMsg(eProposer != NO_PLAYER, "eProposer invalid");
 
-	CvLeague* pLeague = GC.getGame().GetGameLeagues()->GetLeague(eLeague);
+	CvLeague* pLeague = KekGetLeague(eLeague);
+	if(pLeague == NULL)
+	{
+		return;
+	}
 	CvAssertMsg(pLeague->CanProposeRepeal(iResolutionID, eProposer), "eProposer not allowed to repeal Resolution. Please send Anton your save file and version.");
 	pLeague->DoProposeRepeal(iResolutionID, eProposer);
 #ifdef ASSIGN_SECOND_PROPOSAL_PRIVILEGE
@@ -890,7 +922,11 @@ void CvDllNetMessageHandler::ResponseLeagueEditName(LeagueTypes eLeague, PlayerT
 #endif
 	CvAssertMsg(eLeague != NO_LEAGUE, "eLeague invalid");
 
-	CvLeague* pLeague = GC.getGame().GetGameLeagues()->GetLeague(eLeague);
+	CvLeague* pLeague = KekGetLeague(eLeague);
+	if(pLeague == NULL)
+	{
+		return;
+	}
 	pLeague->DoChangeCustomName(ePlayer, szCustomName);
 }
 //------------------------------------------------------------------------------
