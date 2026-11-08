@@ -1117,9 +1117,6 @@ public:
 	bool canRangeStrike() const;
 	bool canEverRangeStrikeAt(int iX, int iY) const;
 	bool canRangeStrikeAt(int iX, int iY, bool bNeedWar = true, bool bNoncombatAllowed = true) const;
-#ifdef SUBMARINES_UNDER_ICE
-	bool IsShieldedByIceFrom(const CvUnit* pAttacker) const;
-#endif
 
 	bool IsAirSweepCapable() const;
 	int GetAirSweepCapableCount() const;
