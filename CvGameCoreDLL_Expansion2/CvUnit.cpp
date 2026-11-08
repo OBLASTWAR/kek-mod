@@ -279,6 +279,9 @@ CvUnit::CvUnit() :
 #ifdef PROMOTION_INSTA_HEAL_LOCKED
 	, m_bInstaHealLocked(false)
 #endif
+#ifdef SUBMARINES_UNDER_ICE
+	, m_iSurfacedTurn(0)
+#endif
 	, m_bPromotionReady("CvUnit::m_bPromotionReady", m_syncArchive)
 	, m_bDeathDelay("CvUnit::m_bDeathDelay", m_syncArchive)
 	, m_bCombatFocus("CvUnit::m_bCombatFocus", m_syncArchive)
@@ -991,6 +994,9 @@ void CvUnit::reset(int iID, UnitTypes eUnit, PlayerTypes eOwner, bool bConstruct
 #endif
 #ifdef PROMOTION_INSTA_HEAL_LOCKED
 	m_bInstaHealLocked = false;
+#endif
+#ifdef SUBMARINES_UNDER_ICE
+	m_iSurfacedTurn = 0;
 #endif
 	m_strNameIAmNotSupposedToBeUsedAnyMoreBecauseThisShouldNotBeCheckedAndWeNeedToPreserveSaveGameCompatibility = "";
 	m_strScriptData ="";
@@ -1819,6 +1825,14 @@ void CvUnit::doTurn()
 	if(isPromotionReady() && GET_PLAYER(getOwner()).isHuman())
 	{
 		setInstaHealLocked(true);
+	}
+#endif
+#ifdef SUBMARINES_UNDER_ICE
+	// The turn it broke through the ice is over: hide the submarine again (graphics only)
+	if(m_iSurfacedTurn > 0 && !IsSurfacedByLaunch())
+	{
+		m_iSurfacedTurn = 0;
+		plot()->updateVisibility();
 	}
 #endif
 	testPromotionReady();
@@ -12792,6 +12806,14 @@ bool CvUnit::isInvisible(TeamTypes eTeam, bool bDebug, bool bCheckCargo) const
 		return false;
 	}
 
+#ifdef SUBMARINES_UNDER_ICE
+	// A submarine that broke through the ice to launch a missile is seen like any other unit.
+	if(IsSurfacedByLaunch())
+	{
+		return false;
+	}
+#endif
+
 	if(bCheckCargo)
 	{
 		if((m_transportUnit.eOwner >= 0) && m_transportUnit.eOwner < MAX_PLAYERS)
@@ -18794,6 +18816,20 @@ void CvUnit::read(FDataStream& kStream)
 	}
 # endif
 #endif
+#ifdef SUBMARINES_UNDER_ICE
+# ifdef SAVE_BACKWARDS_COMPATIBILITY
+	if (uiVersion >= 1002)
+	{
+# endif
+		kStream >> m_iSurfacedTurn;
+# ifdef SAVE_BACKWARDS_COMPATIBILITY
+	}
+	else
+	{
+		m_iSurfacedTurn = 0;
+	}
+# endif
+#endif
 
 	//  Read mission queue
 	UINT uSize;
@@ -18921,6 +18957,9 @@ void CvUnit::write(FDataStream& kStream) const
 #endif
 #ifdef PROMOTION_INSTA_HEAL_LOCKED
 	kStream << m_bInstaHealLocked;
+#endif
+#ifdef SUBMARINES_UNDER_ICE
+	kStream << m_iSurfacedTurn;
 #endif
 
 	//  Write mission list
@@ -19074,6 +19113,13 @@ bool CvUnit::canRangeStrikeAt(int iX, int iY, bool bNeedWar, bool bNoncombatAllo
 				if(!pLoopUnit) continue;
 
 				TeamTypes loopTeam = pLoopUnit->getTeam();
+
+#ifdef SUBMARINES_UNDER_ICE
+				if(pLoopUnit->IsShieldedByIceFrom(this))
+				{
+					continue;
+				}
+#endif
 
 				// Make sure it's a valid Team
 				if(myTeam.isAtWar(loopTeam) || myTeam.canDeclareWar(loopTeam))
@@ -21240,7 +21286,11 @@ CvUnit* CvUnit::airStrikeTarget(CvPlot& targetPlot, bool bNoncombatAllowed) cons
 
 	if(pDefender)
 	{
+#ifdef SUBMARINES_UNDER_ICE
+		if(!pDefender->IsDead() && !pDefender->IsShieldedByIceFrom(this))
+#else
 		if(!pDefender->IsDead())
+#endif
 		{
 			return pDefender.pointer();
 		}
@@ -21248,6 +21298,50 @@ CvUnit* CvUnit::airStrikeTarget(CvPlot& targetPlot, bool bNoncombatAllowed) cons
 
 	return NULL;
 }
+
+#ifdef SUBMARINES_UNDER_ICE
+//	--------------------------------------------------------------------------------
+/// A ship under ice (only submarines can get there) can only be attacked by submarines.
+/// pAttacker is NULL for a city.
+bool CvUnit::IsShieldedByIceFrom(const CvUnit* pAttacker) const
+{
+	VALIDATE_OBJECT
+	if(getDomainType() != DOMAIN_SEA || plot()->getFeatureType() != FEATURE_ICE)
+	{
+		return false;
+	}
+
+	if(IsSurfacedByLaunch())
+	{
+		return false;
+	}
+
+	return pAttacker == NULL || !pAttacker->getUnitInfo().IsRangeAttackOnlyInDomain();
+}
+
+//	--------------------------------------------------------------------------------
+/// A missile launched from a submarine under ice breaks through it: the submarine uses up all its
+/// movement and loses the ice shield for the rest of this turn. Called on the missile.
+void CvUnit::SurfaceIfLaunchingFromIce()
+{
+	VALIDATE_OBJECT
+	CvUnit* pTransport = getTransportUnit();
+	if(pTransport != NULL && pTransport->getDomainType() == DOMAIN_SEA && pTransport->plot()->getFeatureType() == FEATURE_ICE)
+	{
+		pTransport->m_iSurfacedTurn = GC.getGame().getGameTurn();
+		pTransport->finishMoves();
+		// Show the submarine now (graphics only)
+		pTransport->plot()->updateVisibility();
+	}
+}
+
+//	--------------------------------------------------------------------------------
+bool CvUnit::IsSurfacedByLaunch() const
+{
+	VALIDATE_OBJECT
+	return m_iSurfacedTurn > 0 && GC.getGame().getGameTurn() == m_iSurfacedTurn;
+}
+#endif
 
 //	--------------------------------------------------------------------------------
 bool CvUnit::CanWithdrawFromMelee(CvUnit& attacker)
