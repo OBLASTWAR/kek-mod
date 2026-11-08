@@ -85143,12 +85143,12 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_MP_VERSION_MISMATCH_FOR_HOST"> 
 			<Text>
-				Version mismatch with player: {1_PlayerName}. They were removed: everyone in a game needs the same KEK Mod version (this game is KEK v@KEKMOD_VERSION@).
+				Version mismatch with player: {1_PlayerName}.
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_MP_VERSION_MISMATCH_FOR_PLAYER"> 
 			<Text>
-				Version mismatch with host. Everyone in a game needs the same KEK Mod version (you have KEK v@KEKMOD_VERSION@): update from the installer.
+				Version mismatch with host.
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_MULTIPLAYER"> 
@@ -124834,6 +124834,31 @@ The ship has weather'd every rack; the prize we sought is won."
 				ui_check.bat failed: {1_Num} UI files are missing. Close Civilization V and run ui_check.bat again.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_BLOCK">
+			<Text>
+				The game can't start: {1_PlayerName} has KEK Mod v{2_Theirs}, this game is v{3_Ours}. Everyone in a game needs the same KEK Mod version.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_BLOCK_NONE">
+			<Text>
+				The game can't start: {1_PlayerName} has not said their KEK Mod version (no KEK Mod, one older than 2.3, or ui_check.bat not run).
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_LEAVE">
+			<Text>
+				This game runs KEK Mod v{1_Host}, you have v{2_Mine}, so you can't ready up. Everyone in a game needs the same KEK Mod version: leave the lobby and update from the installer.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_HOST_UNKNOWN">
+			<Text>
+				You can't ready up yet: the host has not sent its KEK Mod version (it may run an older KEK Mod). Everyone in a game needs the same KEK Mod version.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_MISMATCH">
+			<Text>
+				{1_PlayerName} has KEK Mod v{2_Theirs}, this game is v{3_Ours}: the game can't start until they leave or are kicked.
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_UI_CHECK_BAT_INCOMPLETE">
 			<Text>
 				ui_check.bat did not finish. Close Civilization V and run ui_check.bat again.
@@ -127155,6 +127180,31 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_UI_CHECK_BAT_FAILED">
 			<Text>
 				ui_check.bat ist fehlgeschlagen: {1_Num} UI-Dateien fehlen. Beende Civilization V und führe ui_check.bat erneut aus.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_BLOCK">
+			<Text>
+				Das Spiel kann nicht starten: {1_PlayerName} hat KEK Mod v{2_Theirs}, dieses Spiel nutzt v{3_Ours}. Alle Spieler brauchen dieselbe KEK-Mod-Version.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_BLOCK_NONE">
+			<Text>
+				Das Spiel kann nicht starten: {1_PlayerName} hat keine KEK-Mod-Version gemeldet (keine KEK Mod, älter als 2.3 oder ui_check.bat nicht ausgeführt).
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_LEAVE">
+			<Text>
+				Dieses Spiel nutzt KEK Mod v{1_Host}, du hast v{2_Mine}, daher kannst du dich nicht bereit melden. Alle Spieler brauchen dieselbe KEK-Mod-Version: verlasse die Lobby und aktualisiere über den Installer.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_HOST_UNKNOWN">
+			<Text>
+				Du kannst dich noch nicht bereit melden: Der Host hat seine KEK-Mod-Version nicht gesendet (vielleicht eine ältere KEK Mod). Alle Spieler brauchen dieselbe KEK-Mod-Version.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_MISMATCH">
+			<Text>
+				{1_PlayerName} hat KEK Mod v{2_Theirs}, dieses Spiel nutzt v{3_Ours}: Das Spiel kann erst starten, wenn der Spieler geht oder entfernt wird.
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_UI_CHECK_BAT_INCOMPLETE">
@@ -129600,6 +129650,31 @@ The ship has weather'd every rack; the prize we sought is won."
 				ui_check.bat ha fallado: faltan {1_Num} archivos de interfaz. Cierra Civilization V y vuelve a ejecutar ui_check.bat.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_BLOCK">
+			<Text>
+				La partida no puede empezar: {1_PlayerName} tiene KEK Mod v{2_Theirs} y esta partida usa v{3_Ours}. Todos los jugadores necesitan la misma versión de KEK Mod.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_BLOCK_NONE">
+			<Text>
+				La partida no puede empezar: {1_PlayerName} no ha indicado su versión de KEK Mod (sin KEK Mod, una anterior a 2.3 o sin ejecutar ui_check.bat).
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_LEAVE">
+			<Text>
+				Esta partida usa KEK Mod v{1_Host} y tú tienes v{2_Mine}, así que no puedes marcarte como listo. Todos los jugadores necesitan la misma versión de KEK Mod: sal de la sala y actualiza con el instalador.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_HOST_UNKNOWN">
+			<Text>
+				Aún no puedes marcarte como listo: el anfitrión no ha enviado su versión de KEK Mod (quizá una más antigua). Todos los jugadores necesitan la misma versión de KEK Mod.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_MISMATCH">
+			<Text>
+				{1_PlayerName} tiene KEK Mod v{2_Theirs} y esta partida usa v{3_Ours}: la partida no puede empezar hasta que salga o sea expulsado.
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_UI_CHECK_BAT_INCOMPLETE">
 			<Text>
 				ui_check.bat no terminó. Cierra Civilization V y vuelve a ejecutar ui_check.bat.
@@ -132041,6 +132116,31 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_UI_CHECK_BAT_FAILED">
 			<Text>
 				ui_check.bat a échoué : {1_Num} fichiers d'interface manquent. Fermez Civilization V et relancez ui_check.bat.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_BLOCK">
+			<Text>
+				La partie ne peut pas commencer : {1_PlayerName} a KEK Mod v{2_Theirs}, cette partie utilise v{3_Ours}. Tous les joueurs doivent avoir la même version de KEK Mod.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_BLOCK_NONE">
+			<Text>
+				La partie ne peut pas commencer : {1_PlayerName} n'a pas indiqué sa version de KEK Mod (pas de KEK Mod, une version antérieure à 2.3 ou ui_check.bat non lancé).
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_LEAVE">
+			<Text>
+				Cette partie utilise KEK Mod v{1_Host}, vous avez v{2_Mine} : vous ne pouvez pas vous déclarer prêt. Tous les joueurs doivent avoir la même version de KEK Mod : quittez le salon et mettez à jour avec l'installateur.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_HOST_UNKNOWN">
+			<Text>
+				Vous ne pouvez pas encore vous déclarer prêt : l'hôte n'a pas envoyé sa version de KEK Mod (peut-être une version plus ancienne). Tous les joueurs doivent avoir la même version de KEK Mod.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_MISMATCH">
+			<Text>
+				{1_PlayerName} a KEK Mod v{2_Theirs}, cette partie utilise v{3_Ours} : la partie ne peut pas commencer tant qu'il n'est pas parti ou exclu.
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_UI_CHECK_BAT_INCOMPLETE">
@@ -134486,6 +134586,31 @@ The ship has weather'd every rack; the prize we sought is won."
 				ui_check.bat non è riuscito: mancano {1_Num} file dell'interfaccia. Chiudi Civilization V ed esegui di nuovo ui_check.bat.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_BLOCK">
+			<Text>
+				La partita non può iniziare: {1_PlayerName} ha KEK Mod v{2_Theirs}, questa partita usa v{3_Ours}. Tutti i giocatori devono avere la stessa versione di KEK Mod.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_BLOCK_NONE">
+			<Text>
+				La partita non può iniziare: {1_PlayerName} non ha indicato la sua versione di KEK Mod (nessuna KEK Mod, una precedente alla 2.3 o ui_check.bat non eseguito).
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_LEAVE">
+			<Text>
+				Questa partita usa KEK Mod v{1_Host}, tu hai v{2_Mine}, quindi non puoi dichiararti pronto. Tutti i giocatori devono avere la stessa versione di KEK Mod: esci dalla sala e aggiorna con l'installer.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_HOST_UNKNOWN">
+			<Text>
+				Non puoi ancora dichiararti pronto: l'host non ha inviato la sua versione di KEK Mod (forse una più vecchia). Tutti i giocatori devono avere la stessa versione di KEK Mod.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_MISMATCH">
+			<Text>
+				{1_PlayerName} ha KEK Mod v{2_Theirs}, questa partita usa v{3_Ours}: la partita non può iniziare finché non esce o viene rimosso.
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_UI_CHECK_BAT_INCOMPLETE">
 			<Text>
 				ui_check.bat non è stato completato. Chiudi Civilization V ed esegui di nuovo ui_check.bat.
@@ -136927,6 +137052,31 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_UI_CHECK_BAT_FAILED">
 			<Text>
 				ui_check.bat が失敗しました：UIファイルが {1_Num} 個不足しています。Civilization V を終了して ui_check.bat を再実行してください。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_BLOCK">
+			<Text>
+				ゲームを開始できません：{1_PlayerName} は KEK Mod v{2_Theirs} ですが、このゲームは v{3_Ours} です。全員が同じバージョンの KEK Mod を使う必要があります。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_BLOCK_NONE">
+			<Text>
+				ゲームを開始できません：{1_PlayerName} から KEK Mod のバージョンが送られてきていません（KEK Mod なし、2.3 より古い、または ui_check.bat 未実行）。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_LEAVE">
+			<Text>
+				このゲームは KEK Mod v{1_Host} ですが、あなたは v{2_Mine} のため準備完了にできません。全員が同じバージョンの KEK Mod を使う必要があります。ロビーを出て、インストーラーで更新してください。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_HOST_UNKNOWN">
+			<Text>
+				まだ準備完了にできません：ホストが KEK Mod のバージョンを送ってきていません（古い KEK Mod の可能性があります）。全員が同じバージョンの KEK Mod を使う必要があります。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_MISMATCH">
+			<Text>
+				{1_PlayerName} は KEK Mod v{2_Theirs} ですが、このゲームは v{3_Ours} です：退出するかキックされるまでゲームを開始できません。
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_UI_CHECK_BAT_INCOMPLETE">
@@ -139372,6 +139522,31 @@ The ship has weather'd every rack; the prize we sought is won."
 				ui_check.bat 실패: UI 파일 {1_Num}개가 없습니다. Civilization V를 종료하고 ui_check.bat를 다시 실행하세요.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_BLOCK">
+			<Text>
+				게임을 시작할 수 없습니다: {1_PlayerName} 님은 KEK Mod v{2_Theirs}이고 이 게임은 v{3_Ours}입니다. 모든 플레이어가 같은 KEK Mod 버전을 사용해야 합니다.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_BLOCK_NONE">
+			<Text>
+				게임을 시작할 수 없습니다: {1_PlayerName} 님이 KEK Mod 버전을 보내지 않았습니다 (KEK Mod 없음, 2.3보다 오래된 버전, 또는 ui_check.bat 미실행).
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_LEAVE">
+			<Text>
+				이 게임은 KEK Mod v{1_Host}이고 당신은 v{2_Mine}이므로 준비할 수 없습니다. 모든 플레이어가 같은 KEK Mod 버전을 사용해야 합니다. 로비를 나가 설치 프로그램으로 업데이트하세요.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_HOST_UNKNOWN">
+			<Text>
+				아직 준비할 수 없습니다: 호스트가 KEK Mod 버전을 보내지 않았습니다 (이전 KEK Mod일 수 있음). 모든 플레이어가 같은 KEK Mod 버전을 사용해야 합니다.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_MISMATCH">
+			<Text>
+				{1_PlayerName} 님은 KEK Mod v{2_Theirs}이고 이 게임은 v{3_Ours}입니다: 나가거나 추방될 때까지 게임을 시작할 수 없습니다.
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_UI_CHECK_BAT_INCOMPLETE">
 			<Text>
 				ui_check.bat가 완료되지 않았습니다. Civilization V를 종료하고 ui_check.bat를 다시 실행하세요.
@@ -141813,6 +141988,31 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_UI_CHECK_BAT_FAILED">
 			<Text>
 				ui_check.bat nie powiódł się: brakuje plików interfejsu ({1_Num}). Zamknij Civilization V i uruchom ponownie ui_check.bat.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_BLOCK">
+			<Text>
+				Gra nie może się rozpocząć: {1_PlayerName} ma KEK Mod v{2_Theirs}, a ta gra używa v{3_Ours}. Wszyscy gracze muszą mieć tę samą wersję KEK Mod.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_BLOCK_NONE">
+			<Text>
+				Gra nie może się rozpocząć: {1_PlayerName} nie podał swojej wersji KEK Mod (brak KEK Mod, wersja starsza niż 2.3 lub nieuruchomiony ui_check.bat).
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_LEAVE">
+			<Text>
+				Ta gra używa KEK Mod v{1_Host}, a ty masz v{2_Mine}, więc nie możesz zgłosić gotowości. Wszyscy gracze muszą mieć tę samą wersję KEK Mod: opuść lobby i zaktualizuj ją instalatorem.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_HOST_UNKNOWN">
+			<Text>
+				Nie możesz jeszcze zgłosić gotowości: host nie przesłał swojej wersji KEK Mod (może to starsza wersja). Wszyscy gracze muszą mieć tę samą wersję KEK Mod.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_MISMATCH">
+			<Text>
+				{1_PlayerName} ma KEK Mod v{2_Theirs}, a ta gra używa v{3_Ours}: gra nie może się rozpocząć, dopóki nie wyjdzie lub nie zostanie wyrzucony.
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_UI_CHECK_BAT_INCOMPLETE">
@@ -144292,6 +144492,31 @@ The ship has weather'd every rack; the prize we sought is won."
 				Ошибка ui_check.bat: не хватает файлов интерфейса ({1_Num}). Закройте Civilization V и запустите ui_check.bat ещё раз.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_BLOCK">
+			<Text>
+				Игра не может начаться: у {1_PlayerName} KEK Mod v{2_Theirs}, а в этой игре v{3_Ours}. У всех игроков должна быть одна и та же версия KEK Mod.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_BLOCK_NONE">
+			<Text>
+				Игра не может начаться: {1_PlayerName} не сообщил свою версию KEK Mod (нет KEK Mod, версия старше 2.3 или не запущен ui_check.bat).
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_LEAVE">
+			<Text>
+				В этой игре KEK Mod v{1_Host}, у вас v{2_Mine}, поэтому вы не можете отметить готовность. У всех игроков должна быть одна и та же версия KEK Mod: выйдите из лобби и обновитесь через установщик.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_HOST_UNKNOWN">
+			<Text>
+				Пока нельзя отметить готовность: хост не прислал свою версию KEK Mod (возможно, у него более старая). У всех игроков должна быть одна и та же версия KEK Mod.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_MISMATCH">
+			<Text>
+				У {1_PlayerName} KEK Mod v{2_Theirs}, а в этой игре v{3_Ours}: игра не начнётся, пока он не выйдет или не будет исключён.
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_UI_CHECK_BAT_INCOMPLETE">
 			<Text>
 				ui_check.bat не завершился. Закройте Civilization V и запустите ui_check.bat ещё раз.
@@ -146748,6 +146973,31 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_UI_CHECK_BAT_FAILED">
 			<Text>
 				ui_check.bat 執行失敗：缺少 {1_Num} 個介面檔案。請關閉 Civilization V 並重新執行 ui_check.bat。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_BLOCK">
+			<Text>
+				遊戲無法開始：{1_PlayerName} 的 KEK Mod 為 v{2_Theirs}，本遊戲為 v{3_Ours}。所有玩家都必須使用相同版本的 KEK Mod。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_BLOCK_NONE">
+			<Text>
+				遊戲無法開始：{1_PlayerName} 未回報 KEK Mod 版本（未安裝 KEK Mod、版本早於 2.3，或未執行 ui_check.bat）。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_LEAVE">
+			<Text>
+				本遊戲使用 KEK Mod v{1_Host}，你的版本為 v{2_Mine}，因此無法準備。所有玩家都必須使用相同版本的 KEK Mod：請離開大廳並用安裝程式更新。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_HOST_UNKNOWN">
+			<Text>
+				目前還不能準備：主持人尚未傳送其 KEK Mod 版本（可能是較舊的 KEK Mod）。所有玩家都必須使用相同版本的 KEK Mod。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_VERSION_MISMATCH">
+			<Text>
+				{1_PlayerName} 的 KEK Mod 為 v{2_Theirs}，本遊戲為 v{3_Ours}：在其離開或被踢出之前，遊戲無法開始。
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_UI_CHECK_BAT_INCOMPLETE">

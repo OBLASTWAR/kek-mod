@@ -7,7 +7,6 @@
 	------------------------------------------------------------------------------------------------------- */
 #include "CvGameCoreDLLPCH.h"
 #include "CvDllContext.h"
-#include "CvHttpUtils.h"	// CvHttp_GetModVersion()
 
 #include "CvDllBuildingInfo.h"
 #include "CvDllGame.h"
@@ -119,17 +118,7 @@ GUID CvDllGameContext::GetDLLGUID()
 //	---------------------------------------------------------------------------
 const char* CvDllGameContext::GetDLLVersion()
 {
-	// The engine compares this string between the host and every joiner and raises
-	// PlayerVersionMismatchEvent when it differs (UI/StagingRoom.lua then kicks the
-	// joiner, UI/JoiningRoom.lua makes the joiner leave). It was the constant "1.0.0"
-	// in every KEK Mod release, so clients on different releases were let into the
-	// same game (2.3 and 2.4 together, game #9313): it now carries the mod version.
-	static std::string s_strVersion;
-	if (s_strVersion.empty())
-	{
-		s_strVersion = std::string(CIV5_XP2_DLL_VERSION) + "+kek" + CvHttp_GetModVersion();
-	}
-	return s_strVersion.c_str();
+	return CIV5_XP2_DLL_VERSION;
 }
 
 //------------------------------------------------------------------------------

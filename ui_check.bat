@@ -106,6 +106,8 @@ copy /y "%T%\ui\MPGameOptions.lua" "%U%\MPGameOptions.lua" >nul 2>&1
 call :check ui MPGameOptions.lua
 copy /y "%T%\ui\MPGameSetupScreen.xml" "%U%\MPGameSetupScreen.xml" >nul 2>&1
 call :check ui MPGameSetupScreen.xml
+copy /y "%T%\ui\MPGameSetupScreen.lua" "%U%\MPGameSetupScreen.lua" >nul 2>&1
+call :check ui MPGameSetupScreen.lua
 copy /y "%T%\ui\MPTurnPanel.lua" "%U%\MPTurnPanel.lua" >nul 2>&1
 call :check ui MPTurnPanel.lua
 copy /y "%T%\ui\MPTurnPanel.xml" "%U%\MPTurnPanel.xml" >nul 2>&1

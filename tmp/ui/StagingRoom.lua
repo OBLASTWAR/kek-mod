@@ -380,6 +380,12 @@ end
 -------------------------------------------------
 -------------------------------------------------
 function OnReadyCheck( bChecked )
+	-- kekmod: not before the host's KEK Mod version is known (see KekMayReady)
+	if( bChecked and not KekMayReady() ) then
+		Controls.LocalReadyCheck:SetCheck( false );
+		UpdateDisplay();	-- redraws the box from the (unchanged) ready state
+		return;
+	end
 	PreGame.SetReady( Matchmaking.GetLocalID(), bChecked );
 	Network.BroadcastPlayerInfo();
 	UpdateDisplay();
@@ -1019,6 +1025,10 @@ function HandleExitRequest()
 	
 	local isHost = Matchmaking.IsHost();
 	Matchmaking.LeaveMultiplayerGame();
+	g_KekVersions = {};		-- kekmod: a new lobby starts clean
+	g_KekAnswered = {};
+	g_KekWarned = {};
+	g_KekBlocked = {};
 	if ( not PreGame.IsHotSeatGame() ) then
 		-- Refresh the lobby as we enter it
 		if ( PreGame.IsInternetGame() and not isHost ) then
@@ -1078,6 +1088,10 @@ Events.MultiplayerGamePlayerUpdated.Add( OnDisconnectOrPossiblyUpdate );
 ----------------------------------------------------------------
 ----------------------------------------------------------------
 function OnDisconnect( playerID )
+	g_KekVersions[ playerID ] = nil;	-- kekmod
+	g_KekAnswered[ playerID ] = nil;
+	g_KekWarned[ playerID ] = nil;
+	g_KekBlocked[ playerID ] = nil;
     if( ContextPtr:IsHidden() == false ) then
 			if(Network.IsPlayerKicked(playerID)) then
 				OnChat( playerID, -1, Locale.ConvertTextKey( "TXT_KEY_KICKED" ) );
@@ -1147,6 +1161,11 @@ function CheckGameAutoStart()
 	local bPlayerCountValid = (totalPlayers <= maxPlayers);
 		
 	if(m_bLaunchReady and m_bTeamsValid and bPlayerCountValid and not PreGame.GameStarted() and Network.IsEveryoneConnected()) then
+		-- kekmod: everyone connected must have said their KEK Mod version first
+		if( not KekVersionGate() ) then
+			StopCountdown();
+			return;
+		end
 		-- Everyone has readied up and we can start.
 		if(PreGame.IsHotSeatGame()) then
 			-- Hotseat skips the countdown.
@@ -1332,6 +1351,138 @@ if( string.sub( KEKMOD_VERSION, 1, 1 ) == "@" ) then
 end
 local m_bKekVersionAnnounced = false;
 
+-- kekmod: KEK Mod version check. Every KEK client since 2.3 says "KEK Mod v<version>"
+-- (TXT_KEY_MULTIPLAYER_STAGING_ROOM) in the chat when it joins a lobby (JoiningRoom.lua);
+-- the host answers each joiner's line with its own. A joiner can't ready up until it has
+-- the host's version, nor when it differs (red line: leave and update). The host gets a red
+-- line for a joiner on another version, and the game can't start while anyone is on another
+-- version or never said one (no KEK Mod, older than 2.3, ui_check.bat not run): the countdown
+-- stops and the lobby is told who and why. Nobody is kicked or made to leave automatically:
+-- in testing (2026-11-07) leaving or being kicked right after joining crashed the client, and
+-- a kick as the countdown started made an old client take over as host of its own game.
+-- The engine's own PlayerVersionMismatchEvent never fires for this.
+g_KekVersions = {};		-- playerID -> "2.5-beta10", from their chat line
+g_KekAnswered = {};		-- host: joiners we sent our own line to
+g_KekWarned = {};		-- playerID -> true once the red mismatch line was shown for them
+g_KekBlocked = {};		-- host: playerID -> true once the lobby was told they block the start
+
+-- Only the exact announcement line counts (not a kick message or a typed line that
+-- mentions a version).
+function KekVersionOf( text )
+	return text and string.match( text, "^%s*%[COLOR_POSITIVE_TEXT%]KEK Mod v([%w%.%-]+)%[ENDCOLOR%]%s*$" );
+end
+
+function KekVersionCheckOn()
+	return KEKMOD_VERSION ~= "unstamped" and not PreGame.IsHotSeatGame();
+end
+
+-- Host: tell the whole lobby (once per player) why the game can't start.
+function KekTellBlocked( playerID, strTheirs )
+	if( g_KekBlocked[ playerID ] ) then
+		return;
+	end
+	g_KekBlocked[ playerID ] = true;
+	local strName = PreGame.GetNickName( playerID ) or "";
+	local strText;
+	if( strTheirs ~= nil ) then
+		strText = Locale.ConvertTextKey( "TXT_KEY_KEK_VERSION_BLOCK", strName, strTheirs, KEKMOD_VERSION );
+	else
+		strText = Locale.ConvertTextKey( "TXT_KEY_KEK_VERSION_BLOCK_NONE", strName );
+	end
+	Network.SendChat( "[COLOR_NEGATIVE_TEXT]" .. strText .. "[ENDCOLOR]" );
+end
+
+function KekVersionChat( fromPlayer, toPlayer, text )
+	local strTheirs = KekVersionOf( text );
+	if( strTheirs == nil or fromPlayer == nil or fromPlayer < 0 ) then
+		return;
+	end
+	g_KekVersions[ fromPlayer ] = strTheirs;
+	if( not KekVersionCheckOn() or fromPlayer == Matchmaking.GetLocalID() ) then
+		return;
+	end
+	if( Matchmaking.IsHost() ) then
+		-- answer with our own line, so the joiner can check us
+		if( not g_KekAnswered[ fromPlayer ] ) then
+			g_KekAnswered[ fromPlayer ] = true;
+			Network.SendChat( Locale.ConvertTextKey( "TXT_KEY_MULTIPLAYER_STAGING_ROOM" ) );
+		end
+	end
+	KekVersionWarn();
+end
+
+-- Joiner: a lobby name tagged "KEK v<version>" (MPGameSetupScreen.lua, as LEKMOD tags its
+-- names) gives the host's version before its chat line arrives.
+function KekVersionFromName()
+	if( Matchmaking.IsHost() ) then
+		return;
+	end
+	local strTag = string.match( Matchmaking.GetCurrentGameName() or "", "KEK v([%w%.%-]+)" );
+	local iHost = Matchmaking.GetHostID();
+	if( strTag ~= nil and iHost ~= nil and iHost >= 0 and g_KekVersions[ iHost ] == nil ) then
+		g_KekVersions[ iHost ] = strTag;
+	end
+end
+
+-- Red line for a version that differs from ours: on the host for any joiner, on a joiner
+-- for the host. Shown once per player, as soon as the lobby is on screen.
+function KekVersionWarn()
+	if( ContextPtr:IsHidden() or not KekVersionCheckOn() ) then
+		return;
+	end
+	local bHost = Matchmaking.IsHost();
+	local iHost = Matchmaking.GetHostID();
+	for playerID, strTheirs in pairs( g_KekVersions ) do
+		if( strTheirs ~= KEKMOD_VERSION and not g_KekWarned[ playerID ] and playerID ~= Matchmaking.GetLocalID() ) then
+			local strText = nil;
+			if( bHost ) then
+				strText = Locale.ConvertTextKey( "TXT_KEY_KEK_VERSION_MISMATCH", PreGame.GetNickName( playerID ) or "", strTheirs, KEKMOD_VERSION );
+			elseif( playerID == iHost ) then
+				strText = Locale.ConvertTextKey( "TXT_KEY_KEK_VERSION_LEAVE", strTheirs, KEKMOD_VERSION );
+			end
+			if( strText ~= nil ) then
+				g_KekWarned[ playerID ] = true;
+				KekAddSystemChat( "[COLOR_NEGATIVE_TEXT]" .. strText .. "[ENDCOLOR]" );
+			end
+		end
+	end
+end
+Events.GameMessageChat.Add( KekVersionChat );
+
+-- Host, before the countdown: anyone connected on another version or who never said one
+-- blocks the start. Returns true when the game may start.
+function KekVersionGate()
+	if( not Matchmaking.IsHost() or not KekVersionCheckOn() ) then
+		return true;
+	end
+	local bOk = true;
+	local iLocal = Matchmaking.GetLocalID();
+	for i = 0, GameDefines.MAX_MAJOR_CIVS - 1 do
+		if( i ~= iLocal and Network.IsPlayerConnected( i ) and g_KekVersions[ i ] ~= KEKMOD_VERSION ) then
+			KekTellBlocked( i, g_KekVersions[ i ] );
+			bOk = false;
+		end
+	end
+	return bOk;
+end
+
+-- Joiner: may we ready up? Only once the host's version is known (it answers our line).
+function KekMayReady()
+	if( Matchmaking.IsHost() or not KekVersionCheckOn() ) then
+		return true;
+	end
+	local strHost = g_KekVersions[ Matchmaking.GetHostID() ];
+	if( strHost == KEKMOD_VERSION ) then
+		return true;
+	end
+	if( strHost ~= nil ) then
+		KekAddSystemChat( "[COLOR_NEGATIVE_TEXT]" .. Locale.ConvertTextKey( "TXT_KEY_KEK_VERSION_LEAVE", strHost, KEKMOD_VERSION ) .. "[ENDCOLOR]" );
+	else
+		KekAddSystemChat( "[COLOR_NEGATIVE_TEXT]" .. Locale.ConvertTextKey( "TXT_KEY_KEK_VERSION_HOST_UNKNOWN" ) .. "[ENDCOLOR]" );
+	end
+	return false;
+end
+
 -- kekmod: ui_check.bat/.sh writes UI\KekUiCheck.lua when it finishes. This copy of
 -- StagingRoom.lua is installed by ui_check itself, so no file means the run stopped
 -- partway. Returns the red/yellow chat line to show, or nil when the run was clean.
@@ -1432,6 +1583,8 @@ function ShowHideHandler( bIsHide, bIsInit )
 			end
 			m_bKekVersionAnnounced = true;
 		end
+		KekVersionFromName();
+		KekVersionWarn();
 	end
 
 end
@@ -1444,7 +1597,11 @@ function UpdateOptions()
 
 	-- Set Game Name (kekmod: suffix the lobby title with the mod version)
 	local strGameName = Matchmaking.GetCurrentGameName();
-	Controls.NameLabel:SetText( strGameName .. " [COLOR_GREY](KEK v" .. KEKMOD_VERSION .. ")[ENDCOLOR]" );
+	if( string.find( strGameName, "KEK v" .. KEKMOD_VERSION, 1, true ) ~= nil ) then
+		Controls.NameLabel:SetText( strGameName );
+	else
+		Controls.NameLabel:SetText( strGameName .. " [COLOR_GREY](KEK v" .. KEKMOD_VERSION .. ")[ENDCOLOR]" );
+	end
 	
 	-- Game State Indicator
 	if( PreGame.GameStarted() ) then
