@@ -227,6 +227,7 @@ public:
 	bool IsResearch() const;
 	bool CanEverResearch(TechTypes eTech) const;
 	bool CanResearch(TechTypes eTech, bool bTrade = false) const;
+	bool CanResearchNoEvents(TechTypes eTech, bool bTrade = false) const;
 	bool CanResearchForFree(TechTypes eTech) const;
 	TechTypes GetCurrentResearch() const;
 	bool IsCurrentResearchRepeat() const;
