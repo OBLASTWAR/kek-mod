@@ -1841,12 +1841,28 @@ void CvDllNetMessageHandler::ResponseSwapUnits(PlayerTypes ePlayer, int iUnitID,
 		{
 			CvPlot* pkOriginationPlot = pkUnit->plot();
 
-			// Find unit to move out
+			// Find the units to move out. KEK: take them first, as owner + ID. The first mission can move,
+			// kill or remove either unit and change the plot's unit list under the loop, and a stale pointer
+			// here crashed in CvUnit::SetActivityType (2.4 crash report 117, a freed unit's sync archive).
+			std::vector<std::pair<PlayerTypes, int> > vUnitsOut;
 			for(int iI = 0; iI < pkTargetPlot->getNumUnits(); iI++)
 			{
 				CvUnit* pkUnit2 = pkTargetPlot->getUnitByIndex(iI);
 
-				if(pkUnit2 && pkUnit2->AreUnitsOfSameType(*pkUnit))
+				if(pkUnit2 && pkUnit2 != pkUnit && pkUnit2->AreUnitsOfSameType(*pkUnit))
+				{
+					vUnitsOut.push_back(std::make_pair(pkUnit2->getOwner(), pkUnit2->GetID()));
+				}
+			}
+
+			for(size_t iOut = 0; iOut < vUnitsOut.size(); iOut++)
+			{
+				pkUnit = kPlayer.getUnit(iUnitID);
+				CvUnit* pkUnit2 = GET_PLAYER(vUnitsOut[iOut].first).getUnit(vUnitsOut[iOut].second);
+				if(pkUnit == NULL || pkUnit2 == NULL)
+				{
+					break;
+				}
 				{
 #ifdef GAME_ALLOW_ONLY_ONE_UNIT_MOVE_ON_TURN_LOADING
 					CvGame& game = GC.getGame();
@@ -1863,6 +1879,13 @@ void CvDllNetMessageHandler::ResponseSwapUnits(PlayerTypes ePlayer, int iUnitID,
 #endif
 					// Start the swap
 					pkUnit->PushMission(CvTypes::getMISSION_MOVE_TO(), iData1, iData2, MOVE_IGNORE_STACKING, bShift, true);
+
+					// KEK: the first mission may have removed the other unit
+					pkUnit2 = GET_PLAYER(vUnitsOut[iOut].first).getUnit(vUnitsOut[iOut].second);
+					if(pkUnit2 == NULL)
+					{
+						break;
+					}
 
 					// Move the other unit back out, again splitting if necessary
 					pkUnit2->PushMission(CvTypes::getMISSION_MOVE_TO(), pkOriginationPlot->getX(), pkOriginationPlot->getY());
