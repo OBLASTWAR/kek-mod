@@ -18,7 +18,7 @@ Built on [ImmoSS/Civ5-Patch](https://github.com/ImmoSS/Civ5-Patch).
 
 ### Installer (recommended)
 
-1. Download [`KekModInstaller.exe`](https://github.com/OBLASTWAR/kek-mod/raw/main/installer/KekModInstaller.exe).
+1. Download [`CivVModInstaller.exe`](https://github.com/OBLASTWAR/civ5-mod-installer/releases/latest/download/CivVModInstaller.exe).
 2. Run it and click **INSTALL** next to KEK Mod. Optionally install EUI from
    the same window.
 3. Start Civ V.
@@ -42,6 +42,20 @@ release is out, the **UPDATE** button turns red.
    the same DLC folder.
 5. Run `ui_check.bat` from inside the `KEK Mod v<version>` folder. Run it
    again whenever you add or remove EUI.
+6. Optional, for the Fish Map: download `FishMapScript-v<version>.zip` from
+   the [Pangea StratBal++ release](https://github.com/OBLASTWAR/pangea-stratbal/releases/latest)
+   and extract it into `Assets\Maps\`. Unlike KEK Mod, this folder has **no
+   version in its name**. It must be exactly
+
+   ```
+   ...\Sid Meier's Civilization V\Assets\Maps\Fish Map Script\VanillaPangaea.lua
+   ```
+
+   Windows **Extract All** adds an extra `FishMapScript-v<version>` folder
+   around it, so pick `Assets\Maps` as the target and remove that extra folder
+   if it appears. Don't rename the folder. Multiplayer matches the map by its
+   full path, so a different folder name gives you a red map in the lobby.
+   Replace any older `Fish Map Script` folder; don't keep two.
 
 ---
 
@@ -58,7 +72,7 @@ The installer only needs `python3`, which comes with almost every distro and
 with SteamOS. Install it with one line:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/OBLASTWAR/kek-mod/main/installer/linux/civ5-mod | python3 - install-self
+curl -fsSL https://github.com/OBLASTWAR/civ5-mod-installer/releases/latest/download/civ5-mod | python3 - install-self
 ```
 
 After that, open **Civ V Mod Installer** from your app menu or run:
@@ -93,6 +107,19 @@ It also updates itself. To remove the installer, run
    curl -fsSL https://raw.githubusercontent.com/OBLASTWAR/kek-mod/main/ui_check.sh \
      | bash -s -- "$HOME/.local/share/Steam/steamapps/common/Sid Meier's Civilization V/Assets/DLC/KEK Mod v<version>"
    ```
+5. Optional, for the Fish Map: download `FishMapScript-v<version>.zip` from
+   the [Pangea StratBal++ release](https://github.com/OBLASTWAR/pangea-stratbal/releases/latest)
+   and unzip it into `Assets/Maps/`. Unlike KEK Mod, this folder has **no
+   version in its name**. It must be exactly
+
+   ```
+   .../Sid Meier's Civilization V/Assets/Maps/Fish Map Script/VanillaPangaea.lua
+   ```
+
+   Don't rename it or nest it inside a `FishMapScript-v<version>` folder.
+   Multiplayer matches the map by its full path, so a different folder name
+   gives you a red map in the lobby. Replace any older `Fish Map Script`
+   folder; don't keep two.
 
 ---
 
