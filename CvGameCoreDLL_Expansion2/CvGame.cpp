@@ -5836,9 +5836,9 @@ bool CvGame::isDebugMode() const
 }
 
 //	--------------------------------------------------------------------------------
-// End-game full view: once the game is over, this machine draws the whole map with no fog of
-// war for its own team (units, improvements, roads, borders, city banners), so players can
-// see what everyone was doing. Debug mode still reveals as stock.
+// End-game full view: once the game is over, and through One More Turn after it, this machine
+// draws the whole map with no fog of war for its own team (units, improvements, roads, borders,
+// city banners), so players can see what everyone was doing. Debug mode still reveals as stock.
 // Display only: it feeds the bDebug view queries (fog drawing, revealed owner/improvement/
 // route, city reveal), never the real visibility counts or revealed bits, so game state is
 // identical on every machine.
@@ -5848,7 +5848,9 @@ bool CvGame::isRevealAllView(TeamTypes eTeam)
 		return true;
 
 #ifdef REVEAL_MAP_GAME_OVER
-	return eTeam != NO_TEAM && eTeam == getActiveTeam() && getGameState() == GAMESTATE_OVER;
+	// EXTENDED too: after One More Turn the view stays on (it would otherwise drop only on
+	// the plots that happen to redraw, leaving a patchwork of fog)
+	return eTeam != NO_TEAM && eTeam == getActiveTeam() && (getGameState() == GAMESTATE_OVER || getGameState() == GAMESTATE_EXTENDED);
 #else
 	return false;
 #endif

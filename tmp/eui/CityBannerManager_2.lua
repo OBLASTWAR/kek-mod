@@ -818,7 +818,8 @@ end
 -- team's banner (growth and production bars, turns to grow and build), so you can see
 -- what everyone was building. City states keep their own banner.
 local function IsGameOverView( cityOwner )
-	return Game.GetGameState() == GameplayGameStateTypes.GAMESTATE_OVER and not cityOwner:IsMinorCiv()
+	local state = Game.GetGameState()
+	return (state == GameplayGameStateTypes.GAMESTATE_OVER or state == GameplayGameStateTypes.GAMESTATE_EXTENDED) and not cityOwner:IsMinorCiv()
 end
 
 local function RefreshCityBannersNow()
