@@ -23,8 +23,12 @@ function ResizeBackground()
 		w = math.floor( h * x / y );
 	end
 	Controls.AtlasLogo:SetSizeVal( x, y );
-	Controls.AtlasLogo:SetTextureOffsetVal( math.floor( ( BACKGROUND_W - w ) / 2 ), math.floor( ( BACKGROUND_H - h ) / 2 ) );
+	-- Texture size before offset: the offset is clamped to the texture size set at that
+	-- moment. Offset first only worked because the first menu runs this twice; the menu
+	-- rebuilt after leaving a game runs it once and kept a cut offset (background drifted
+	-- up, bottom rows stretched).
 	Controls.AtlasLogo:SetTextureSizeVal( w, h );
+	Controls.AtlasLogo:SetTextureOffsetVal( math.floor( ( BACKGROUND_W - w ) / 2 ), math.floor( ( BACKGROUND_H - h ) / 2 ) );
 	Controls.AtlasLogo:ReprocessAnchoring();
 end
 
