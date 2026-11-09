@@ -26,6 +26,7 @@
 #include "../CvInternalGameCoreUtils.h"
 #include "../CvGameTextMgr.h"
 #include "../CvReplayMessage.h"
+#include "../CvKekPlayerStats.h"
 #include "../CvSyncFingerprint.h"
 
 #define Method(func) RegisterMethod(L, l##func, #func);
@@ -413,6 +414,10 @@ void CvLuaGame::RegisterMembers(lua_State* L)
 #endif
 #ifdef LUAAPI_GET_TURN_TIME_ELAPSED
 	Method(GetTurnTimeElapsed);
+#endif
+#ifdef KEK_PLAYER_STATS
+	Method(KekStatsDemographicsOpened);
+	Method(KekStatsCityScreenEntered);
 #endif
 #ifdef KEK_SYNC_FINGERPRINT
 	Method(KekSyncGetLatest);
@@ -3263,5 +3268,22 @@ int CvLuaGame::lKekSyncCompare(lua_State* L)
 
 	lua_pushinteger(L, (int)KekSync_Compare(eRemote, iTurn, iSlice, szHashes));
 	return 1;
+}
+#endif
+#ifdef KEK_PLAYER_STATS
+//------------------------------------------------------------------------------
+// Game.KekStatsDemographicsOpened() / Game.KekStatsCityScreenEntered(): count
+// one open of the screen for the local player. Local only, no network message
+// (see CvKekPlayerStats.h). Called by Demographics.lua and CityView.lua.
+int CvLuaGame::lKekStatsDemographicsOpened(lua_State*)
+{
+	KekStats_OnDemographicsOpened();
+	return 0;
+}
+//------------------------------------------------------------------------------
+int CvLuaGame::lKekStatsCityScreenEntered(lua_State*)
+{
+	KekStats_OnCityScreenEntered();
+	return 0;
 }
 #endif

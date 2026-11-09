@@ -2283,9 +2283,9 @@ function()
 
 	LuaEvents.TryQueueTutorial("CITY_SCREEN", true)
 
-	-- -9: count this city screen open (ResponseGiftUnit, synced on every client)
-	if not Players[Game.GetActivePlayer()]:IsObserver() then
-		Network.SendGiftUnit(-1, -9)
+	-- kek stats: count this city screen open, local only (no network message)
+	if Game.KekStatsCityScreenEntered then
+		Game.KekStatsCityScreenEntered()
 	end
 
 	g_queuedItemNumber = false

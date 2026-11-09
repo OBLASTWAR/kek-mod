@@ -1187,9 +1187,6 @@ static void BuildTurnJson(std::string& out, PlayerTypes eUploader)
 #ifdef EG_REPLAYDATASET_LOSTHAMMERSFROMLOSTWONDERS
         JsonAppendFmt(out, ",\"productionLostToFailedWonderRaces\":%d", kPlayer.getReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_LOSTHAMMERSFROMLOSTWONDERS"), kGame.getGameTurn()));
 #endif
-#ifdef EG_REPLAYDATASET_NUMTIMESOPENEDDEMOGRAPHICS
-        JsonAppendFmt(out, ",\"timesOpenedDemographics\":%d", kPlayer.getReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_NUMTIMESOPENEDDEMOGRAPHICS"), kGame.getGameTurn()));
-#endif
 #ifdef EG_REPLAYDATASET_SCIENTISTSTOTALSCIENCEBOOST
         JsonAppendFmt(out, ",\"totalScienceFromGreatScientists\":%d", kPlayer.getReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_SCIENTISTSTOTALSCIENCEBOOST"), kGame.getGameTurn()));
 #endif
@@ -1213,9 +1210,6 @@ static void BuildTurnJson(std::string& out, PlayerTypes eUploader)
 #endif
 #ifdef EG_REPLAYDATASET_ALLIEDCS
         JsonAppendFmt(out, ",\"alliedCityStates\":%d", kPlayer.getReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_ALLIEDCS"), kGame.getGameTurn()));
-#endif
-#ifdef EG_REPLAYDATASET_TIMESENTEREDCITYSCREEN
-        JsonAppendFmt(out, ",\"timesEnteredCityScreen\":%d", kPlayer.getReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_TIMESENTEREDCITYSCREEN"), kGame.getGameTurn()));
 #endif
 #ifdef EG_REPLAYDATASET_HAPPINESSFROMTRADEDEALS
         JsonAppendFmt(out, ",\"happinessFromTradeDeals\":%d", kPlayer.getReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_HAPPINESSFROMTRADEDEALS"), kGame.getGameTurn()));
@@ -1435,12 +1429,12 @@ static void BuildTurnJson(std::string& out, PlayerTypes eUploader)
     //
     // NOTE: this reads THIS client's replay list, and only the uploader's
     // payload is ever sent. That is fine as long as every event is added from
-    // synchronized code, so every client's list agrees. That includes the
-    // UI-driven types: REPLAYEVENT_OpenDemoScreen / REPLAYEVENT_EnterCityScreen
-    // are sent by the UI as Network.SendGiftUnit(-1, -8 / -9) and recorded in
-    // ResponseGiftUnit, which runs on every client, so the uploader sees every
-    // player's opens. Anything added from a local-only path (e.g. a Lua call
-    // straight into CvPlayer/CvGame) would stay on that one machine instead.
+    // synchronized code, so every client's list agrees. Anything added from a
+    // local-only path (e.g. a Lua call straight into CvPlayer/CvGame) would
+    // stay on that one machine instead. (The UI no longer sends the
+    // REPLAYEVENT_OpenDemoScreen / REPLAYEVENT_EnterCityScreen gift-unit
+    // codes -8 / -9: those opens are now local-only stats in each player's
+    // own save, see CvKekPlayerStats.h.)
     out += ",\"replayEvents\":[";
     {
         uint uiTotal = kGame.getNumReplayEvents();

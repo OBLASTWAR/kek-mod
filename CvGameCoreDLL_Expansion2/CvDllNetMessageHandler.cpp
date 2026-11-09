@@ -8,6 +8,7 @@
 #include "CvGameCoreDLLPCH.h"
 #include "CvDllNetMessageHandler.h"
 #include "CvDllContext.h"
+#include "CvKekPlayerStats.h"
 
 #include "CvDiplomacyAI.h"
 #include "CvTypes.h"
@@ -1115,6 +1116,9 @@ void CvDllNetMessageHandler::ResponseGiftUnit(PlayerTypes ePlayer, PlayerTypes e
 #ifdef REPLAY_EVENTS
 		GC.getGame().addReplayEvent(REPLAYEVENT_ResetTimer, ePlayer, vArgs);
 #endif
+#ifdef KEK_PLAYER_STATS
+		KekStats_OnTimerReset(ePlayer);
+#endif
 		GC.getGame().resetTurnTimer(true);
 		DLLUI->AddMessage(0, CvPreGame::activePlayer(), true, GC.getEVENT_MESSAGE_TIME(), GetLocalizedText("TXT_KEY_MISC_TURN_TIMER_RESET", GET_PLAYER(ePlayer).getName()).GetCString());
 		ICvEngineScriptSystem1* pkScriptSystem = gDLL->GetScriptSystem();
@@ -1136,6 +1140,9 @@ void CvDllNetMessageHandler::ResponseGiftUnit(PlayerTypes ePlayer, PlayerTypes e
 			{
 #ifdef REPLAY_EVENTS
 				GC.getGame().addReplayEvent(REPLAYEVENT_PauseTimer, ePlayer, vArgs);
+#endif
+#ifdef KEK_PLAYER_STATS
+				KekStats_OnTimerPaused(ePlayer);
 #endif
 				GC.getGame().m_fCurrentTurnTimerPauseDelta += GC.getGame().m_curTurnTimer.Stop();
 				GC.getGame().m_timeSinceGameTurnStart.Stop();

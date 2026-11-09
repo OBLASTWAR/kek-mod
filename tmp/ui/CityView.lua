@@ -1973,9 +1973,9 @@ function OnEnterCityScreen()
 	
 	UI.SetInterfaceMode(InterfaceModeTypes.INTERFACEMODE_SELECTION);
 
-	-- -9: count this city screen open (ResponseGiftUnit, synced on every client)
-	if (not Players[Game.GetActivePlayer()]:IsObserver()) then
-		Network.SendGiftUnit(-1, -9);
+	-- kek stats: count this city screen open, local only (no network message)
+	if (Game.KekStatsCityScreenEntered ~= nil) then
+		Game.KekStatsCityScreenEntered();
 	end
 end
 Events.SerialEventEnterCityScreen.Add(OnEnterCityScreen);
