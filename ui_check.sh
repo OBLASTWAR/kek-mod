@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # ui_check.sh -- Linux (Proton) port of ui_check.bat. Keep the two in sync:
 # every check here mirrors one block of the .bat, in the same order.
+# The Linux installer (civ5-mod) runs this file; Windows players run ui_check.bat.
 #
 # Run from the deployed DLC folder ("KEK Mod v<version>"), or pass its path:
 #   ./ui_check.sh ["<...>/Assets/DLC/KEK Mod v2.1"]
