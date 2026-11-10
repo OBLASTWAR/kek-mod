@@ -19758,6 +19758,81 @@
 				Palmanova
 			</Text>
 		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CANDIA"> 
+			<Text>
+				Candia
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CORFU"> 
+			<Text>
+				Corfu
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_ZARA"> 
+			<Text>
+				Zara
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_NEGROPONTE"> 
+			<Text>
+				Negroponte
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_SPALATO"> 
+			<Text>
+				Spalato
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_RAGUSA"> 
+			<Text>
+				Ragusa
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_NICOSIA"> 
+			<Text>
+				Nicosia
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_FAMAGUSTA"> 
+			<Text>
+				Famagusta
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_MODONE"> 
+			<Text>
+				Modone
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_ZANTE"> 
+			<Text>
+				Zante
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_DURAZZO"> 
+			<Text>
+				Durazzo
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CERIGO"> 
+			<Text>
+				Cerigo
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_BUTRINTO"> 
+			<Text>
+				Butrinto
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_SOLDAIA"> 
+			<Text>
+				Soldaia
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_TANA"> 
+			<Text>
+				Tana
+			</Text>
+		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_VENLO"> 
 			<Text>
 				Venlo
@@ -127132,6 +127207,81 @@ The ship has weather'd every rack; the prize we sought is won."
 				Palmanova
 			</Text>
 		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CANDIA"> 
+			<Text>
+				Candia
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CORFU"> 
+			<Text>
+				Korfu
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_ZARA"> 
+			<Text>
+				Zara
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_NEGROPONTE"> 
+			<Text>
+				Negroponte
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_SPALATO"> 
+			<Text>
+				Spalato
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_RAGUSA"> 
+			<Text>
+				Ragusa
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_NICOSIA"> 
+			<Text>
+				Nikosia
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_FAMAGUSTA"> 
+			<Text>
+				Famagusta
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_MODONE"> 
+			<Text>
+				Modon
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_ZANTE"> 
+			<Text>
+				Zante
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_DURAZZO"> 
+			<Text>
+				Durazzo
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CERIGO"> 
+			<Text>
+				Cerigo
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_BUTRINTO"> 
+			<Text>
+				Butrinto
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_SOLDAIA"> 
+			<Text>
+				Soldaia
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_TANA"> 
+			<Text>
+				Tana
+			</Text>
+		</Replace>
 		<Replace Tag="TXT_KEY_UNITCOMBAT_PARADROPPER"> 
 			<Text>
 				Paradropping Units
@@ -129600,6 +129750,81 @@ The ship has weather'd every rack; the prize we sought is won."
 				Palmanova
 			</Text>
 		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CANDIA"> 
+			<Text>
+				Candía
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CORFU"> 
+			<Text>
+				Corfú
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_ZARA"> 
+			<Text>
+				Zara
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_NEGROPONTE"> 
+			<Text>
+				Negroponte
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_SPALATO"> 
+			<Text>
+				Spalato
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_RAGUSA"> 
+			<Text>
+				Ragusa
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_NICOSIA"> 
+			<Text>
+				Nicosia
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_FAMAGUSTA"> 
+			<Text>
+				Famagusta
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_MODONE"> 
+			<Text>
+				Modón
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_ZANTE"> 
+			<Text>
+				Zante
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_DURAZZO"> 
+			<Text>
+				Durazzo
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CERIGO"> 
+			<Text>
+				Cerigo
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_BUTRINTO"> 
+			<Text>
+				Butrinto
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_SOLDAIA"> 
+			<Text>
+				Soldaia
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_TANA"> 
+			<Text>
+				Tana
+			</Text>
+		</Replace>
 		<Replace Tag="TXT_KEY_UNITCOMBAT_PARADROPPER"> 
 			<Text>
 				Paradropping Units
@@ -132030,17 +132255,17 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_PADUA"> 
 			<Text>
-				Padua
+				Padoue
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_VICENZA"> 
 			<Text>
-				Vicenza
+				Vicence
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_VERONA"> 
 			<Text>
-				Verona
+				Vérone
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_CHIOGGIA"> 
@@ -132060,12 +132285,87 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_TREVISO"> 
 			<Text>
-				Treviso
+				Trévise
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_PALMANOVA"> 
 			<Text>
 				Palmanova
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CANDIA"> 
+			<Text>
+				Candie
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CORFU"> 
+			<Text>
+				Corfou
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_ZARA"> 
+			<Text>
+				Zara
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_NEGROPONTE"> 
+			<Text>
+				Négrepont
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_SPALATO"> 
+			<Text>
+				Spalato
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_RAGUSA"> 
+			<Text>
+				Raguse
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_NICOSIA"> 
+			<Text>
+				Nicosie
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_FAMAGUSTA"> 
+			<Text>
+				Famagouste
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_MODONE"> 
+			<Text>
+				Modon
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_ZANTE"> 
+			<Text>
+				Zante
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_DURAZZO"> 
+			<Text>
+				Durazzo
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CERIGO"> 
+			<Text>
+				Cerigo
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_BUTRINTO"> 
+			<Text>
+				Butrinto
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_SOLDAIA"> 
+			<Text>
+				Soldaïa
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_TANA"> 
+			<Text>
+				Tana
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_UNITCOMBAT_PARADROPPER"> 
@@ -134498,7 +134798,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_PADUA"> 
 			<Text>
-				Padua
+				Padova
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_VICENZA"> 
@@ -134534,6 +134834,81 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Replace Tag="TXT_KEY_CITY_NAME_PALMANOVA"> 
 			<Text>
 				Palmanova
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CANDIA"> 
+			<Text>
+				Candia
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CORFU"> 
+			<Text>
+				Corfù
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_ZARA"> 
+			<Text>
+				Zara
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_NEGROPONTE"> 
+			<Text>
+				Negroponte
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_SPALATO"> 
+			<Text>
+				Spalato
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_RAGUSA"> 
+			<Text>
+				Ragusa
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_NICOSIA"> 
+			<Text>
+				Nicosia
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_FAMAGUSTA"> 
+			<Text>
+				Famagosta
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_MODONE"> 
+			<Text>
+				Modone
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_ZANTE"> 
+			<Text>
+				Zante
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_DURAZZO"> 
+			<Text>
+				Durazzo
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CERIGO"> 
+			<Text>
+				Cerigo
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_BUTRINTO"> 
+			<Text>
+				Butrinto
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_SOLDAIA"> 
+			<Text>
+				Soldaia
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_TANA"> 
+			<Text>
+				Tana
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_UNITCOMBAT_PARADROPPER"> 
@@ -136966,17 +137341,17 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_PADUA"> 
 			<Text>
-				Padua
+				パドヴァ
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_VICENZA"> 
 			<Text>
-				Vicenza
+				ヴィチェンツァ
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_VERONA"> 
 			<Text>
-				Verona
+				ヴェローナ
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_CHIOGGIA"> 
@@ -136986,7 +137361,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_BURANO"> 
 			<Text>
-				Burano
+				ブラーノ
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_BERGAMO"> 
@@ -136996,12 +137371,87 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_TREVISO"> 
 			<Text>
-				Treviso
+				トレヴィーゾ
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_PALMANOVA"> 
 			<Text>
 				Palmanova
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CANDIA"> 
+			<Text>
+				カンディア
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CORFU"> 
+			<Text>
+				コルフ
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_ZARA"> 
+			<Text>
+				ザーラ
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_NEGROPONTE"> 
+			<Text>
+				ネグロポンテ
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_SPALATO"> 
+			<Text>
+				スパラート
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_RAGUSA"> 
+			<Text>
+				ラグーザ
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_NICOSIA"> 
+			<Text>
+				ニコシア
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_FAMAGUSTA"> 
+			<Text>
+				ファマグスタ
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_MODONE"> 
+			<Text>
+				モドーネ
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_ZANTE"> 
+			<Text>
+				ザンテ
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_DURAZZO"> 
+			<Text>
+				ドゥラッツォ
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CERIGO"> 
+			<Text>
+				チェリーゴ
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_BUTRINTO"> 
+			<Text>
+				ブトリント
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_SOLDAIA"> 
+			<Text>
+				ソルダイア
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_TANA"> 
+			<Text>
+				ターナ
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_UNITCOMBAT_PARADROPPER"> 
@@ -139434,17 +139884,17 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_PADUA"> 
 			<Text>
-				Padua
+				파도바
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_VICENZA"> 
 			<Text>
-				Vicenza
+				비첸차
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_VERONA"> 
 			<Text>
-				Verona
+				베로나
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_CHIOGGIA"> 
@@ -139454,7 +139904,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_BURANO"> 
 			<Text>
-				Burano
+				부라노
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_BERGAMO"> 
@@ -139464,12 +139914,87 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_TREVISO"> 
 			<Text>
-				Treviso
+				트레비소
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_PALMANOVA"> 
 			<Text>
 				Palmanova
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CANDIA"> 
+			<Text>
+				칸디아
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CORFU"> 
+			<Text>
+				코르푸
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_ZARA"> 
+			<Text>
+				자라
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_NEGROPONTE"> 
+			<Text>
+				네그로폰테
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_SPALATO"> 
+			<Text>
+				스팔라토
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_RAGUSA"> 
+			<Text>
+				라구사
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_NICOSIA"> 
+			<Text>
+				니코시아
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_FAMAGUSTA"> 
+			<Text>
+				파마구스타
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_MODONE"> 
+			<Text>
+				모도네
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_ZANTE"> 
+			<Text>
+				잔테
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_DURAZZO"> 
+			<Text>
+				두라초
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CERIGO"> 
+			<Text>
+				체리고
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_BUTRINTO"> 
+			<Text>
+				부트린토
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_SOLDAIA"> 
+			<Text>
+				솔다이아
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_TANA"> 
+			<Text>
+				타나
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_UNITCOMBAT_PARADROPPER"> 
@@ -141902,7 +142427,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_PADUA"> 
 			<Text>
-				Padua
+				Padwa
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_VICENZA"> 
@@ -141912,7 +142437,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_VERONA"> 
 			<Text>
-				Verona
+				Werona
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_CHIOGGIA"> 
@@ -141938,6 +142463,81 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Replace Tag="TXT_KEY_CITY_NAME_PALMANOVA"> 
 			<Text>
 				Palmanova
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CANDIA"> 
+			<Text>
+				Kandia
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CORFU"> 
+			<Text>
+				Korfu
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_ZARA"> 
+			<Text>
+				Zara
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_NEGROPONTE"> 
+			<Text>
+				Negroponte
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_SPALATO"> 
+			<Text>
+				Spalato
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_RAGUSA"> 
+			<Text>
+				Raguza
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_NICOSIA"> 
+			<Text>
+				Nikozja
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_FAMAGUSTA"> 
+			<Text>
+				Famagusta
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_MODONE"> 
+			<Text>
+				Modon
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_ZANTE"> 
+			<Text>
+				Zante
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_DURAZZO"> 
+			<Text>
+				Durazzo
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CERIGO"> 
+			<Text>
+				Cerigo
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_BUTRINTO"> 
+			<Text>
+				Butrinto
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_SOLDAIA"> 
+			<Text>
+				Sołdaja
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_TANA"> 
+			<Text>
+				Tana
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_UNITCOMBAT_PARADROPPER"> 
@@ -144442,6 +145042,81 @@ The ship has weather'd every rack; the prize we sought is won."
 				Пальманова
 			</Text>
 		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CANDIA"> 
+			<Text>
+				Кандия
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CORFU"> 
+			<Text>
+				Корфу
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_ZARA"> 
+			<Text>
+				Зара
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_NEGROPONTE"> 
+			<Text>
+				Негропонт
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_SPALATO"> 
+			<Text>
+				Спалато
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_RAGUSA"> 
+			<Text>
+				Рагуза
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_NICOSIA"> 
+			<Text>
+				Никосия
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_FAMAGUSTA"> 
+			<Text>
+				Фамагуста
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_MODONE"> 
+			<Text>
+				Модон
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_ZANTE"> 
+			<Text>
+				Занте
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_DURAZZO"> 
+			<Text>
+				Дураццо
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CERIGO"> 
+			<Text>
+				Чериго
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_BUTRINTO"> 
+			<Text>
+				Бутринто
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_SOLDAIA"> 
+			<Text>
+				Солдайя
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_TANA"> 
+			<Text>
+				Тана
+			</Text>
+		</Replace>
 		<Replace Tag="TXT_KEY_UNITCOMBAT_PARADROPPER"> 
 			<Text>
 				Десант
@@ -146887,17 +147562,17 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_PADUA"> 
 			<Text>
-				Padua
+				帕多瓦
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_VICENZA"> 
 			<Text>
-				Vicenza
+				維琴察
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_VERONA"> 
 			<Text>
-				Verona
+				維羅納
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_CHIOGGIA"> 
@@ -146907,7 +147582,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_BURANO"> 
 			<Text>
-				Burano
+				布拉諾
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_BERGAMO"> 
@@ -146917,12 +147592,87 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_TREVISO"> 
 			<Text>
-				Treviso
+				特雷維索
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_CITY_NAME_PALMANOVA"> 
 			<Text>
 				Palmanova
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CANDIA"> 
+			<Text>
+				坎迪亞
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CORFU"> 
+			<Text>
+				科孚
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_ZARA"> 
+			<Text>
+				扎拉
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_NEGROPONTE"> 
+			<Text>
+				內格羅蓬特
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_SPALATO"> 
+			<Text>
+				斯帕拉托
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_RAGUSA"> 
+			<Text>
+				拉古薩
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_NICOSIA"> 
+			<Text>
+				尼科西亞
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_FAMAGUSTA"> 
+			<Text>
+				法馬古斯塔
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_MODONE"> 
+			<Text>
+				莫多內
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_ZANTE"> 
+			<Text>
+				贊特
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_DURAZZO"> 
+			<Text>
+				都拉佐
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_CERIGO"> 
+			<Text>
+				切里戈
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_BUTRINTO"> 
+			<Text>
+				布特林特
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_SOLDAIA"> 
+			<Text>
+				索爾達亞
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_CITY_NAME_TANA"> 
+			<Text>
+				塔納
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_UNITCOMBAT_PARADROPPER"> 
