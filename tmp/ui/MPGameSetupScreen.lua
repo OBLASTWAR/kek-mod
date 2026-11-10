@@ -72,8 +72,8 @@ function OnStart()
 	-- kekmod: put the KEK Mod version in the lobby name (as LEKMOD does with its own),
 	-- so it shows in the game list and a joiner on another version knows at once that it
 	-- can't play here (StagingRoom.lua). The version comes from the stamped
-	-- TXT_KEY_MULTIPLAYER_STAGING_ROOM text ("KEK Mod v<version>").
-	local strKekVersion = string.match( Locale.ConvertTextKey( "TXT_KEY_MULTIPLAYER_STAGING_ROOM" ), "KEK Mod v([%w%.%-]+)" );
+	-- TXT_KEY_MULTIPLAYER_STAGING_ROOM text ("KEK Mod v<version>"; Russian has "KEK <Cyrillic mod> v").
+	local strKekVersion = string.match( Locale.ConvertTextKey( "TXT_KEY_MULTIPLAYER_STAGING_ROOM" ), "KEK [^%[%]]-v(%d[%w%.%-]*)" );
 	-- An empty name is left empty: the engine then uses the host's name, which nothing
 	-- here can read before hosting. The lobby chat check (StagingRoom.lua) covers it.
 	if( strKekVersion ~= nil and strGameName ~= "" and string.find( strGameName, "KEK v" .. strKekVersion, 1, true ) == nil ) then
