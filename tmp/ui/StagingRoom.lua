@@ -1352,7 +1352,7 @@ end
 local m_bKekVersionAnnounced = false;
 
 -- kekmod: KEK Mod version check. Every KEK client since 2.3 says "KEK Mod v<version>"
--- (TXT_KEY_MULTIPLAYER_STAGING_ROOM) in the chat when it joins a lobby (JoiningRoom.lua);
+-- (from TXT_KEY_MULTIPLAYER_STAGING_ROOM) in the chat when it joins a lobby (JoiningRoom.lua);
 -- the host answers each joiner's line with its own. A joiner can't ready up until it has
 -- the host's version, nor when it differs (red line: leave and update). The host gets a red
 -- line for a joiner on another version, and the game can't start while anyone is on another
@@ -1367,9 +1367,17 @@ g_KekWarned = {};		-- playerID -> true once the red mismatch line was shown for 
 g_KekBlocked = {};		-- host: playerID -> true once the lobby was told they block the start
 
 -- Only the exact announcement line counts (not a kick message or a typed line that
--- mentions a version).
+-- mentions a version). Any word may stand between "KEK" and "v": the line used to be
+-- the sender's own TXT_KEY_MULTIPLAYER_STAGING_ROOM, which Russian has as "KEK <Cyrillic mod> v"
+-- (2.5 clients still send that).
 function KekVersionOf( text )
-	return text and string.match( text, "^%s*%[COLOR_POSITIVE_TEXT%]KEK Mod v([%w%.%-]+)%[ENDCOLOR%]%s*$" );
+	return text and string.match( text, "^%s*%[COLOR_POSITIVE_TEXT%]KEK [^%[%]]-v(%d[%w%.%-]*)%[ENDCOLOR%]%s*$" );
+end
+
+-- The line we send: always the same English text, whatever the game language, so every
+-- client can read it (JoiningRoom.lua builds the same line).
+function KekVersionLine()
+	return "[COLOR_POSITIVE_TEXT]KEK Mod v" .. KEKMOD_VERSION .. "[ENDCOLOR]";
 end
 
 function KekVersionCheckOn()
@@ -1405,7 +1413,7 @@ function KekVersionChat( fromPlayer, toPlayer, text )
 		-- answer with our own line, so the joiner can check us
 		if( not g_KekAnswered[ fromPlayer ] ) then
 			g_KekAnswered[ fromPlayer ] = true;
-			Network.SendChat( Locale.ConvertTextKey( "TXT_KEY_MULTIPLAYER_STAGING_ROOM" ) );
+			Network.SendChat( KekVersionLine() );
 		end
 	end
 	KekVersionWarn();

@@ -127,7 +127,15 @@ function OnConnectionCompete()
 	end
 
     -- TOURNAMENT MOD:
-    Network.SendChat(Locale.ConvertTextKey("TXT_KEY_MULTIPLAYER_STAGING_ROOM"))
+    -- kekmod: the version line is read by the other clients' lobby check (StagingRoom.lua),
+    -- so it goes out in English whatever the game language: the translated text differs
+    -- (Russian has "KEK <Cyrillic mod> v<version>"), and a host on another language couldn't read it.
+    local strKekLine = Locale.ConvertTextKey("TXT_KEY_MULTIPLAYER_STAGING_ROOM")
+    local strKekVersion = string.match(strKekLine, "%[COLOR_POSITIVE_TEXT%]KEK [^%[%]]-v(%d[%w%.%-]*)%[ENDCOLOR%]")
+    if( strKekVersion ~= nil ) then
+        strKekLine = "[COLOR_POSITIVE_TEXT]KEK Mod v" .. strKekVersion .. "[ENDCOLOR]"
+    end
+    Network.SendChat(strKekLine)
 
     -- kekmod: tell the lobby when ui_check.bat failed or didn't finish here, like the
     -- "not launched" line the shipped UI\JoiningRoom.lua sends. ui_check writes
