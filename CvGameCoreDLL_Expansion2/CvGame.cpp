@@ -1668,7 +1668,7 @@ void CvGame::CheckPlayerTurnDeactivate()
 							recordKekReplayData();
 #endif
 							gDLL->AutoSave(false, true);
-							CvHttp_OnTurnAutoSave();   // kekmod: every client uploads its save; turn JSON single-uploader
+							CvHttp_OnTurnAutoSave();   // kekmod: every client uploads its save
 						}
 #endif
 						kPlayer.setTurnActive(false);
@@ -6236,8 +6236,8 @@ void CvGame::setWinner(TeamTypes eNewWinner, VictoryTypes eNewVictory)
 		// Reset UN countdown if necessary
 		SetUnitedNationsCountdown(0);
 
-		// kekmod 1.5: no end-of-turn autosave follows a game end, so flush the
-		// final turn JSON (winner block + buffered vote/capture events) now.
+		// kekmod 1.5: no end-of-turn autosave follows a game end, so save and
+		// upload the final state (winner + the deciding vote) now.
 		if (eNewVictory != NO_VICTORY)
 		{
 			CvHttp_OnGameEnd();
@@ -6253,7 +6253,7 @@ void CvGame::setWinner(TeamTypes eNewWinner, VictoryTypes eNewVictory)
 			const char* szVictoryTextKey = pkVictoryInfo->GetTextKey();
 
 			// kekmod: scrap and remap votes hijack SetWinner() to end the game (each
-			// client reports its own team, see CvHttpUtils.cpp), so the generic "has
+			// client reports its own team as the winner), so the generic "has
 			// won the game" broadcast is misleading here and gets skipped. EndGameMenu.lua
 			// already shows its own scrap/remap-specific message.
 			VictoryTypes eScrapVictory = (VictoryTypes) GC.getInfoTypeForString("VICTORY_SCRAP", true);

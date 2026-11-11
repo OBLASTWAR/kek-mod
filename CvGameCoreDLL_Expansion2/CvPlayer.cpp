@@ -2703,8 +2703,9 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bGift)
 		GET_PLAYER(eOldOwner).SetHasLostCapital(true, m_eID);
 	}
 
-	// kekmod 1.5: record every city transfer for turn telemetry (events, not
-	// snapshots -- capitals can flip several times within one turn)
+	// kekmod 1.5: record every city transfer for GDR, as a replay event the
+	// save carries (events, not snapshots -- capitals can flip several times
+	// within one turn)
 	{
 		KekCityCaptureEvent kekEvt;
 		kekEvt.iX = pNewCity->getX();
@@ -2726,7 +2727,6 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bGift)
 				break;
 			}
 		}
-		CvHttp_RecordCityCaptureEvent(kekEvt);
 #if defined(REPLAY_EVENTS) && defined(KEK_SAVE_DATA)
 		std::vector<int> vArgs;
 		vArgs.push_back(kekEvt.iX);
@@ -7664,9 +7664,6 @@ void CvPlayer::receiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit)
 	}
 #endif
 #endif
-
-	// kekmod 1.5: buffer the event; it ships with the next turn-end upload
-	CvHttp_RecordRuinEvent(kekEvt);
 
 	if(!strBuffer.empty() && GC.getGame().getActivePlayer() == GetID())
 	{
