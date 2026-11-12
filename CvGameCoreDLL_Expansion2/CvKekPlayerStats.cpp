@@ -149,7 +149,10 @@ static void AddToDataset(CvPlayer& kPlayer, const char* szDataSet, int iTurn, in
 
 // The clock runs while the local player's own turn is active and not ended,
 // and the game is not paused (a turn timer pause still counts: the player
-// can keep playing).
+// can keep playing). "Ended" is the player's turn-complete message: in
+// simultaneous MP, isEndTurn() only turns true once every player has ended,
+// so on its own it kept the clock running while the player waited for the
+// others. Un-ending the turn clears the message, and the clock runs again.
 static bool IsLocalTurnClockCondition()
 {
 	CvGame& kGame = GC.getGame();
@@ -160,7 +163,8 @@ static bool IsLocalTurnClockCondition()
 		return false;
 	CvPlayer& kPlayer = GET_PLAYER(eActive);
 	return kPlayer.isAlive() && kPlayer.isHuman() && !kPlayer.isObserver()
-		&& kPlayer.isTurnActive() && !kPlayer.isEndTurn();
+		&& kPlayer.isTurnActive() && !kPlayer.isEndTurn()
+		&& !gDLL->HasReceivedTurnComplete(eActive);
 }
 
 static void TickClock()
