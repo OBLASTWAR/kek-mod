@@ -89,8 +89,25 @@ function UseTeamBanner( team, iActiveTeam, playerID )
 	if (team == iActiveTeam) then
 		return true;
 	end
+	return IsEndGameView() and not Players[playerID]:IsMinorCiv();
+end
+
+-------------------------------------------------
+-- KEK: the end-game full view (game over, and One More Turn after it). The DLL reveals every
+-- plot then, so every city banner is shown. Stock otherwise shows a banner only from fog
+-- events: one created in black fog stayed hidden when its plot's event didn't come again.
+-------------------------------------------------
+function IsEndGameView()
 	local state = Game.GetGameState();
-	return (state == GameplayGameStateTypes.GAMESTATE_OVER or state == GameplayGameStateTypes.GAMESTATE_EXTENDED) and not Players[playerID]:IsMinorCiv();
+	return state == GameplayGameStateTypes.GAMESTATE_OVER or state == GameplayGameStateTypes.GAMESTATE_EXTENDED;
+end
+
+function ShowAllCityBanners()
+	for playerID, playerTable in pairs( Instances ) do
+		for cityID, instance in pairs( playerTable ) do
+			instance.SubControls.Anchor:SetHide( false );
+		end
+	end
 end
 
 -------------------------------------------------
@@ -106,10 +123,10 @@ function RefreshCityBanner(cityBanner, iActiveTeam, iActivePlayer)
 	
 	local team = Players[cityBanner.playerID]:GetTeam();
 	local isActivePlayerCity = (cityBanner.playerID == iActivePlayer);
-	local isActiveTeamCity = false;
-	if (UseTeamBanner(team, iActiveTeam, cityBanner.playerID)) then
-		isActiveTeamCity = true;
-	end	
+	-- KEK: the banner's own kind (team or other), not UseTeamBanner: when the game ends, a
+	-- city refreshes before its banner is rebuilt, and an other-civ banner has no garrison
+	-- controls (GarrisonFrame / EjectGarrison errors)
+	local isActiveTeamCity = (cityBanner.IsActiveType == true);
 		
 	-- grab city using playerID and cityID
 	local city = player:GetCityByID(cityBanner.cityID);
@@ -674,7 +691,7 @@ function OnCityCreated( hexPos, playerID, cityID, cultureType, eraType, continen
 	
 	RefreshCityBanner(cityBanner, iActiveTeam, iActivePlayer);
 	
-	if fowState == BlackFog then
+	if fowState == BlackFog and not IsEndGameView() then
 	    controlTable.Anchor:SetHide( true );
     else
 	    controlTable.Anchor:SetHide( false );
@@ -767,8 +784,8 @@ function CheckCityBannerRebuild( instance, iActiveTeam, iActivePlayer )
 		
 		RefreshCityBanner(instance, iActiveTeam, iActivePlayer);
 
-		-- Keep the hidden state	
-		controlTable.Anchor:SetHide( bWasHidden );
+		-- Keep the hidden state (none in the end-game view)
+		controlTable.Anchor:SetHide( bWasHidden and not IsEndGameView() );
 	end
 end
 
@@ -966,6 +983,10 @@ Events.SpecificCityInfoDirty.Add(OnSpecificCityInfoDirty);
 ------------------------------------------------------------
 ------------------------------------------------------------
 function OnHexFogEvent( hexPos, fowType, bWholeMap )
+    -- KEK: the end-game full view hides no banner
+    if( fowType == BlackFog and IsEndGameView() ) then
+        fowType = GreyFog;
+    end
     if( bWholeMap ) then
         for playerID,playerTable in pairs( Instances ) do
             for cityID,instance in pairs( playerTable ) do
@@ -1273,6 +1294,7 @@ Events.GameplaySetActivePlayer.Add(OnCityBannerActivePlayerChanged);
 ----------------------------------------------------------------
 Events.EndGameShow.Add( function()
 	OnCityBannerActivePlayerChanged( Game.GetActivePlayer(), Game.GetActivePlayer() );
+	ShowAllCityBanners();
 end);
 
 ------------------------------------------------------------
@@ -1364,6 +1386,11 @@ Events.EndCombatSim.Add( OnCombatEnd );
 -- The active player's turn has begin, make sure their range strike icons are correct
 --------------------------------------------------------------
 function OnActivePlayerTurnStart()
+
+	-- KEK: each turn after One More Turn, show any banner a fog event hid
+	if IsEndGameView() then
+		ShowAllCityBanners();
+	end
 
 	local iPlayerID = Game.GetActivePlayer();
 	local playerTable = Instances[ iPlayerID ];
