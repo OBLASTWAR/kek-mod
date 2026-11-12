@@ -141,6 +141,20 @@
 			<Box Anchor="R,C" Offset="1,0" Size="1,30" Color="255,255,0,64" />
 		</Box>
 		<Button ID="MusicianIcon" Hidden="1" NoStateChange="1" Anchor="L,T" Offset="-5,-13" Size="45.45" ToolTipType="TooltipTypeTopPanel" />
+		<!--Container Size="3,1" /-->
+		<Box ID="GeneralBox" Hidden="1" Anchor="L,T" Offset="0,-6" Size="6,30" Color="0,0,0,255" >
+			<Bar ID="GeneralBar" Anchor="C,B" Offset="0,0" Size="4,30" FGColor="Production,255" Direction="Up"/>
+			<Box Anchor="L,C" Offset="0,0" Size="3,30" Color="0,0,0,64" />
+			<Box Anchor="R,C" Offset="1,0" Size="1,30" Color="255,255,0,64" />
+		</Box>
+		<Button ID="GeneralIcon" Hidden="1" NoStateChange="1" Anchor="L,T" Offset="-5,-13" Size="45.45" ToolTipType="TooltipTypeTopPanel" />
+		<!--Container Size="3,1" /-->
+		<Box ID="AdmiralBox" Hidden="1" Anchor="L,T" Offset="0,-6" Size="6,30" Color="0,0,0,255" >
+			<Bar ID="AdmiralBar" Anchor="C,B" Offset="0,0" Size="4,30" FGColor="Production,255" Direction="Up"/>
+			<Box Anchor="L,C" Offset="0,0" Size="3,30" Color="0,0,0,64" />
+			<Box Anchor="R,C" Offset="1,0" Size="1,30" Color="255,255,0,64" />
+		</Box>
+		<Button ID="AdmiralIcon" Hidden="1" NoStateChange="1" Anchor="L,T" Offset="-5,-13" Size="45.45" ToolTipType="TooltipTypeTopPanel" />
 		<Container Size="10,1" />
 
 		<!-- Happy & Golden Age -->
