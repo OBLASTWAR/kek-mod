@@ -179,21 +179,6 @@ end
 
 local RefreshCityBanner
 
--- Production a city building Settlers gets from its food surplus (CvCity::GetFoodProduction)
-local function GetFoodProduction( excessFood )
-	local p
-	if excessFood <= 0 then
-		p = 0
-	elseif excessFood <= 2 then
-		p = excessFood * 100
-	elseif excessFood <= 4 then
-		p = 200 + (excessFood - 2) * 50
-	else
-		p = 300 + (excessFood - 4) * 25
-	end
-	return math_floor( p / 100 )
-end
-
 local g_cityToolTips = {
 	-- CityBanner ToolTip
 	CityBannerButton = function( city )
@@ -372,21 +357,6 @@ local g_cityToolTips = {
 						or ( buildingProductionID ~= -1 and GameDefines.MAXED_BUILDING_GOLD_PERCENT )
 						or GameDefines.MAXED_PROJECT_GOLD_PERCENT or 100
 					tipText = tipText .. S( " %+g[ICON_GOLD]", math_floor( productionLost100 * goldPercent / 100 ) / 100 )
-				end
-			end
-
-			-- Settlers: food surplus now and the next two surpluses that give more production
-			if city:IsFoodProduction() then
-				local excessFood = city:GetYieldRate( YieldTypes.YIELD_FOOD, false ) - city:FoodConsumption( true, 0 )
-				local foodProduction = GetFoodProduction( excessFood )
-				tipText = tipText .. "[NEWLINE]" .. S( "%+d[ICON_FOOD] = %+d[ICON_PRODUCTION]", excessFood, foodProduction )
-				local food = math_max( excessFood, 0 )
-				for _ = 1, 2 do
-					repeat
-						food = food + 1
-					until GetFoodProduction( food ) > foodProduction
-					foodProduction = GetFoodProduction( food )
-					tipText = tipText .. S( "   %+d[ICON_FOOD] = %+d[ICON_PRODUCTION]", food, foodProduction )
 				end
 			end
 		end

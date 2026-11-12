@@ -964,14 +964,6 @@ local function GetTeamResearchTimes100( techID )
 	return researchTimes100
 end
 
--- Great General / Great Admiral come from combat experience, not from city specialists
-local g_combatGreatPeople = {
-	{ Name = "General", Class = "UNITCLASS_GREAT_GENERAL",
-		Scan = function( player ) return player:GetCombatExperience(), player:GreatGeneralThreshold() end },
-	{ Name = "Admiral", Class = "UNITCLASS_GREAT_ADMIRAL",
-		Scan = function( player ) return player:GetNavalCombatExperience(), player:GreatAdmiralThreshold() end },
-}
-
 -------------------------------------------------
 -- Top Panel Update
 -------------------------------------------------
@@ -1313,21 +1305,6 @@ local function UpdateTopPanelNow()
 				Controls.MusicianBox:SetHide(true)
 				Controls.MusicianIcon:SetHide(true)
 				Controls.MusicianTurns:SetText("")
-			end
-
-			-- Great General / Great Admiral, once there is some experience towards one
-			for _, combat in ipairs( g_combatGreatPeople ) do
-				local progress, threshold = combat.Scan( g_activePlayer )
-				local box, icon = Controls[ combat.Name .. "Box" ], Controls[ combat.Name .. "Icon" ]
-				if progress > 0 and threshold > 0 then
-					Controls[ combat.Name .. "Bar" ]:SetPercent( progress / threshold )
-					box:SetHide(false)
-					local gpUnit = GameInfo.Units[ GameInfo.UnitClasses[ combat.Class ].DefaultUnit ]
-					icon:SetHide(not (gpUnit and IconHookup(gpUnit.PortraitIndex, 45, gpUnit.IconAtlas, icon)))
-				else
-					box:SetHide(true)
-					icon:SetHide(true)
-				end
 			end
 		end
 
@@ -2078,20 +2055,6 @@ if civ5_mode then
 		return setTextToolTip( tipText )
 	end
 	Controls.MusicianIcon:SetToolTipCallback( requestTextToolTip )
-
-	for _, combat in ipairs( g_combatGreatPeople ) do
-		local iconName = combat.Name .. "Icon"
-		local unitClass = GameInfo.UnitClasses[ combat.Class ]
-		Controls[ iconName ]:RegisterCallback( Mouse.eLClick, function() GamePopup( ButtonPopupTypes.BUTTONPOPUP_MILITARY_OVERVIEW ) end )
-		Controls[ iconName ]:RegisterCallback( Mouse.eRClick, function() GamePedia( GameInfo.Units[ unitClass.DefaultUnit ].Description ) end )
-		g_toolTipHandler[ iconName ] = function()-- control )
-			local progress, threshold = combat.Scan( Players[Game.GetActivePlayer()] )
-			local icon = GreatPeopleIcon( combat.Class )
-			return setTextToolTip( L( "TXT_KEY_PROGRESS_TOWARDS", "[COLOR_YIELD_FOOD]" .. Locale.ToUpper( unitClass.Description ) .. "[ENDCOLOR]" )
-				.. " " .. progress .. icon .. " / " .. threshold .. icon )
-		end
-		Controls[ iconName ]:SetToolTipCallback( requestTextToolTip )
-	end
 
 	-------------------------------------------------
 	-- Happiness Tooltip & Click Actions

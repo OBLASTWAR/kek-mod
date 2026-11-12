@@ -259,13 +259,21 @@ FINDSTR /L /C:%text% "%E%\CityView\CityView.lua" >nul 2>&1 && (
   call :check ui CityView.lua
 )
 REM -------------------------------------------------
+REM EUI XITS (whatever its folder is called) is told apart from EUI by its Great
+REM General/Admiral bars. It gets the *_xits files: KEK's top panel and city banners
+REM with the XITS extras.
 set text="-- coded by bc1 from Civ V 1.0.3.276 code"
-FINDSTR /L /C:%text% "%E%\TopPanel\TopPanel.lua" >nul 2>&1 && (
-  copy /y "%T%\eui\TopPanel.lua" "%U%\TopPanel.lua" >nul 2>&1
-  call :check eui TopPanel.lua
+FINDSTR /L /C:"GetNavalCombatExperience" "%E%\TopPanel\TopPanel.lua" >nul 2>&1 && (
+  copy /y "%T%\eui\TopPanel_xits.lua" "%U%\TopPanel.lua" >nul 2>&1
+  call :check eui TopPanel_xits.lua TopPanel.lua
 ) || (
-  copy /y "%T%\ui\TopPanel.lua" "%U%\TopPanel.lua" >nul 2>&1
-  call :check ui TopPanel.lua
+  FINDSTR /L /C:%text% "%E%\TopPanel\TopPanel.lua" >nul 2>&1 && (
+    copy /y "%T%\eui\TopPanel.lua" "%U%\TopPanel.lua" >nul 2>&1
+    call :check eui TopPanel.lua
+  ) || (
+    copy /y "%T%\ui\TopPanel.lua" "%U%\TopPanel.lua" >nul 2>&1
+    call :check ui TopPanel.lua
+  )
 )
 REM -------------------------------------------------
 set text="Game.SelectionListGameNetMessage( GameMessageTypes.GAMEMESSAGE_DO_COMMAND, action.CommandType, action.CommandData, -1, 0, bAlt );"
@@ -331,16 +339,23 @@ REM CityBannerManager_2 is for EUIs with the clickable production button
 REM (CityBannerProductionButton) in place of CityBannerProductionBox.
 set text="CityBannerProductionBox = function( city )"
 IF EXIST "%E%\CityBanners\CityBannerManager.lua" (
-  FINDSTR /L /C:%text% "%E%\CityBanners\CityBannerManager.lua" >nul 2>&1 && (
-    copy /y "%T%\eui\CityBannerManager_1.lua" "%U%\CityBannerManager.lua" >nul 2>&1
-    call :check eui CityBannerManager_1.lua CityBannerManager.lua
+  FINDSTR /L /C:"GetNavalCombatExperience" "%E%\TopPanel\TopPanel.lua" >nul 2>&1 && (
+    copy /y "%T%\eui\CityBannerManager_xits.lua" "%U%\CityBannerManager.lua" >nul 2>&1
+    call :check eui CityBannerManager_xits.lua CityBannerManager.lua
     copy /y "%T%\eui\CityBannerManager_1.xml" "%U%\CityBannerManager.xml" >nul 2>&1
     call :check eui CityBannerManager_1.xml CityBannerManager.xml
   ) || (
-    copy /y "%T%\eui\CityBannerManager_2.lua" "%U%\CityBannerManager.lua" >nul 2>&1
-    call :check eui CityBannerManager_2.lua CityBannerManager.lua
-    copy /y "%T%\eui\CityBannerManager_2.xml" "%U%\CityBannerManager.xml" >nul 2>&1
-    call :check eui CityBannerManager_2.xml CityBannerManager.xml
+    FINDSTR /L /C:%text% "%E%\CityBanners\CityBannerManager.lua" >nul 2>&1 && (
+      copy /y "%T%\eui\CityBannerManager_1.lua" "%U%\CityBannerManager.lua" >nul 2>&1
+      call :check eui CityBannerManager_1.lua CityBannerManager.lua
+      copy /y "%T%\eui\CityBannerManager_1.xml" "%U%\CityBannerManager.xml" >nul 2>&1
+      call :check eui CityBannerManager_1.xml CityBannerManager.xml
+    ) || (
+      copy /y "%T%\eui\CityBannerManager_2.lua" "%U%\CityBannerManager.lua" >nul 2>&1
+      call :check eui CityBannerManager_2.lua CityBannerManager.lua
+      copy /y "%T%\eui\CityBannerManager_2.xml" "%U%\CityBannerManager.xml" >nul 2>&1
+      call :check eui CityBannerManager_2.xml CityBannerManager.xml
+    )
   )
 ) ELSE (
   copy /y "%T%\ui\CityBannerManager.lua" "%U%\CityBannerManager.lua" >nul 2>&1
@@ -378,8 +393,13 @@ IF EXIST "%E%\Improvements\YieldIconManager.lua" (
 )
 REM -------------------------------------------------
 IF EXIST "%E%\TopPanel\TopPanel.xml" (
-  copy /y "%T%\eui\TopPanel.xml" "%U%\TopPanel.xml" >nul 2>&1
-  call :check eui TopPanel.xml
+  FINDSTR /L /C:"GetNavalCombatExperience" "%E%\TopPanel\TopPanel.lua" >nul 2>&1 && (
+    copy /y "%T%\eui\TopPanel_xits.xml" "%U%\TopPanel.xml" >nul 2>&1
+    call :check eui TopPanel_xits.xml TopPanel.xml
+  ) || (
+    copy /y "%T%\eui\TopPanel.xml" "%U%\TopPanel.xml" >nul 2>&1
+    call :check eui TopPanel.xml
+  )
 )
 REM -------------------------------------------------
 IF EXIST "%E%\CityView\CityView.xml" (
