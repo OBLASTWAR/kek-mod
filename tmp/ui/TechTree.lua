@@ -484,7 +484,7 @@ function AddTechButton( tech )
 		thisTechButtonInstance.LockedTechName:SetText( techName );
 		thisTechButtonInstance.FreeTechName:SetText( techName );
 		
-		thisTechButtonInstance.TechButton:SetToolTipString( GetHelpTextForTech(tech.ID) );
+		thisTechButtonInstance.TechButton:SetToolTipString( GetHelpTextForTech(tech.ID) .. GetTechKnownByMetText(tech.ID) );
 		
 		-- update the picture
 		if IconHookup( tech.PortraitIndex, 64, tech.IconAtlas, thisTechButtonInstance.TechPortrait ) then
@@ -615,7 +615,7 @@ function RefreshDisplayOfSpecificTech( tech )
 		AddSmallButtonsToTechButton( thisTechButton, tech, maxSmallButtons, 45 );
  	end
  	
- 	thisTechButton.TechButton:SetToolTipString( GetHelpTextForTech(techID) );
+ 	thisTechButton.TechButton:SetToolTipString( GetHelpTextForTech(techID) .. GetTechKnownByMetText(techID) );
  	
  	local scienceDisabled = Game.IsOption(GameOptionTypes.GAMEOPTION_NO_SCIENCE);
  	if (scienceDisabled) then

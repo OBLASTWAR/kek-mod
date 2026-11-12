@@ -213,7 +213,7 @@ local function TechPedia( techID )
 end
 
 local function setTechToolTip( techID, _, button )
-	button:SetToolTipString( GetHelpTextForTech( techID, g_activePlayer:CanResearch( techID ) ) )
+	button:SetToolTipString( GetHelpTextForTech( techID, g_activePlayer:CanResearch( techID ) ) .. GetTechKnownByMetText( techID ) )
 end
 
 -------------------------------------------------

@@ -277,7 +277,7 @@ function AddTechButton( tech, turnsLeft, iDiscover)
  		-- update advisor icon if needed
 	end
 	
-	thisTechButtonInstance.TechButton:SetToolTipString( GetHelpTextForTech(tech.ID) );
+	thisTechButtonInstance.TechButton:SetToolTipString( GetHelpTextForTech(tech.ID) .. GetTechKnownByMetText(tech.ID) );
 		
 	-- update the picture
 	if IconHookup( tech.PortraitIndex, 64, tech.IconAtlas, thisTechButtonInstance.TechPortrait ) then

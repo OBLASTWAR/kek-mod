@@ -126930,6 +126930,11 @@ The ship has weather'd every rack; the prize we sought is won."
 				Click to open the v{1_Ver} release page.
 			</Text>
 		</Replace>
+		<Replace Tag="TXT_KEY_KEK_TECH_KNOWN_BY_MET">
+			<Text>
+				[ICON_RESEARCH] Discovered by {1_Num} of the {2_Num} civilizations you have met
+			</Text>
+		</Replace>
 	</Language_en_US>
 	<Language_DE_DE>
 		<Replace Tag="TXT_KEY_WONDER_HUBBLE_HELP"> 
@@ -129471,6 +129476,11 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED_TT">
 			<Text>
 				Klicken, um die Release-Seite von v{1_Ver} zu öffnen.
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_TECH_KNOWN_BY_MET">
+			<Text>
+				[ICON_RESEARCH] Entdeckt von {1_Num} der {2_Num} Zivilisationen, die Sie getroffen haben
 			</Text>
 		</Replace>
 	</Language_DE_DE>
@@ -132016,6 +132026,11 @@ The ship has weather'd every rack; the prize we sought is won."
 				Haz clic para abrir la página de la versión v{1_Ver}.
 			</Text>
 		</Replace>
+		<Replace Tag="TXT_KEY_KEK_TECH_KNOWN_BY_MET">
+			<Text>
+				[ICON_RESEARCH] Descubierta por {1_Num} de las {2_Num} civilizaciones que has conocido
+			</Text>
+		</Replace>
 	</Language_ES_ES>
 	<Language_FR_FR>
 		<Replace Tag="TXT_KEY_WONDER_HUBBLE_HELP"> 
@@ -134557,6 +134572,11 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED_TT">
 			<Text>
 				Cliquez pour ouvrir la page de la version v{1_Ver}.
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_TECH_KNOWN_BY_MET">
+			<Text>
+				[ICON_RESEARCH] Découverte par {1_Num} des {2_Num} civilisations que vous avez rencontrées
 			</Text>
 		</Replace>
 	</Language_FR_FR>
@@ -137102,6 +137122,11 @@ The ship has weather'd every rack; the prize we sought is won."
 				Clicca per aprire la pagina della versione v{1_Ver}.
 			</Text>
 		</Replace>
+		<Replace Tag="TXT_KEY_KEK_TECH_KNOWN_BY_MET">
+			<Text>
+				[ICON_RESEARCH] Scoperta da {1_Num} delle {2_Num} civiltà che hai incontrato
+			</Text>
+		</Replace>
 	</Language_IT_IT>
 	<Language_JA_JP>
 		<Replace Tag="TXT_KEY_WONDER_HUBBLE_HELP"> 
@@ -139643,6 +139668,11 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED_TT">
 			<Text>
 				クリックしてv{1_Ver}のリリースページを開きます。
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_TECH_KNOWN_BY_MET">
+			<Text>
+				[ICON_RESEARCH] 接触済みの{2_Num}文明のうち{1_Num}文明が発見済み
 			</Text>
 		</Replace>
 	</Language_JA_JP>
@@ -142188,6 +142218,11 @@ The ship has weather'd every rack; the prize we sought is won."
 				클릭하여 v{1_Ver} 릴리스 페이지를 엽니다.
 			</Text>
 		</Replace>
+		<Replace Tag="TXT_KEY_KEK_TECH_KNOWN_BY_MET">
+			<Text>
+				[ICON_RESEARCH] 만난 문명 {2_Num}개 중 {1_Num}개가 발견함
+			</Text>
+		</Replace>
 	</Language_KO_KR>
 	<Language_PL_PL>
 		<Replace Tag="TXT_KEY_WONDER_HUBBLE_HELP"> 
@@ -144729,6 +144764,11 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED_TT">
 			<Text>
 				Kliknij, aby otworzyć stronę wydania v{1_Ver}.
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_TECH_KNOWN_BY_MET">
+			<Text>
+				[ICON_RESEARCH] Odkryta przez {1_Num} z {2_Num} poznanych cywilizacji
 			</Text>
 		</Replace>
 	</Language_PL_PL>
@@ -147323,6 +147363,11 @@ The ship has weather'd every rack; the prize we sought is won."
 				Нажмите, чтобы открыть страницу выпуска v{1_Ver}.
 			</Text>
 		</Replace>
+		<Replace Tag="TXT_KEY_KEK_TECH_KNOWN_BY_MET">
+			<Text>
+				[ICON_RESEARCH] Открыта {1_Num} из {2_Num} встреченных цивилизаций
+			</Text>
+		</Replace>
 	</Language_RU_RU>
 	<Language_ZH_Hant_HK>
 		<Replace Tag="TXT_KEY_WONDER_HUBBLE_HELP"> 
@@ -149864,6 +149909,11 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Replace Tag="TXT_KEY_KEK_MENU_VERSION_OUTDATED_TT">
 			<Text>
 				點擊開啟 v{1_Ver} 的發佈頁面。
+			</Text>
+		</Replace>
+		<Replace Tag="TXT_KEY_KEK_TECH_KNOWN_BY_MET">
+			<Text>
+				[ICON_RESEARCH] 已接觸的 {2_Num} 個文明中有 {1_Num} 個已發現
 			</Text>
 		</Replace>
 	</Language_ZH_Hant_HK>
