@@ -89,7 +89,8 @@ function UseTeamBanner( team, iActiveTeam, playerID )
 	if (team == iActiveTeam) then
 		return true;
 	end
-	return Game.GetGameState() == GameplayGameStateTypes.GAMESTATE_OVER and not Players[playerID]:IsMinorCiv();
+	local state = Game.GetGameState();
+	return (state == GameplayGameStateTypes.GAMESTATE_OVER or state == GameplayGameStateTypes.GAMESTATE_EXTENDED) and not Players[playerID]:IsMinorCiv();
 end
 
 -------------------------------------------------
