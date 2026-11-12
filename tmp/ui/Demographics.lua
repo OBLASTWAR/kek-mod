@@ -473,9 +473,9 @@ function ShowHideHandler( bIsHide, bIsInit )
             if( not m_bIsEndGame ) then
 	            UI.incTurnTimerSemaphore();
 	            Events.SerialEventGameMessagePopupShown(m_PopupInfo);
-	            -- -8: count this open (ResponseGiftUnit, synced on every client)
-	            if( not Players[Game.GetActivePlayer()]:IsObserver() ) then
-	                Network.SendGiftUnit(-1, -8);
+	            -- kek stats: count this open, local only (no network message)
+	            if( Game.KekStatsDemographicsOpened ~= nil ) then
+	                Game.KekStatsDemographicsOpened();
 	            end
             end
         else

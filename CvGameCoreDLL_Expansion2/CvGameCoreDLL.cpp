@@ -11,6 +11,7 @@
 #include "Win32/FDebugHelper.h"
 #include "CvDllContext.h"
 #include "CvCrashReporter.h"
+#include "CvKekPlayerStats.h"
 
 // must be included after all other headers
 #include "LintFree.h"
@@ -47,6 +48,9 @@ BOOL APIENTRY DllMain(HANDLE hModule,
 		break;
 	case DLL_PROCESS_DETACH:
 		OutputDebugString("DLL_PROCESS_DETACH\n");
+#ifdef KEK_PLAYER_STATS
+		KekStats_Shutdown();   // the click hook points into this DLL
+#endif
 		KekCrashReporter_Shutdown();
 		timeEndPeriod(1);
 		CvDllGameContext::DestroySingleton();

@@ -49,6 +49,7 @@
 #include "CvBarbarians.h"
 #include "CvHttpUtils.h"
 #include "CvSyncFingerprint.h"
+#include "CvKekPlayerStats.h"
 #include "CvCrashReporter.h"
 #include "CvGoodyHuts.h"
 
@@ -1125,6 +1126,10 @@ void CvGame::reset(HandicapTypes eHandicap, bool bConstructorCall)
 	// Uninit class
 	uninit();
 
+#ifdef KEK_PLAYER_STATS
+	KekStats_Reset();
+#endif
+
 	m_fCurrentTurnTimerPauseDelta = 0.f;
 
 	CvString strUTF8DatabasePath = gDLL->GetCacheFolderPath();
@@ -1499,6 +1504,12 @@ void CvGame::update()
 
 	// Dev builds only: crash-test trigger file poll (no-op in prod).
 	KekCrashReporter_CheckTestTrigger();
+
+#ifdef KEK_PLAYER_STATS
+	// Before any early return below (diplo, blocking input): the active-turn
+	// clock must keep ticking while a popup is up.
+	KekStats_Update();
+#endif
 
 	if(IsWaitingForBlockingInput())
 	{
@@ -10315,6 +10326,10 @@ void CvGame::addReplayEvent(int eType, PlayerTypes ePlayer, std::vector<int> vNu
 void CvGame::recordKekReplayData()
 {
 	const int iTurn = getGameTurn();
+#ifdef KEK_PLAYER_STATS
+	// The local player's own stats (local only, see CvKekPlayerStats.h).
+	KekStats_RecordLocal(iTurn);
+#endif
 #ifdef REPLAY_EVENTS
 	{
 		std::vector<int> vKey;

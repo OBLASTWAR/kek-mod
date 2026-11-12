@@ -1054,6 +1054,13 @@
 // each autosave, logs every ruin with its rewards (for all players, not only
 // humans), and logs every change of a city's owner (REPLAYEVENT_CityAcquired).
 #define KEK_SAVE_DATA
+// Extra per-player stats in the save (CvKekPlayerStats.cpp): clicks, active
+// turn time, Demographics and city screen opens are counted locally, with no
+// network message, and written only into that player's own save; timer
+// resets and pauses are counted from the synced timer commands. Per-turn
+// replay datasets REPLAYDATASET_KEK_*, kept out of the replay viewer.
+// Needs KEK_SAVE_DATA (written in recordKekReplayData).
+#define KEK_PLAYER_STATS
 // Dev-only: dumps finished games to an external SQLite file (Civ5FinishedGameDatabase.db)
 // for cross-game analytics. Separate from REPLAY_EVENTS because this is the only piece
 // that actually needs winsqlite3.h from the Windows 10 SDK (10.0.15063+); the in-game

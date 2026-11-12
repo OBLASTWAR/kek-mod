@@ -83,6 +83,7 @@
     <ClCompile Include="CvCrashReporter.cpp" />
     <ClCompile Include="CvHttpUtils.cpp" />
     <ClCompile Include="CvSyncFingerprint.cpp" />
+    <ClCompile Include="CvKekPlayerStats.cpp" />
     <ClCompile Include="CvCityManager.cpp" />
     <ClCompile Include="CvTargeting.cpp" />
     <ClCompile Include="_precompile.cpp">
@@ -270,6 +271,7 @@
     <ClInclude Include="CvCrashReporter.h" />
     <ClInclude Include="CvHttpUtils.h" />
     <ClInclude Include="CvSyncFingerprint.h" />
+    <ClInclude Include="CvKekPlayerStats.h" />
     <ClInclude Include="CvCityManager.h" />
     <ClInclude Include="CvCitySpecializationAI.h" />
     <ClInclude Include="CvCityStrategyAI.h" />
