@@ -10,8 +10,6 @@ Works with or without [EUI](https://forums.civfanatics.com/resources/enhanced-us
 
 Built on [ImmoSS/Civ5-Patch](https://github.com/ImmoSS/Civ5-Patch).
 
-> Everyone in a multiplayer game needs the **same KEK Mod version**.
-
 ---
 
 ## Windows
