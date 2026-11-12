@@ -90,7 +90,11 @@ has "-- modified by bc1 from Civ V 1.0.3.276 code" "$E/UnitPanel/UnitPanel.lua" 
 if has "-- modified by bc1 from 1.0.3.144 brave new world code" "$E/CityStatePopup/CityStateDiploPopup.lua"
 then eui CityStateDiploPopup.lua; eui CityStateDiploPopup.xml; else ui CityStateDiploPopup.lua; ui CityStateDiploPopup.xml; fi
 has "-- coded by bc1 from 1.0.3.276 brave new world code" "$E/CityView/CityView.lua" && eui CityView.lua || ui CityView.lua
-has "-- coded by bc1 from Civ V 1.0.3.276 code" "$E/TopPanel/TopPanel.lua" && eui TopPanel.lua || ui TopPanel.lua
+# EUI XITS (whatever its folder is called) is told apart from EUI by its Great General/Admiral
+# bars. It gets the *_xits files: KEK's top panel and city banners with the XITS extras.
+if has "GetNavalCombatExperience" "$E/TopPanel/TopPanel.lua"; then cp_ eui/TopPanel_xits.lua TopPanel.lua
+elif has "-- coded by bc1 from Civ V 1.0.3.276 code" "$E/TopPanel/TopPanel.lua"; then eui TopPanel.lua
+else ui TopPanel.lua; fi
 has "Game.SelectionListGameNetMessage( GameMessageTypes.GAMEMESSAGE_DO_COMMAND, action.CommandType, action.CommandData, -1, 0, bAlt );" \
   "$E/Improvements/ConfirmCommandPopup.lua" && eui ConfirmCommandPopup.lua || ui ConfirmCommandPopup.lua
 has "-- coded by bc1 from Civ V 1.0.3.276 code" "$E/TechTree/TechTree.lua" && eui TechTree.lua || ui TechTree.lua
@@ -102,7 +106,9 @@ if [[ -f "$E/Options/OptionsMenu.lua" ]]; then cp_ eui/OptionsMenu.lua.ignore Op
 if [[ -f "$E/Options/OptionsMenu.xml" ]]; then cp_ eui/OptionsMenu.xml.ignore OptionsMenu.xml; else cp_ ui/OptionsMenu.xml.ignore OptionsMenu.xml; fi
 
 if [[ -f "$E/CityBanners/CityBannerManager.lua" ]]; then
-  if has "CityBannerProductionBox = function( city )" "$E/CityBanners/CityBannerManager.lua"; then
+  if has "GetNavalCombatExperience" "$E/TopPanel/TopPanel.lua"; then
+    cp_ eui/CityBannerManager_xits.lua CityBannerManager.lua; cp_ eui/CityBannerManager_1.xml CityBannerManager.xml
+  elif has "CityBannerProductionBox = function( city )" "$E/CityBanners/CityBannerManager.lua"; then
     cp_ eui/CityBannerManager_1.lua CityBannerManager.lua; cp_ eui/CityBannerManager_1.xml CityBannerManager.xml
   else
     cp_ eui/CityBannerManager_2.lua CityBannerManager.lua; cp_ eui/CityBannerManager_2.xml CityBannerManager.xml
@@ -112,7 +118,9 @@ else ui CityBannerManager.lua; ui CityBannerManager.xml; fi
 if [[ -f "$E/NotificationPanel/DiploCorner.xml" ]]; then eui DiploCorner.lua; eui DiploCorner.xml; else ui DiploCorner.lua; ui DiploCorner.xml; fi
 [[ -f "$E/Improvements/WorldView.lua" ]] && eui WorldView.lua || ui WorldView.lua
 [[ -f "$E/Improvements/YieldIconManager.lua" ]] && eui YieldIconManager.lua || ui YieldIconManager.lua
-[[ -f "$E/TopPanel/TopPanel.xml" ]] && eui TopPanel.xml
+if [[ -f "$E/TopPanel/TopPanel.xml" ]]; then
+  if has "GetNavalCombatExperience" "$E/TopPanel/TopPanel.lua"; then cp_ eui/TopPanel_xits.xml TopPanel.xml; else eui TopPanel.xml; fi
+fi
 [[ -f "$E/CityView/CityView.xml" ]] && eui CityView.xml || ui CityView.xml
 [[ -f "$E/CityView/CityView_small.xml" ]] && eui CityView_small.xml || ui CityView_small.xml
 # UI/KekUiCheck.lua tells the lobby screens how this run went (no file: it never finished).
