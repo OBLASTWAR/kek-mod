@@ -348,8 +348,16 @@ local g_cityToolTips = {
 					tipText = tipText .. L( "TXT_KEY_STR_TURNS", productionTurnsLeft -1 )
 						.. S( " %+g[ICON_PRODUCTION]  ", ( productionOverflow100 - productionPerTurn100 ) / 100 )
 				end
+				-- Overflow above the item's cost (or one turn of production, if more) is lost and paid out as gold (CvCity::popOrder)
+				local productionLost100 = math_max( 0, productionOverflow100 - math_max( productionNeeded * 100, productionPerTurn100 ) )
 				tipText = tipText .. "[COLOR_YIELD_FOOD]" .. Locale_ToUpper( L( "TXT_KEY_STR_TURNS", productionTurnsLeft ) ) .. "[ENDCOLOR]"
-						.. S( " %+g[ICON_PRODUCTION]", productionOverflow100 / 100 )
+						.. S( " %+g[ICON_PRODUCTION]", ( productionOverflow100 - productionLost100 ) / 100 )
+				if productionLost100 > 0 then
+					local goldPercent = ( unitProductionID ~= -1 and GameDefines.MAXED_UNIT_GOLD_PERCENT )
+						or ( buildingProductionID ~= -1 and GameDefines.MAXED_BUILDING_GOLD_PERCENT )
+						or GameDefines.MAXED_PROJECT_GOLD_PERCENT or 100
+					tipText = tipText .. S( " %+g[ICON_GOLD]", math_floor( productionLost100 * goldPercent / 100 ) / 100 )
+				end
 			end
 		end
 
