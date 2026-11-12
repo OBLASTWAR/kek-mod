@@ -15424,7 +15424,8 @@ void CvPlayer::DoUnitKilledCombat(PlayerTypes eKilledPlayer, UnitTypes eUnitType
 		LuaSupport::CallHook(pkScriptSystem, "UnitKilledInCombat", args.get(), bResult);
 	}
 #ifdef REPLAY_EVENTS
-	if (isHuman())
+	// a human's unit killed by barbarians, a city-state or the AI is recorded too, owned by the killer
+	if (isHuman() || (eKilledPlayer != NO_PLAYER && GET_PLAYER(eKilledPlayer).isHuman()))
 	{
 		std::vector<int> vArgs;
 		vArgs.push_back(static_cast<int>(eKilledPlayer));
