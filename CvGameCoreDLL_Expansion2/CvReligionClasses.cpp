@@ -755,6 +755,9 @@ void CvGameReligions::FoundPantheon(PlayerTypes ePlayer, BeliefTypes eBelief)
 
 	// Found it
 	m_CurrentReligions.push_back(newReligion);
+#ifdef KEK_RESULT_LOG
+	kGame.resultLogReligion(ePlayer, (int)RELIGION_PANTHEON, RESULTLOG_RELIGION_PANTHEON, (int)eBelief, -1, -1, -1, NULL);
+#endif
 
 	// Update game systems
 	kPlayer.UpdateReligion();
@@ -895,6 +898,9 @@ void CvGameReligions::FoundReligion(PlayerTypes ePlayer, ReligionTypes eReligion
 
 	// Found it
 	m_CurrentReligions.push_back(kReligion);
+#ifdef KEK_RESULT_LOG
+	GC.getGame().resultLogReligion(ePlayer, (int)eReligion, RESULTLOG_RELIGION_FOUNDED, (int)eBelief1, (int)eBelief2, (int)eBelief3, (int)eBelief4, pkHolyCity);
+#endif
 
 	// Inform the holy city
 	pkHolyCity->GetCityReligions()->DoReligionFounded(kReligion.m_eReligion);
@@ -1099,6 +1105,9 @@ void CvGameReligions::EnhanceReligion(PlayerTypes ePlayer, ReligionTypes eReligi
 	it->m_Beliefs.AddBelief(eBelief1);
 	it->m_Beliefs.AddBelief(eBelief2);
 	it->m_bEnhanced = true;
+#ifdef KEK_RESULT_LOG
+	GC.getGame().resultLogReligion(ePlayer, (int)eReligion, RESULTLOG_RELIGION_ENHANCED, (int)eBelief1, (int)eBelief2, -1, -1, NULL);
+#endif
 
 	// Update game systems
 	UpdateAllCitiesThisReligion(eReligion);
@@ -1216,6 +1225,9 @@ void CvGameReligions::AddReformationBelief(PlayerTypes ePlayer, ReligionTypes eR
 	}
 
 	it->m_Beliefs.AddBelief(eBelief1);
+#ifdef KEK_RESULT_LOG
+	GC.getGame().resultLogReligion(ePlayer, (int)eReligion, RESULTLOG_RELIGION_REFORMED, (int)eBelief1, -1, -1, -1, NULL);
+#endif
 
 	// Update game systems
 	UpdateAllCitiesThisReligion(eReligion);

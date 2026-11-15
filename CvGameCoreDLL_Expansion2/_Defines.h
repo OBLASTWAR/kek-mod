@@ -1061,6 +1061,18 @@
 // replay datasets REPLAYDATASET_KEK_*, kept out of the replay viewer.
 // Needs KEK_SAVE_DATA (written in recordKekReplayData).
 #define KEK_PLAYER_STATS
+// Result log (REPLAYEVENT_RL_*): what the game DID, for every player (AI,
+// city-states and barbarians too), so that one final save rebuilds the whole
+// replay: units created / standing / removed / hit / promoted, city size,
+// production, buildings, queue, stocks, worked tiles, religion, damage, map
+// improvements and pillage, policies, beliefs, city-state allies, explored
+// tiles, and a marker right before each autosave so a reader can cut the log
+// exactly at that save. Hooks sit in simulation code that runs alike on every
+// machine; nothing in the game reads these events back, and they are left out
+// of the turn JSON. Needs REPLAY_EVENTS and KEK_SAVE_DATA.
+#if defined(REPLAY_EVENTS) && defined(KEK_SAVE_DATA)
+#define KEK_RESULT_LOG
+#endif
 // Dev-only: dumps finished games to an external SQLite file (Civ5FinishedGameDatabase.db)
 // for cross-game analytics. Separate from REPLAY_EVENTS because this is the only piece
 // that actually needs winsqlite3.h from the Windows 10 SDK (10.0.15063+); the in-game

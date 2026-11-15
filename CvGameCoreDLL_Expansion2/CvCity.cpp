@@ -305,6 +305,9 @@ void CvCity::init(int iID, PlayerTypes eOwner, int iX, int iY, bool bBumpUnits, 
 	reset(iID, eOwner, pPlot->getX(), pPlot->getY());
 
 	CvPlayerAI& owningPlayer = GET_PLAYER(getOwner());
+#ifdef KEK_RESULT_LOG
+	GC.getGame().resultLogCityFounded(*this, bInitialFounding);
+#endif
 
 	//--------------------------------
 	// Init non-saved data
@@ -1406,6 +1409,9 @@ void CvCity::kill()
 	CvPlot* pPlot = plot();
 	PlayerTypes eOwner = getOwner();
 	bool bCapital = isCapital();
+#ifdef KEK_RESULT_LOG
+	GC.getGame().resultLogCityRemoved(*this);
+#endif
 
 	IDInfo* pUnitNode;
 	CvUnit* pLoopUnit;
@@ -7752,6 +7758,9 @@ void CvCity::setPopulation(int iNewValue, bool bReassignPop /* = true */)
 
 	if(iOldPopulation != iNewValue)
 	{
+#ifdef KEK_RESULT_LOG
+		GC.getGame().resultLogCitySize(*this, iNewValue);
+#endif
 		// If we are reducing population, remove the workers first
 		if(bReassignPop)
 		{
@@ -11390,6 +11399,9 @@ void CvCity::setDamage(int iValue, bool noMessage)
 	if(iValue != getDamage())
 	{
 		int iOldValue = getDamage();
+#ifdef KEK_RESULT_LOG
+		GC.getGame().resultLogCityDamage(*this, iValue);
+#endif
 		auto_ptr<ICvCity1> pDllCity(new CvDllCity(this));
 		gDLL->GameplayCitySetDamage(pDllCity.get(), iValue, iOldValue);
 
@@ -12368,6 +12380,9 @@ void CvCity::popOrder(int iNum, bool bFinish, bool bChoose)
 	VALIDATE_OBJECT
 
 	CvPlayerAI& kOwner = GET_PLAYER(getOwner());	//Used often later on
+#ifdef KEK_RESULT_LOG
+	CvResultLogScope kResultLogPayment(RESULTLOG_SCOPE_CITY_PAYMENT, RESULTLOG_PAID_PRODUCTION);
+#endif
 
 	OrderData* pOrderNode;
 	SpecialistTypes eSpecialist;
@@ -13054,6 +13069,9 @@ int CvCity::CreateUnit(UnitTypes eUnitType, UnitAITypes eAIType, bool bUseToSati
 		thisPlayer.ChangeNumTrainedUnits(1);
 	}
 #endif
+#ifdef KEK_RESULT_LOG
+	GC.getGame().resultLogCityProduced(*this, ORDER_TRAIN, (int)eUnitType, pUnit->GetID());
+#endif
 	return pUnit->GetID();
 }
 
@@ -13076,6 +13094,9 @@ bool CvCity::CreateBuilding(BuildingTypes eBuildingType)
 	}
 
 	m_pCityBuildings->SetNumRealBuilding(eBuildingType, m_pCityBuildings->GetNumRealBuilding(eBuildingType) + 1);
+#ifdef KEK_RESULT_LOG
+	GC.getGame().resultLogCityProduced(*this, ORDER_CONSTRUCT, (int)eBuildingType, -1);
+#endif
 
 	//Achievements
 	if(kPlayer.isHuman() && !GC.getGame().isGameMultiPlayer())
@@ -13123,6 +13144,9 @@ bool CvCity::CreateProject(ProjectTypes eProjectType)
 	CvPlayer& thisPlayer = GET_PLAYER(getOwner());
 	CvTeam& thisTeam = GET_TEAM(getTeam());
 	thisTeam.changeProjectCount(eProjectType, 1);
+#ifdef KEK_RESULT_LOG
+	GC.getGame().resultLogCityProduced(*this, ORDER_CREATE, (int)eProjectType, -1);
+#endif
 
 	ProjectTypes ApolloProgram = (ProjectTypes) GC.getSPACE_RACE_TRIGGER_PROJECT();
 	ProjectTypes capsuleID = (ProjectTypes) GC.getSPACESHIP_CAPSULE();
@@ -13600,6 +13624,9 @@ void CvCity::Purchase(UnitTypes eUnitType, BuildingTypes eBuildingType, ProjectT
 	VALIDATE_OBJECT
 
 	CvPlayer& kPlayer = GET_PLAYER(getOwner());
+#ifdef KEK_RESULT_LOG
+	CvResultLogScope kResultLogPayment(RESULTLOG_SCOPE_CITY_PAYMENT, (ePurchaseYield == YIELD_FAITH) ? RESULTLOG_PAID_FAITH : RESULTLOG_PAID_GOLD);
+#endif
 
 	switch(ePurchaseYield)
 	{

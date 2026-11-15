@@ -869,6 +869,9 @@ CvUnit* CvMilitaryAI::BuyEmergencyUnit(UnitAITypes eUnitType, CvCity* pCity)
 				if(pCity->getOwner() == m_pPlayer->GetID())		// Player must own the city or this will create a unit for another player
 				{
 					// This is an EXTRA build for the operation beyond any that are already assigned to this city, so pass in the right flag to CreateUnit()
+#ifdef KEK_RESULT_LOG
+					CvResultLogScope kResultLogPayment(RESULTLOG_SCOPE_CITY_PAYMENT, RESULTLOG_PAID_GOLD);
+#endif
 					int iResult = pCity->CreateUnit(eType, NO_UNITAI, false /*bUseToSatisfyOperation*/);
 
 					CvAssertMsg(iResult != FFreeList::INVALID_INDEX, "Unable to create unit");
@@ -906,6 +909,9 @@ CvUnit* CvMilitaryAI::BuyEmergencyUnit(UnitAITypes eUnitType, CvCity* pCity)
 				m_pPlayer->ChangeFaith(-iFaithCost);
 
 				// This is an EXTRA build for the operation beyond any that are already assigned to this city, so pass in the right flag to CreateUnit()
+#ifdef KEK_RESULT_LOG
+				CvResultLogScope kResultLogPayment(RESULTLOG_SCOPE_CITY_PAYMENT, RESULTLOG_PAID_FAITH);
+#endif
 				int iResult = pCity->CreateUnit(eType, NO_UNITAI, false /*bUseToSatisfyOperation*/);
 
 				CvAssertMsg(iResult != FFreeList::INVALID_INDEX, "Unable to create unit");
@@ -945,6 +951,9 @@ bool CvMilitaryAI::BuyEmergencyBuilding(CvCity* pCity)
 					{
 						m_pPlayer->GetTreasury()->LogExpenditure((CvString)pkBuildingInfo->GetText(), iGoldCost, 8);
 						m_pPlayer->GetTreasury()->ChangeGold(-iGoldCost);
+#ifdef KEK_RESULT_LOG
+						CvResultLogScope kResultLogPayment(RESULTLOG_SCOPE_CITY_PAYMENT, RESULTLOG_PAID_GOLD);
+#endif
 						int iResult = pCity->CreateBuilding(eBldg);
 
 						DEBUG_VARIABLE(iResult);

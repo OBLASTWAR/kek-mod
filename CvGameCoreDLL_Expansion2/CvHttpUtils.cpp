@@ -1221,7 +1221,11 @@ void CvHttp_OnGameEnd()
     char szGuid[40];
     FormatMapGuid(szGuid, sizeof(szGuid));
 #ifdef KEK_SAVE_DATA
+#ifdef KEK_RESULT_LOG
+    GC.getGame().recordKekReplayData(RESULTLOG_SAVE_GAME_END);
+#else
     GC.getGame().recordKekReplayData();
+#endif
 #endif
     gDLL->AutoSave(false, true);
     CaptureTurnSave(GC.getGame().getGameTurn(), szGuid, eActive, true);
@@ -1253,7 +1257,11 @@ void CvHttp_OnUpdate()
     char szGuid[40];
     FormatMapGuid(szGuid, sizeof(szGuid));
 #ifdef KEK_SAVE_DATA
+#ifdef KEK_RESULT_LOG
+    GC.getGame().recordKekReplayData(RESULTLOG_SAVE_PROPOSAL);
+#else
     GC.getGame().recordKekReplayData();
+#endif
 #endif
     gDLL->AutoSave(false, true);
     CaptureTurnSave(GC.getGame().getGameTurn(), szGuid, eActive, false, true);

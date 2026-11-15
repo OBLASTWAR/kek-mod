@@ -2626,6 +2626,9 @@ void CvCityBuildings::SetNumRealBuildingTimed(BuildingTypes eIndex, int iNewValu
 		int iOldNumBuilding = GetNumBuilding(eIndex);
 
 		m_paiNumRealBuilding[eIndex] = iNewValue;
+#ifdef KEK_RESULT_LOG
+		GC.getGame().resultLogCityBuilding(*m_pCity, (int)eIndex, GetNumRealBuilding(eIndex), GetNumFreeBuilding(eIndex));
+#endif
 
 		if(GetNumRealBuilding(eIndex) > 0)
 		{
@@ -2880,6 +2883,9 @@ void CvCityBuildings::SetNumFreeBuilding(BuildingTypes eIndex, int iNewValue)
 				m_pCity->processBuilding(eIndex, iNewValue - iOldNumBuilding, true);
 			}
 		}
+#ifdef KEK_RESULT_LOG
+		GC.getGame().resultLogCityBuilding(*m_pCity, (int)eIndex, GetNumRealBuilding(eIndex), GetNumFreeBuilding(eIndex));
+#endif
 	}
 }
 /// Accessor: Get yield boost for a specific building by yield type

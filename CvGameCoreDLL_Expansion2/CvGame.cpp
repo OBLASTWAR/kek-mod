@@ -152,6 +152,9 @@ CvGame::CvGame() :
 
 	m_pAdvisorCounsel = NULL;
 	m_pAdvisorRecommender = NULL;
+#ifdef KEK_RESULT_LOG
+	m_pResultLogUnitInInit = NULL;
+#endif
 
 	m_endTurnTimer.Start();
 	m_endTurnTimer.Stop();
@@ -997,6 +1000,9 @@ void CvGame::uninit()
 	clearReplayMessageMap();
 #ifdef REPLAY_EVENTS
 	clearReplayEventMap();
+#endif
+#ifdef KEK_RESULT_LOG
+	resultLogClear();
 #endif
 
 	m_aPlotExtraYields.clear();
@@ -10315,6 +10321,676 @@ void CvGame::addReplayEvent(int eType, PlayerTypes ePlayer, std::vector<int> vNu
 	m_listReplayEvents.push_back(event);
 }
 
+#ifdef KEK_RESULT_LOG
+//	--------------------------------------------------------------------------------
+// Result log (REPLAYEVENT_RL_*). What the game DID, for every player, so that one
+// final save rebuilds every turn of the replay. Each hook sits in simulation code
+// that runs alike on every machine; the samples run right before an autosave
+// (recordKekReplayData) and end with RL_SaveMarker. Nothing in the game reads
+// these events or this state back, so they cannot change the game.
+
+CvResultLogScope::CvResultLogScope(ResultLogScopeKind eKind, int iValue, int iSource1, int iSource2)
+	: m_eKind(eKind)
+{
+	m_iOldValue = GC.getGame().getResultLogScope(eKind, m_iOldSource1, m_iOldSource2);
+	GC.getGame().setResultLogScope(eKind, iValue, iSource1, iSource2);
+}
+
+CvResultLogScope::~CvResultLogScope()
+{
+	GC.getGame().setResultLogScope(m_eKind, m_iOldValue, m_iOldSource1, m_iOldSource2);
+}
+
+//	--------------------------------------------------------------------------------
+int CvGame::getResultLogScope(int iKind, int& iSource1, int& iSource2) const
+{
+	if (iKind < 0 || iKind >= RESULTLOG_NUM_SCOPES)
+	{
+		iSource1 = -1;
+		iSource2 = -1;
+		return -1;
+	}
+	iSource1 = m_aiResultLogScope[iKind][1];
+	iSource2 = m_aiResultLogScope[iKind][2];
+	return m_aiResultLogScope[iKind][0];
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::setResultLogScope(int iKind, int iValue, int iSource1, int iSource2)
+{
+	if (iKind < 0 || iKind >= RESULTLOG_NUM_SCOPES)
+		return;
+	m_aiResultLogScope[iKind][0] = iValue;
+	m_aiResultLogScope[iKind][1] = iSource1;
+	m_aiResultLogScope[iKind][2] = iSource2;
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogClear()
+{
+	m_kResultLogUnits.clear();
+	m_kResultLogCities.clear();
+	for (int iRecord = 0; iRecord < RESULTLOG_NUM_CITYRECS; iRecord++)
+	{
+		m_akResultLogCityRecords[iRecord].clear();
+	}
+	m_kResultLogPlayers.clear();
+	for (int iI = 0; iI < MAX_TEAMS; iI++)
+	{
+		m_aiResultLogRevealed[iI].clear();
+	}
+	m_pResultLogUnitInInit = NULL;
+	for (int iKind = 0; iKind < RESULTLOG_NUM_SCOPES; iKind++)
+	{
+		m_aiResultLogScope[iKind][0] = -1;
+		m_aiResultLogScope[iKind][1] = -1;
+		m_aiResultLogScope[iKind][2] = -1;
+	}
+}
+
+//	--------------------------------------------------------------------------------
+/// The plot index (y * map width + x) the result log uses for every tile, as KEK's CityPlot.
+static int ResultLogPlotIndex(int iX, int iY)
+{
+	const CvPlot* pPlot = GC.getMap().plot(iX, iY);
+	return (pPlot != NULL) ? pPlot->GetPlotIndex() : -1;
+}
+
+//	--------------------------------------------------------------------------------
+/// The values RL_CitySample carries after the city plot, in its order.
+static void ResultLogReadCity(const CvCity& kCity, int* aiValues)
+{
+	const OrderData* pOrder = kCity.headOrderQueueNode();
+	aiValues[0] = pOrder ? (int)pOrder->eOrderType : -1;
+	aiValues[1] = pOrder ? pOrder->iData1 : -1;
+	aiValues[2] = kCity.getFoodTimes100();
+	aiValues[3] = kCity.getProductionTimes100();
+
+	unsigned int uiWorkedLow = 0;
+	unsigned int uiWorkedHigh = 0;
+	const CvCityCitizens* pCitizens = kCity.GetCityCitizens();
+	if (pCitizens != NULL)
+	{
+		for (int iI = 0; iI < NUM_CITY_PLOTS; iI++)
+		{
+			const CvPlot* pPlot = pCitizens->GetCityPlotFromIndex(iI);
+			if (pPlot != NULL && pCitizens->IsWorkingPlot(pPlot))
+			{
+				if (iI < 32)
+					uiWorkedLow |= (1u << iI);
+				else
+					uiWorkedHigh |= (1u << (iI - 32));
+			}
+		}
+	}
+	aiValues[4] = (int)uiWorkedLow;
+	aiValues[5] = (int)uiWorkedHigh;
+
+	CvCityReligions* pReligions = kCity.GetCityReligions();
+	aiValues[6] = (pReligions != NULL) ? (int)pReligions->GetReligiousMajority() : -1;
+
+	int iFlags = 0;
+	if (kCity.IsPuppet())
+		iFlags |= 1;
+	if (kCity.IsRazing())
+		iFlags |= 2;
+	if (kCity.IsResistance())
+		iFlags |= 4;
+	if (kCity.IsOccupied())
+		iFlags |= 8;
+	if (kCity.GetWeLoveTheKingDayCounter() > 0)
+		iFlags |= 16;
+	aiValues[7] = iFlags;
+}
+
+//	--------------------------------------------------------------------------------
+/// The values of one v3 city record (RL_CityYields .. RL_CitySpecialists), in its order.
+/// Only getters the city screen calls on every machine: reading them changes nothing.
+static void ResultLogReadCityRecord(const CvCity& kCity, int iRecord, std::vector<int>& vValues)
+{
+	vValues.clear();
+	switch (iRecord)
+	{
+	case RESULTLOG_CITYREC_YIELDS:
+		vValues.push_back(kCity.foodDifferenceTimes100());
+		vValues.push_back(kCity.getYieldRateTimes100(YIELD_PRODUCTION, false));
+		vValues.push_back(kCity.getCurrentProductionDifferenceTimes100(false, false));
+		vValues.push_back(kCity.getYieldRateTimes100(YIELD_GOLD, false));
+		vValues.push_back(kCity.getYieldRateTimes100(YIELD_SCIENCE, false));
+		vValues.push_back(kCity.getJONSCulturePerTurn());
+		vValues.push_back(kCity.GetFaithPerTurn());
+		break;
+	case RESULTLOG_CITYREC_CULTURE:
+		vValues.push_back(kCity.GetJONSCultureStored());
+		break;
+	case RESULTLOG_CITYREC_QUEUE:
+		for (const OrderData* pOrder = kCity.headOrderQueueNode(); pOrder != NULL; pOrder = kCity.nextOrderQueueNode(pOrder))
+		{
+			vValues.push_back((int)pOrder->eOrderType);
+			vValues.push_back(pOrder->iData1);
+		}
+		break;
+	case RESULTLOG_CITYREC_RELIGION:
+	{
+		CvCityReligions* pReligions = kCity.GetCityReligions();
+		if (pReligions == NULL)
+			break;
+		for (int iReligion = 0; iReligion < GC.getNumReligionInfos(); iReligion++)
+		{
+			const int iFollowers = pReligions->GetNumFollowers((ReligionTypes)iReligion);
+			if (iFollowers > 0)
+			{
+				vValues.push_back(iReligion);
+				vValues.push_back(iFollowers);
+			}
+		}
+		break;
+	}
+	case RESULTLOG_CITYREC_SPECIALISTS:
+	{
+		const CvCityCitizens* pCitizens = kCity.GetCityCitizens();
+		if (pCitizens == NULL)
+			break;
+		for (int iSpecialist = 0; iSpecialist < GC.getNumSpecialistInfos(); iSpecialist++)
+		{
+			const int iCount = pCitizens->GetSpecialistCount((SpecialistTypes)iSpecialist);
+			if (iCount > 0)
+			{
+				vValues.push_back(iSpecialist);
+				vValues.push_back(iCount);
+			}
+		}
+		break;
+	}
+	}
+}
+
+//	--------------------------------------------------------------------------------
+/// The values RL_PlayerSample carries, in its order (top panel numbers).
+static void ResultLogReadPlayer(const CvPlayer& kPlayer, std::vector<int>& vValues)
+{
+	vValues.clear();
+	vValues.push_back(kPlayer.GetTreasury()->GetGoldTimes100());
+	vValues.push_back(kPlayer.getJONSCulture());
+	vValues.push_back(kPlayer.GetFaith());
+	vValues.push_back(kPlayer.getGoldenAgeTurns());
+	vValues.push_back(kPlayer.GetGoldenAgeProgressMeter());
+	vValues.push_back(kPlayer.GetHappiness());
+	vValues.push_back(kPlayer.GetUnhappiness());
+	const TechTypes eTech = kPlayer.GetPlayerTechs()->GetCurrentResearch();
+	vValues.push_back((int)eTech);
+	vValues.push_back((eTech != NO_TECH) ? GET_TEAM(kPlayer.getTeam()).GetTeamTechs()->GetResearchProgressTimes100(eTech) : 0);
+}
+
+//	--------------------------------------------------------------------------------
+/// Event numbers per RL_UnitAt / RL_CitySample / RL_Revealed event: save
+/// readers cap the numbers of one event, so a long list is split.
+static const size_t RESULTLOG_MAX_ARGS = 999;
+
+//	--------------------------------------------------------------------------------
+/// Right before an autosave: where every unit stands, each city's queue head,
+/// stocks, worked tiles, religion and status, and the tiles each major team
+/// revealed, each only when it changed since the last sample (everything after
+/// a load). One event per player (per team for tiles), then the marker.
+void CvGame::resultLogSample(int iSaveKind)
+{
+	ResultLogUnitMap kUnits;
+	ResultLogCityMap kCities;
+	ResultLogRecordMap akCityRecords[RESULTLOG_NUM_CITYRECS];
+	ResultLogRecordMap kPlayers;
+	for (int iI = 0; iI < MAX_PLAYERS; iI++)
+	{
+		CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)iI);
+		if (!kPlayer.isEverAlive())
+			continue;
+
+		// RL_UnitAt: unitID, plot, embarked; three numbers per unit that moved
+		// RL_UnitXP: unitID, experience, level; three numbers per unit whose experience changed
+		std::vector<int> vUnitArgs;
+		std::vector<int> vXPArgs;
+		int iLoop = 0;
+		for (CvUnit* pUnit = kPlayer.firstUnit(&iLoop); pUnit != NULL; pUnit = kPlayer.nextUnit(&iLoop))
+		{
+			if (pUnit->isDelayedDeath())
+				continue; // already logged as removed
+
+			const CvPlot* pPlot = pUnit->plot();
+			ResultLogUnitState kState;
+			kState.iPlot = (pPlot != NULL) ? pPlot->GetPlotIndex() : -1;
+			kState.iEmbarked = pUnit->isEmbarked() ? 1 : 0;
+			kState.iExperience = pUnit->getExperience();
+			kState.iLevel = pUnit->getLevel();
+			const std::pair<int, int> kKey(iI, pUnit->GetID());
+			kUnits[kKey] = kState;
+
+			ResultLogUnitMap::const_iterator itXP = m_kResultLogUnits.find(kKey);
+			if (itXP == m_kResultLogUnits.end() || itXP->second.iExperience != kState.iExperience || itXP->second.iLevel != kState.iLevel)
+			{
+				if (vXPArgs.size() + 3 > RESULTLOG_MAX_ARGS)
+				{
+					addReplayEvent(REPLAYEVENT_RL_UnitXP, (PlayerTypes)iI, vXPArgs);
+					vXPArgs.clear();
+				}
+				vXPArgs.push_back(pUnit->GetID());
+				vXPArgs.push_back(kState.iExperience);
+				vXPArgs.push_back(kState.iLevel);
+			}
+
+			ResultLogUnitMap::const_iterator it = m_kResultLogUnits.find(kKey);
+			if (it == m_kResultLogUnits.end() || it->second.iPlot != kState.iPlot || it->second.iEmbarked != kState.iEmbarked)
+			{
+				if (vUnitArgs.size() + 3 > RESULTLOG_MAX_ARGS)
+				{
+					addReplayEvent(REPLAYEVENT_RL_UnitAt, (PlayerTypes)iI, vUnitArgs);
+					vUnitArgs.clear();
+				}
+				vUnitArgs.push_back(pUnit->GetID());
+				vUnitArgs.push_back(kState.iPlot);
+				vUnitArgs.push_back(kState.iEmbarked);
+			}
+		}
+		if (!vUnitArgs.empty())
+		{
+			addReplayEvent(REPLAYEVENT_RL_UnitAt, (PlayerTypes)iI, vUnitArgs);
+		}
+		if (!vXPArgs.empty())
+		{
+			addReplayEvent(REPLAYEVENT_RL_UnitXP, (PlayerTypes)iI, vXPArgs);
+		}
+
+		// RL_CitySample: city plot + RESULTLOG_CITY_FIELDS values per city where one changed
+		std::vector<int> vCityArgs;
+		iLoop = 0;
+		for (CvCity* pCity = kPlayer.firstCity(&iLoop); pCity != NULL; pCity = kPlayer.nextCity(&iLoop))
+		{
+			const CvPlot* pPlot = pCity->plot();
+			if (pPlot == NULL)
+				continue;
+
+			ResultLogCityState kState;
+			ResultLogReadCity(*pCity, kState.aiValues);
+			const int iKey = pPlot->GetPlotIndex();
+			kCities[iKey] = kState;
+
+			bool bChanged = true;
+			ResultLogCityMap::const_iterator it = m_kResultLogCities.find(iKey);
+			if (it != m_kResultLogCities.end())
+			{
+				bChanged = false;
+				for (int iField = 0; iField < RESULTLOG_CITY_FIELDS; iField++)
+				{
+					if (it->second.aiValues[iField] != kState.aiValues[iField])
+					{
+						bChanged = true;
+						break;
+					}
+				}
+			}
+			if (bChanged)
+			{
+				if (vCityArgs.size() + 1 + RESULTLOG_CITY_FIELDS > RESULTLOG_MAX_ARGS)
+				{
+					addReplayEvent(REPLAYEVENT_RL_CitySample, (PlayerTypes)iI, vCityArgs);
+					vCityArgs.clear();
+				}
+				vCityArgs.push_back(iKey);
+				for (int iField = 0; iField < RESULTLOG_CITY_FIELDS; iField++)
+				{
+					vCityArgs.push_back(kState.aiValues[iField]);
+				}
+			}
+		}
+		if (!vCityArgs.empty())
+		{
+			addReplayEvent(REPLAYEVENT_RL_CitySample, (PlayerTypes)iI, vCityArgs);
+		}
+
+		// RL_CityYields .. RL_CitySpecialists: city plot, count, values; per city where the record changed
+		for (int iRecord = 0; iRecord < RESULTLOG_NUM_CITYRECS; iRecord++)
+		{
+			const int eType = REPLAYEVENT_RL_CityYields + iRecord;
+			std::vector<int> vArgs;
+			iLoop = 0;
+			for (CvCity* pCity = kPlayer.firstCity(&iLoop); pCity != NULL; pCity = kPlayer.nextCity(&iLoop))
+			{
+				const CvPlot* pPlot = pCity->plot();
+				if (pPlot == NULL)
+					continue;
+
+				const int iKey = pPlot->GetPlotIndex();
+				std::vector<int>& vValues = akCityRecords[iRecord][iKey];
+				ResultLogReadCityRecord(*pCity, iRecord, vValues);
+
+				ResultLogRecordMap::const_iterator it = m_akResultLogCityRecords[iRecord].find(iKey);
+				if (it != m_akResultLogCityRecords[iRecord].end() && it->second == vValues)
+					continue;
+
+				if (!vArgs.empty() && vArgs.size() + 2 + vValues.size() > RESULTLOG_MAX_ARGS)
+				{
+					addReplayEvent(eType, (PlayerTypes)iI, vArgs);
+					vArgs.clear();
+				}
+				vArgs.push_back(iKey);
+				vArgs.push_back((int)vValues.size());
+				vArgs.insert(vArgs.end(), vValues.begin(), vValues.end());
+			}
+			if (!vArgs.empty())
+			{
+				addReplayEvent(eType, (PlayerTypes)iI, vArgs);
+			}
+		}
+
+		// RL_PlayerSample: the top panel numbers, when one changed
+		if (kPlayer.isAlive() && !kPlayer.isBarbarian())
+		{
+			std::vector<int>& vValues = kPlayers[iI];
+			ResultLogReadPlayer(kPlayer, vValues);
+			ResultLogRecordMap::const_iterator it = m_kResultLogPlayers.find(iI);
+			if (it == m_kResultLogPlayers.end() || it->second != vValues)
+			{
+				addReplayEvent(REPLAYEVENT_RL_PlayerSample, (PlayerTypes)iI, vValues);
+			}
+		}
+	}
+	m_kResultLogUnits.swap(kUnits);
+	m_kResultLogCities.swap(kCities);
+	for (int iRecord = 0; iRecord < RESULTLOG_NUM_CITYRECS; iRecord++)
+	{
+		m_akResultLogCityRecords[iRecord].swap(akCityRecords[iRecord]);
+	}
+	m_kResultLogPlayers.swap(kPlayers);
+
+	// RL_Revealed: team, first plot, then the distance to the previous plot (ascending order)
+	for (int iTeam = 0; iTeam < MAX_TEAMS; iTeam++)
+	{
+		std::vector<int>& vPlots = m_aiResultLogRevealed[iTeam];
+		if (vPlots.empty())
+			continue;
+
+		std::sort(vPlots.begin(), vPlots.end());
+		std::vector<int> vArgs;
+		vArgs.push_back(iTeam);
+		int iPrevious = -1;
+		for (size_t i = 0; i < vPlots.size(); i++)
+		{
+			if (vPlots[i] == iPrevious)
+				continue; // revealed twice since the last sample
+			if (vArgs.size() >= RESULTLOG_MAX_ARGS)
+			{
+				addReplayEvent(REPLAYEVENT_RL_Revealed, NO_PLAYER, vArgs);
+				vArgs.clear();
+				vArgs.push_back(iTeam);
+				iPrevious = -1;
+			}
+			vArgs.push_back((iPrevious < 0) ? vPlots[i] : vPlots[i] - iPrevious);
+			iPrevious = vPlots[i];
+		}
+		if (vArgs.size() > 1)
+		{
+			addReplayEvent(REPLAYEVENT_RL_Revealed, NO_PLAYER, vArgs);
+		}
+		vPlots.clear();
+	}
+
+	std::vector<int> vMarker;
+	vMarker.push_back(iSaveKind);
+	vMarker.push_back((int)m_listReplayEvents.size());
+	addReplayEvent(REPLAYEVENT_RL_SaveMarker, getActivePlayer(), vMarker);
+}
+
+//	--------------------------------------------------------------------------------
+/// CvUnit::initWithNameOffset calls this first: until resultLogEndUnitInit the
+/// unit's damage and promotions are not logged one by one, RL_UnitCreated holds them.
+CvUnit* CvGame::resultLogBeginUnitInit(CvUnit* pUnit)
+{
+	CvUnit* pOuterUnit = m_pResultLogUnitInInit;
+	m_pResultLogUnitInInit = pUnit;
+	return pOuterUnit;
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogEndUnitInit(CvUnit* pOuterUnit)
+{
+	m_pResultLogUnitInInit = pOuterUnit;
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogUnitCreated(const CvUnit& kUnit)
+{
+	int iSource1 = -1;
+	int iSource2 = -1;
+	int iOrigin = getResultLogScope(RESULTLOG_SCOPE_UNIT_ORIGIN, iSource1, iSource2);
+	if (iOrigin < 0)
+	{
+		iOrigin = RESULTLOG_ORIGIN_OTHER;
+		iSource1 = -1;
+		iSource2 = -1;
+	}
+
+	std::vector<int> vArgs;
+	const CvPlot* pPlot = kUnit.plot();
+	vArgs.push_back(kUnit.GetID());
+	vArgs.push_back((int)kUnit.getUnitType());
+	vArgs.push_back((pPlot != NULL) ? pPlot->GetPlotIndex() : -1);
+	vArgs.push_back(iOrigin);
+	vArgs.push_back(iSource1);
+	vArgs.push_back(iSource2);
+	vArgs.push_back(kUnit.getDamage());
+	const int iNumPromotions = GC.getNumPromotionInfos();
+	for (int iI = 0; iI < iNumPromotions; iI++)
+	{
+		if (kUnit.isHasPromotion((PromotionTypes)iI))
+			vArgs.push_back(iI);
+	}
+	addReplayEvent(REPLAYEVENT_RL_UnitCreated, kUnit.getOwner(), vArgs);
+
+	// The next sample logs this unit only if it moves (or is embarked:
+	// RL_UnitCreated carries no embarked flag, a reader starts it at 0).
+	ResultLogUnitState kState;
+	kState.iPlot = (pPlot != NULL) ? pPlot->GetPlotIndex() : -1;
+	kState.iEmbarked = 0;
+	kState.iExperience = -1; // the next sample always writes its RL_UnitXP line (same on every machine)
+	kState.iLevel = -1;
+	m_kResultLogUnits[std::make_pair((int)kUnit.getOwner(), kUnit.GetID())] = kState;
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogUnitRemoved(const CvUnit& kUnit, PlayerTypes eKiller)
+{
+	std::vector<int> vArgs;
+	const CvPlot* pPlot = kUnit.plot();
+	vArgs.push_back(kUnit.GetID());
+	vArgs.push_back((int)kUnit.getUnitType());
+	vArgs.push_back((pPlot != NULL) ? pPlot->GetPlotIndex() : -1);
+	vArgs.push_back((int)eKiller);
+	addReplayEvent(REPLAYEVENT_RL_UnitRemoved, kUnit.getOwner(), vArgs);
+	m_kResultLogUnits.erase(std::make_pair((int)kUnit.getOwner(), kUnit.GetID()));
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogUnitDamage(const CvUnit& kUnit, PlayerTypes eByPlayer)
+{
+	if (&kUnit == m_pResultLogUnitInInit)
+		return;
+	// the unit that did the hit, while CvUnitCombat::ResolveCombat runs (RESULTLOG_SCOPE_COMBAT)
+	int iHitter = -1;
+	if (eByPlayer != NO_PLAYER)
+	{
+		int iAttackingPlayer = -1;
+		int iDefenderID = -1;
+		const int iAttackerID = getResultLogScope(RESULTLOG_SCOPE_COMBAT, iAttackingPlayer, iDefenderID);
+		if (iAttackingPlayer != -1)
+		{
+			if ((int)kUnit.getOwner() == iAttackingPlayer && kUnit.GetID() == iAttackerID)
+				iHitter = iDefenderID; // the attacker took damage back from the defender
+			else
+				iHitter = iAttackerID; // the defender took the attacker's hit
+		}
+	}
+	std::vector<int> vArgs;
+	vArgs.push_back(kUnit.GetID());
+	vArgs.push_back(kUnit.getDamage());
+	vArgs.push_back((int)eByPlayer);
+	vArgs.push_back(iHitter);
+	addReplayEvent(REPLAYEVENT_RL_UnitDamage, kUnit.getOwner(), vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogUnitPromotion(const CvUnit& kUnit, int iPromotion, bool bHas)
+{
+	if (&kUnit == m_pResultLogUnitInInit)
+		return;
+	std::vector<int> vArgs;
+	vArgs.push_back(kUnit.GetID());
+	vArgs.push_back(iPromotion);
+	vArgs.push_back(bHas ? 1 : 0);
+	addReplayEvent(REPLAYEVENT_RL_UnitPromotion, kUnit.getOwner(), vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogCityFounded(const CvCity& kCity, bool bInitialFounding)
+{
+	std::vector<int> vArgs;
+	vArgs.push_back(ResultLogPlotIndex(kCity.getX(), kCity.getY()));
+	vArgs.push_back(kCity.GetID());
+	vArgs.push_back(bInitialFounding ? 1 : 0);
+	addReplayEvent(REPLAYEVENT_RL_CityFounded, kCity.getOwner(), vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogCityRemoved(const CvCity& kCity)
+{
+	std::vector<int> vArgs;
+	vArgs.push_back(ResultLogPlotIndex(kCity.getX(), kCity.getY()));
+	vArgs.push_back(kCity.GetID());
+	addReplayEvent(REPLAYEVENT_RL_CityRemoved, kCity.getOwner(), vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogCitySize(const CvCity& kCity, int iPopulation)
+{
+	std::vector<int> vArgs;
+	vArgs.push_back(ResultLogPlotIndex(kCity.getX(), kCity.getY()));
+	vArgs.push_back(iPopulation);
+	addReplayEvent(REPLAYEVENT_RL_CitySize, kCity.getOwner(), vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogCityProduced(const CvCity& kCity, int iOrderType, int iItem, int iUnitID)
+{
+	int iSource1 = -1;
+	int iSource2 = -1;
+	int iPaidWith = getResultLogScope(RESULTLOG_SCOPE_CITY_PAYMENT, iSource1, iSource2);
+	if (iPaidWith < 0)
+		iPaidWith = RESULTLOG_PAID_OTHER;
+
+	std::vector<int> vArgs;
+	vArgs.push_back(ResultLogPlotIndex(kCity.getX(), kCity.getY()));
+	vArgs.push_back(iOrderType);
+	vArgs.push_back(iItem);
+	vArgs.push_back(iPaidWith);
+	vArgs.push_back(iUnitID);
+	addReplayEvent(REPLAYEVENT_RL_CityProduced, kCity.getOwner(), vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogCityBuilding(const CvCity& kCity, int iBuilding, int iRealCount, int iFreeCount)
+{
+	std::vector<int> vArgs;
+	vArgs.push_back(ResultLogPlotIndex(kCity.getX(), kCity.getY()));
+	vArgs.push_back(iBuilding);
+	vArgs.push_back(iRealCount);
+	vArgs.push_back(iFreeCount);
+	addReplayEvent(REPLAYEVENT_RL_CityBuilding, kCity.getOwner(), vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogCityDamage(const CvCity& kCity, int iDamage)
+{
+	std::vector<int> vArgs;
+	vArgs.push_back(ResultLogPlotIndex(kCity.getX(), kCity.getY()));
+	vArgs.push_back(iDamage);
+	addReplayEvent(REPLAYEVENT_RL_CityDamage, kCity.getOwner(), vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogPlotImprovement(const CvPlot& kPlot, int iOldImprovement, int iNewImprovement, PlayerTypes eBuilder)
+{
+	std::vector<int> vArgs;
+	vArgs.push_back(kPlot.GetPlotIndex());
+	vArgs.push_back(iOldImprovement);
+	vArgs.push_back(iNewImprovement);
+	addReplayEvent(REPLAYEVENT_RL_PlotImprovement, (eBuilder != NO_PLAYER) ? eBuilder : kPlot.getOwner(), vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogPlotPillaged(const CvPlot& kPlot, bool bPillaged)
+{
+	std::vector<int> vArgs;
+	vArgs.push_back(kPlot.GetPlotIndex());
+	vArgs.push_back(bPillaged ? 1 : 0);
+	addReplayEvent(REPLAYEVENT_RL_PlotPillaged, kPlot.getOwner(), vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+/// CvPlot::setRevealed: kept until the next sample (one RL_Revealed per team).
+/// Major teams only: no screen shows what a city-state or the barbarians explored.
+void CvGame::resultLogPlotRevealed(TeamTypes eTeam, int iPlotIndex)
+{
+	if (eTeam < 0 || eTeam >= MAX_TEAMS || eTeam == BARBARIAN_TEAM)
+		return;
+	const CvTeam& kTeam = GET_TEAM(eTeam);
+	if (kTeam.isMinorCiv() || kTeam.isBarbarian())
+		return;
+	const PlayerTypes eLeader = kTeam.getLeaderID();
+	if (eLeader == NO_PLAYER || CvPreGame::slotStatus(eLeader) == SS_OBSERVER)
+		return;
+	m_aiResultLogRevealed[eTeam].push_back(iPlotIndex);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogPolicy(PlayerTypes ePlayer, int iPolicy, bool bHas)
+{
+	std::vector<int> vArgs;
+	vArgs.push_back(iPolicy);
+	vArgs.push_back(bHas ? 1 : 0);
+	addReplayEvent(REPLAYEVENT_RL_Policy, ePlayer, vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogPolicyBranch(PlayerTypes ePlayer, int iBranch, bool bUnlocked)
+{
+	std::vector<int> vArgs;
+	vArgs.push_back(iBranch);
+	vArgs.push_back(bUnlocked ? 1 : 0);
+	addReplayEvent(REPLAYEVENT_RL_PolicyBranch, ePlayer, vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogReligion(PlayerTypes ePlayer, int iReligion, int iKind, int iBelief1, int iBelief2, int iBelief3, int iBelief4, const CvCity* pHolyCity)
+{
+	std::vector<int> vArgs;
+	vArgs.push_back(iReligion);
+	vArgs.push_back(iKind);
+	vArgs.push_back(iBelief1);
+	vArgs.push_back(iBelief2);
+	vArgs.push_back(iBelief3);
+	vArgs.push_back(iBelief4);
+	vArgs.push_back((pHolyCity != NULL) ? pHolyCity->getX() : -1);
+	vArgs.push_back((pHolyCity != NULL) ? pHolyCity->getY() : -1);
+	addReplayEvent(REPLAYEVENT_RL_Religion, ePlayer, vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogMinorAlly(PlayerTypes eMinor, PlayerTypes eOldAlly, PlayerTypes eNewAlly)
+{
+	std::vector<int> vArgs;
+	vArgs.push_back((int)eOldAlly);
+	vArgs.push_back((int)eNewAlly);
+	addReplayEvent(REPLAYEVENT_RL_MinorAlly, eMinor, vArgs);
+}
+#endif
+
 #ifdef KEK_SAVE_DATA
 //	--------------------------------------------------------------------------------
 /// Record the turn JSON's live per-player values as replay datasets, right
@@ -10323,7 +10999,9 @@ void CvGame::addReplayEvent(int eType, PlayerTypes ePlayer, std::vector<int> vNu
 /// (ENHANCED_GRAPHS). Kept out of the replay viewer (not in ReplayDataSets).
 /// Also logs the game key (REPLAYEVENT_KEK_GameKey) when it is new or changed:
 /// the save holds the map seed but not the sync seed.
-void CvGame::recordKekReplayData()
+/// KEK_RESULT_LOG: ends with the result log's samples and its save marker
+/// (iSaveKind = ResultLogSaveKind), so they are the last events in the save.
+void CvGame::recordKekReplayData(int iSaveKind)
 {
 	const int iTurn = getGameTurn();
 #ifdef KEK_PLAYER_STATS
@@ -10376,6 +11054,11 @@ void CvGame::recordKekReplayData()
 		kPlayer.setReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_KEK_FOODRATE"), iTurn, iFood);
 		kPlayer.setReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_KEK_PRODUCTIONRATE"), iTurn, iProduction);
 	}
+#ifdef KEK_RESULT_LOG
+	resultLogSample(iSaveKind);
+#else
+	UNREFERENCED_PARAMETER(iSaveKind);
+#endif
 }
 #endif
 
