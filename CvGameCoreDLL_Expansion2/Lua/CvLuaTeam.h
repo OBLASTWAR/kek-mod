@@ -192,6 +192,7 @@ protected:
 	static int lIsHasTradeAgreement(lua_State* L);
 
 	static int lIsHasTech(lua_State* L);
+	static int lIsHasTechByHuman(lua_State* L);
 	static int lSetHasTech(lua_State* L);
 
 	static int lGetTeamTechs(lua_State* L);

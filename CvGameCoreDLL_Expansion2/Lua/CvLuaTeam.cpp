@@ -186,6 +186,7 @@ void CvLuaTeam::PushMethods(lua_State* L, int t)
 	Method(IsHasTradeAgreement);
 
 	Method(IsHasTech);
+	Method(IsHasTechByHuman);
 	Method(SetHasTech);
 
 	Method(GetTeamTechs);
@@ -1146,6 +1147,23 @@ int CvLuaTeam::lIsHasTech(lua_State* L)
 	const TechTypes eTech = (TechTypes)lua_tointeger(L, 2);
 
 	lua_pushboolean(L, pkTeam->GetTeamTechs()->HasTech(eTech));
+	return 1;
+}
+
+//------------------------------------------------------------------------------
+//bool IsHasTechByHuman(TechTypes eIndex);
+// KEK: the flag the known-tech research discount counts (calculateResearchModifier),
+// so the tech tooltip reveals no more than the cost already does.
+int CvLuaTeam::lIsHasTechByHuman(lua_State* L)
+{
+	CvTeam* pkTeam = GetInstance(L);
+	const TechTypes eTech = (TechTypes)lua_tointeger(L, 2);
+
+#ifdef HAS_TECH_BY_HUMAN
+	lua_pushboolean(L, pkTeam->GetTeamTechs()->HasTechByHuman(eTech));
+#else
+	lua_pushboolean(L, pkTeam->GetTeamTechs()->HasTech(eTech));
+#endif
 	return 1;
 }
 

@@ -675,23 +675,27 @@ end
 
 -------------------------------------------------
 -- KEK: "Discovered by X of the Y civilizations you have met", appended to a
--- tech's tooltip while the active team doesn't have it yet. Counts major civs
--- met by the active team; teammates share our techs and are left out.
+-- tech's tooltip. Reveals no more than the research cost already does: the
+-- known-tech discount (CvPlayer::calculateResearchModifier) counts met major
+-- teams that got the tech while human-controlled, so AI teams don't count.
+-- Counted per team; our own team is left out, so researched techs show it too.
 -------------------------------------------------
 function GetTechKnownByMetText( techID )
 	local activeTeamID = Game.GetActiveTeam()
 	local activeTeam = Teams[ activeTeamID ]
-	if not activeTeam or activeTeam:IsHasTech( techID ) then
+	if not activeTeam then
 		return ""
 	end
+	local seen = {}
 	local numMet, numKnown = 0, 0
 	for playerID = 0, GameDefines.MAX_MAJOR_CIVS - 1 do
 		local player = Players[ playerID ]
 		if player and player:IsAlive() then
 			local teamID = player:GetTeam()
-			if teamID ~= activeTeamID and activeTeam:IsHasMet( teamID ) then
+			if not seen[ teamID ] and teamID ~= activeTeamID and activeTeam:IsHasMet( teamID ) then
+				seen[ teamID ] = true
 				numMet = numMet + 1
-				if Teams[ teamID ]:IsHasTech( techID ) then
+				if Teams[ teamID ]:IsHasTechByHuman( techID ) then
 					numKnown = numKnown + 1
 				end
 			end

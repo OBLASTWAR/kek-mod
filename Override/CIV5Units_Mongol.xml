@@ -126932,7 +126932,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_KEK_TECH_KNOWN_BY_MET">
 			<Text>
-				[ICON_RESEARCH] Discovered by {1_Num} of the {2_Num} civilizations you have met
+				[ICON_RESEARCH] Known to {1_Num} of the {2_Num} civilizations you have met (lowers its cost)[NEWLINE]Techs gained under AI control don't count
 			</Text>
 		</Replace>
 	</Language_en_US>
@@ -129480,7 +129480,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_KEK_TECH_KNOWN_BY_MET">
 			<Text>
-				[ICON_RESEARCH] Entdeckt von {1_Num} der {2_Num} Zivilisationen, die Sie getroffen haben
+				[ICON_RESEARCH] Bekannt bei {1_Num} der {2_Num} Zivilisationen, die Sie getroffen haben (senkt die Kosten)[NEWLINE]Unter KI-Kontrolle erlangte Technologien zählen nicht
 			</Text>
 		</Replace>
 	</Language_DE_DE>
@@ -132028,7 +132028,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_KEK_TECH_KNOWN_BY_MET">
 			<Text>
-				[ICON_RESEARCH] Descubierta por {1_Num} de las {2_Num} civilizaciones que has conocido
+				[ICON_RESEARCH] La tienen {1_Num} de las {2_Num} civilizaciones que has conocido (reduce su coste)[NEWLINE]Las tecnologías obtenidas bajo control de la IA no cuentan
 			</Text>
 		</Replace>
 	</Language_ES_ES>
@@ -134576,7 +134576,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_KEK_TECH_KNOWN_BY_MET">
 			<Text>
-				[ICON_RESEARCH] Découverte par {1_Num} des {2_Num} civilisations que vous avez rencontrées
+				[ICON_RESEARCH] Connue de {1_Num} des {2_Num} civilisations que vous avez rencontrées (réduit son coût)[NEWLINE]Les technologies obtenues sous contrôle de l'IA ne comptent pas
 			</Text>
 		</Replace>
 	</Language_FR_FR>
@@ -137124,7 +137124,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_KEK_TECH_KNOWN_BY_MET">
 			<Text>
-				[ICON_RESEARCH] Scoperta da {1_Num} delle {2_Num} civiltà che hai incontrato
+				[ICON_RESEARCH] Conosciuta da {1_Num} delle {2_Num} civiltà che hai incontrato (ne riduce il costo)[NEWLINE]Le tecnologie ottenute sotto il controllo dell'IA non contano
 			</Text>
 		</Replace>
 	</Language_IT_IT>
@@ -139672,7 +139672,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_KEK_TECH_KNOWN_BY_MET">
 			<Text>
-				[ICON_RESEARCH] 接触済みの{2_Num}文明のうち{1_Num}文明が発見済み
+				[ICON_RESEARCH] 接触済みの{2_Num}文明のうち{1_Num}文明が保有（研究コストが下がります）[NEWLINE]AIの管理下で得た技術は数えません
 			</Text>
 		</Replace>
 	</Language_JA_JP>
@@ -142220,7 +142220,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_KEK_TECH_KNOWN_BY_MET">
 			<Text>
-				[ICON_RESEARCH] 만난 문명 {2_Num}개 중 {1_Num}개가 발견함
+				[ICON_RESEARCH] 만난 문명 {2_Num}개 중 {1_Num}개가 보유 (연구 비용 감소)[NEWLINE]AI 통제 중에 얻은 기술은 포함되지 않음
 			</Text>
 		</Replace>
 	</Language_KO_KR>
@@ -144768,7 +144768,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_KEK_TECH_KNOWN_BY_MET">
 			<Text>
-				[ICON_RESEARCH] Odkryta przez {1_Num} z {2_Num} poznanych cywilizacji
+				[ICON_RESEARCH] Znana {1_Num} z {2_Num} poznanych cywilizacji (obniża jej koszt)[NEWLINE]Technologie zdobyte pod kontrolą SI nie są liczone
 			</Text>
 		</Replace>
 	</Language_PL_PL>
@@ -147365,7 +147365,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_KEK_TECH_KNOWN_BY_MET">
 			<Text>
-				[ICON_RESEARCH] Открыта {1_Num} из {2_Num} встреченных цивилизаций
+				[ICON_RESEARCH] Есть у {1_Num} из {2_Num} встреченных цивилизаций (снижает её стоимость)[NEWLINE]Технологии, полученные под управлением ИИ, не учитываются
 			</Text>
 		</Replace>
 	</Language_RU_RU>
@@ -149913,7 +149913,7 @@ The ship has weather'd every rack; the prize we sought is won."
 		</Replace>
 		<Replace Tag="TXT_KEY_KEK_TECH_KNOWN_BY_MET">
 			<Text>
-				[ICON_RESEARCH] 已接觸的 {2_Num} 個文明中有 {1_Num} 個已發現
+				[ICON_RESEARCH] 已接觸的 {2_Num} 個文明中有 {1_Num} 個已擁有（降低研究成本）[NEWLINE]在 AI 控制下取得的科技不計入
 			</Text>
 		</Replace>
 	</Language_ZH_Hant_HK>
