@@ -21,6 +21,10 @@ public:
 	static void BeginTurn();
 	static void DoCamps();
 	static void DoUnits();
+#ifdef TEAMER_BALANCE_FAIR_BARBARIAN_CAMPS
+	static void DoFairStartCamps();
+	static void PlaceFairCamp(CvPlot* pPlot, ImprovementTypes eCamp, UnitTypes eUnit);
+#endif
 
 	static void DoSpawnBarbarianUnit(CvPlot* pPlot, bool bIgnoreMaxBarbarians, bool bFinishMoves);
 

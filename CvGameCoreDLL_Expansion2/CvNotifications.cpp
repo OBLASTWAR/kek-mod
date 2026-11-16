@@ -1778,9 +1778,9 @@ bool CvNotifications::IsNotificationExpired(int iIndex)
 	{
 		CvGame& kGame(GC.getGame());
 		CvGameReligions* pkReligions(kGame.GetGameReligions());
-		if (pkReligions->GetAvailableEnhancerBeliefs().size() == 0)
+		if (pkReligions->GetAvailableEnhancerBeliefs(m_ePlayer).size() == 0)
 			return true;	// None left, dismiss the notification.
-		if (pkReligions->GetAvailableFollowerBeliefs().size() == 0)
+		if (pkReligions->GetAvailableFollowerBeliefs(m_ePlayer).size() == 0)
 			return true;	// None left, dismiss the notification.		
 
 		ReligionTypes eReligion = pkReligions->GetReligionCreatedByPlayer(m_ePlayer);

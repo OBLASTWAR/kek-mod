@@ -27,6 +27,32 @@ class CvReplayMessage;
 class CvReplayEvent;
 #endif
 class CvReplayInfo;
+class CvBuildingEntry;
+
+// TeamerBalance: one lobby checkbox per rule (CvGame::isTeamerOption). All unticked = normal KEK.
+enum TeamerBalanceOption
+{
+	TEAMER_OPTION_SAME_TURN_WONDERS   = 1 << 0,	// GAMEOPTION_SAME_TURN_WONDERS
+	TEAMER_OPTION_SAME_TURN_PANTHEONS = 1 << 1,	// GAMEOPTION_SAME_TURN_PANTHEONS
+	TEAMER_OPTION_NO_RELIGIOUS_CS     = 1 << 2,	// GAMEOPTION_NO_RELIGIOUS_CS
+	TEAMER_OPTION_FAIR_RUINS          = 1 << 3,	// GAMEOPTION_FAIR_RUINS
+	TEAMER_OPTION_EXTRA_LUXURY        = 1 << 4,	// GAMEOPTION_EXTRA_LUXURY_HAPPINESS
+	TEAMER_OPTION_REVEAL_OWN_HALF     = 1 << 5,	// GAMEOPTION_REVEAL_OWN_HALF
+	TEAMER_OPTION_MIRRORED_CS         = 1 << 6,	// GAMEOPTION_MIRRORED_CITY_STATES
+	TEAMER_OPTION_NO_RUIN_UPGRADE     = 1 << 8,	// GAMEOPTION_NO_RUIN_UPGRADE
+	TEAMER_OPTION_FAIR_BARB_CAMPS     = 1 << 9,	// GAMEOPTION_FAIR_BARBARIAN_CAMPS
+	TEAMER_OPTION_FAIR_CS_QUESTS      = 1 << 10,	// GAMEOPTION_FAIR_CS_QUESTS
+	TEAMER_OPTION_GUARANTEED_PROPHET  = 1 << 11,	// GAMEOPTION_GUARANTEED_PROPHET
+	TEAMER_OPTION_RELIGION_FOR_ALL    = 1 << 14,	// GAMEOPTION_RELIGION_FOR_ALL
+	TEAMER_OPTION_NO_GLOBAL_CS_QUESTS = 1 << 24,	// GAMEOPTION_NO_GLOBAL_CS_QUESTS
+	TEAMER_OPTION_CS_QUESTS_OWN_SIDE  = 1 << 25,	// GAMEOPTION_CS_QUESTS_OWN_SIDE
+	TEAMER_OPTION_TEAM_BELIEFS        = 1 << 26,	// GAMEOPTION_TEAM_BELIEFS
+	TEAMER_OPTION_CAPTURE_POP_FLOOR   = 1 << 27,	// GAMEOPTION_CAPTURE_POP_FLOOR (TeamerBalance and KEK+ Balance)
+	TEAMER_OPTION_CS_WORKERS          = 1 << 29,	// GAMEOPTION_CS_WORKERS (TeamerBalance and KEK+ Balance)
+	TEAMER_OPTION_FFA_MODE            = 1 << 16,	// GAMEOPTION_TEAMER_MODE == 2: the KEK+ Balance game mode (a subset of the options)
+	TEAMER_OPTION_MODE                = 1 << 7,	// GAMEOPTION_TEAMER_MODE == 1: the TeamerBalance game mode (every option needs it)
+	TEAMER_OPTION_ANY_MODE            = TEAMER_OPTION_MODE | TEAMER_OPTION_FFA_MODE,
+};
 class CvSiteEvaluatorForSettler;
 class CvSiteEvaluatorForStart;
 class CvStartPositioner;
@@ -493,6 +519,41 @@ public:
 	int getBuildingClassCreatedCount(BuildingClassTypes eIndex);
 	bool isBuildingClassMaxedOut(BuildingClassTypes eIndex, int iExtra = 0);
 	void incrementBuildingClassCreatedCount(BuildingClassTypes eIndex);
+	// Is this TeamerBalance rule's lobby checkbox ticked? (TeamerBalanceOption flags)
+	bool isTeamerOption(int iFlag);
+#ifdef TEAMER_BALANCE_WONDER_BANS
+	bool isWonderBanned(BuildingTypes eBuilding);
+#endif
+#ifdef TEAMER_BALANCE_SAME_TURN_WONDERS
+	// Set by CvCity::doTurn only while a city that tied for this wonder runs its production.
+	void setFairTieWonder(BuildingClassTypes eClass, TeamTypes eTeam);
+#endif
+#ifdef TEAMER_BALANCE_FAIR_RUINS
+	GoodyTypes GetFairRuinGoody(PlayerTypes ePlayer, const std::vector<GoodyTypes>& aeValid) const;
+#endif
+#ifdef TEAMER_BALANCE_WAR_BLOCK
+	bool IsFairWarBlocked(TeamTypes eTeamA, TeamTypes eTeamB);
+#endif
+#ifdef TEAMER_BALANCE_REVEAL_OWN_HALF
+	void FairRevealOwnHalves();
+#endif
+#ifdef TEAMER_BALANCE_MIRRORED_CITY_STATES
+	// The city-state on the exact mirror spot of this one (NO_PLAYER if none or the option is off).
+	PlayerTypes GetMirrorTwin(PlayerTypes ePlayer);
+	// The major civ whose start is the exact mirror spot of this one's (NO_PLAYER if none, or fair quests are off).
+	PlayerTypes GetMirrorMajor(PlayerTypes ePlayer);
+	void ReadTeamerMirrorTwins();
+	// TeamerBalance mode on a mirror map: every major civ's start has a twin on the exact mirror spot.
+	bool IsTeamerMirrorMap();
+	// The major civ on the mirror start (only on a TeamerBalance mirror map, else NO_PLAYER).
+	PlayerTypes GetMirrorStartTwin(PlayerTypes ePlayer);
+	// The plot on the exact left-right mirror spot (same row), NULL off the map.
+	CvPlot* GetMirrorPlot(CvPlot* pPlot);
+	bool IsTeamerRotatedMap();
+#endif
+#ifdef TEAMER_BALANCE_START_ITEMS
+	void TeamerStartItems();
+#endif
 #ifdef DUEL_WORLD_WONDERS_SAME_TURN
 	int getBuildingClassCreationTurn(BuildingClassTypes eIndex);
 	void setBuildingClassCreationTurn(BuildingClassTypes eIndex, int iValue);
@@ -874,6 +935,24 @@ protected:
 
 	typedef std::vector<CvReplayMessage> ReplayMessageList;
 	ReplayMessageList m_listReplayMessages;
+	// Not saved: read from the lobby options (which the save holds) on first use after reset/load.
+	int m_iTeamerOptions;	// TeamerBalanceOption flags, -1 = not read yet
+#ifdef TEAMER_BALANCE_MIRRORED_CITY_STATES
+	// Not saved: worked out again from the players' starting plots (which the save holds).
+	std::vector<int> m_aiTeamerMirrorTwin;
+	bool m_bTeamerMirrorTwinsRead;
+	bool m_bTeamerRotated;	// the map is turned 180 degrees, not mirrored (read from the starts, not saved)
+#endif
+#ifdef TEAMER_BALANCE_WONDER_BANS
+	// Not saved: rebuilt from the lobby options (which the save holds) on first use after reset/load.
+	std::vector<char> m_abFairWonderBanned;
+	bool m_bFairWonderBansRead;
+#endif
+#ifdef TEAMER_BALANCE_SAME_TURN_WONDERS
+	// Not saved: only set inside one city's CvCity::doTurn.
+	BuildingClassTypes m_eFairTieWonderClass;
+	TeamTypes m_eFairTieWonderTeam;
+#endif
 #ifdef REPLAY_EVENTS
 	typedef std::vector< CvReplayEvent > ReplayEventList;
 	ReplayEventList m_listReplayEvents;

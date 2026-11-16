@@ -2333,9 +2333,23 @@ int CvLuaGame::lGetTimeString(lua_State* L)
 	return 1;
 }
 //------------------------------------------------------------------------------
+// TeamerBalance: the belief lists are for the player who will pick (optional first argument;
+// the screens call them with none, so the active player). Screens only, never game rules.
+static PlayerTypes LuaBeliefPicker(lua_State* L)
+{
+	if(lua_gettop(L) >= 1 && lua_isnumber(L, 1))
+	{
+		const int iPlayer = lua_tointeger(L, 1);
+		if(iPlayer >= 0 && iPlayer < MAX_MAJOR_CIVS)
+			return (PlayerTypes)iPlayer;
+	}
+	return GC.getGame().getActivePlayer();
+}
+//------------------------------------------------------------------------------
 int CvLuaGame::lGetMinimumFaithNextPantheon(lua_State* L)
 {
-	int iFaith = GC.getGame().GetGameReligions()->GetMinimumFaithNextPantheon();
+	// What a pantheon costs right now (TeamerBalance: this turn's starting price).
+	int iFaith = GC.getGame().GetGameReligions()->GetPantheonPriceThisTurn();
 	lua_pushinteger(L, iFaith);
 	return 1;
 }
@@ -2352,7 +2366,7 @@ int CvLuaGame::lGetAvailablePantheonBeliefs(lua_State* L)
 	const int t = lua_gettop(L);
 	int idx = 1;
 
-	std::vector<BeliefTypes> availableBeliefs = GC.getGame().GetGameReligions()->GetAvailablePantheonBeliefs();
+	std::vector<BeliefTypes> availableBeliefs = GC.getGame().GetGameReligions()->GetAvailablePantheonBeliefs(LuaBeliefPicker(L));
 	for(std::vector<BeliefTypes>::iterator it = availableBeliefs.begin();
 	        it!= availableBeliefs.end(); ++it)
 	{
@@ -2370,7 +2384,7 @@ int CvLuaGame::lGetAvailableFounderBeliefs(lua_State* L)
 	const int t = lua_gettop(L);
 	int idx = 1;
 
-	std::vector<BeliefTypes> availableBeliefs = GC.getGame().GetGameReligions()->GetAvailableFounderBeliefs();
+	std::vector<BeliefTypes> availableBeliefs = GC.getGame().GetGameReligions()->GetAvailableFounderBeliefs(LuaBeliefPicker(L));
 	for(std::vector<BeliefTypes>::iterator it = availableBeliefs.begin();
 	        it!= availableBeliefs.end(); ++it)
 	{
@@ -2388,7 +2402,7 @@ int CvLuaGame::lGetAvailableFollowerBeliefs(lua_State* L)
 	const int t = lua_gettop(L);
 	int idx = 1;
 
-	std::vector<BeliefTypes> availableBeliefs = GC.getGame().GetGameReligions()->GetAvailableFollowerBeliefs();
+	std::vector<BeliefTypes> availableBeliefs = GC.getGame().GetGameReligions()->GetAvailableFollowerBeliefs(LuaBeliefPicker(L));
 	for(std::vector<BeliefTypes>::iterator it = availableBeliefs.begin();
 	        it!= availableBeliefs.end(); ++it)
 	{
@@ -2406,7 +2420,7 @@ int CvLuaGame::lGetAvailableEnhancerBeliefs(lua_State* L)
 	const int t = lua_gettop(L);
 	int idx = 1;
 
-	std::vector<BeliefTypes> availableBeliefs = GC.getGame().GetGameReligions()->GetAvailableEnhancerBeliefs();
+	std::vector<BeliefTypes> availableBeliefs = GC.getGame().GetGameReligions()->GetAvailableEnhancerBeliefs(LuaBeliefPicker(L));
 	for(std::vector<BeliefTypes>::iterator it = availableBeliefs.begin();
 	        it!= availableBeliefs.end(); ++it)
 	{
@@ -2424,7 +2438,7 @@ int CvLuaGame::lGetAvailableBonusBeliefs(lua_State* L)
 	const int t = lua_gettop(L);
 	int idx = 1;
 
-	std::vector<BeliefTypes> availableBeliefs = GC.getGame().GetGameReligions()->GetAvailableBonusBeliefs();
+	std::vector<BeliefTypes> availableBeliefs = GC.getGame().GetGameReligions()->GetAvailableBonusBeliefs(LuaBeliefPicker(L));
 	for(std::vector<BeliefTypes>::iterator it = availableBeliefs.begin();
 	        it!= availableBeliefs.end(); ++it)
 	{
@@ -2442,7 +2456,7 @@ int CvLuaGame::lGetAvailableReformationBeliefs(lua_State* L)
 	const int t = lua_gettop(L);
 	int idx = 1;
 
-	std::vector<BeliefTypes> availableBeliefs = GC.getGame().GetGameReligions()->GetAvailableReformationBeliefs();
+	std::vector<BeliefTypes> availableBeliefs = GC.getGame().GetGameReligions()->GetAvailableReformationBeliefs(LuaBeliefPicker(L));
 	for(std::vector<BeliefTypes>::iterator it = availableBeliefs.begin();
 	        it!= availableBeliefs.end(); ++it)
 	{

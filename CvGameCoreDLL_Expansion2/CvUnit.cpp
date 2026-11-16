@@ -7329,7 +7329,7 @@ bool CvUnit::CanFoundReligion(const CvPlot* pPlot) const
 		}
 	}
 
-	if (pReligions->GetAvailableFounderBeliefs().size() < 1 || pReligions->GetAvailableFollowerBeliefs().size() < 1)
+	if (pReligions->GetAvailableFounderBeliefs(getOwner()).size() < 1 || pReligions->GetAvailableFollowerBeliefs(getOwner()).size() < 1)
 	{
 		return false;
 	}
@@ -7469,7 +7469,7 @@ bool CvUnit::CanEnhanceReligion(const CvPlot* pPlot) const
 		return false;
 	}
 
-	if (pReligions->GetAvailableEnhancerBeliefs().size() < 1 || pReligions->GetAvailableFollowerBeliefs().size() < 1)
+	if (pReligions->GetAvailableEnhancerBeliefs(getOwner()).size() < 1 || pReligions->GetAvailableFollowerBeliefs(getOwner()).size() < 1)
 	{
 		return false;
 	}

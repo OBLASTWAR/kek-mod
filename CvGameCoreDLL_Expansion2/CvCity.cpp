@@ -1535,6 +1535,16 @@ void CvCity::doTurn()
 	{
 		DoResistanceTurn();
 
+#ifdef TEAMER_BALANCE_SAME_TURN_WONDERS
+		// TeamerBalance: if another team finished the wonder this city is building on this very turn,
+		// this city may still finish it in this turn's production (see CvGame::isBuildingClassMaxedOut).
+		const BuildingClassTypes eFairTieClass = GetFairTieWonderClass();
+		if(eFairTieClass != NO_BUILDINGCLASS)
+		{
+			GC.getGame().setFairTieWonder(eFairTieClass, getTeam());
+		}
+#endif
+
 		bool bAllowNoProduction = !doCheckProduction();
 
 		doGrowth();
@@ -1542,6 +1552,19 @@ void CvCity::doTurn()
 		DoUpdateIndustrialRouteToCapital();
 
 		doProduction(bAllowNoProduction);
+
+#ifdef TEAMER_BALANCE_SAME_TURN_WONDERS
+		if(eFairTieClass != NO_BUILDINGCLASS)
+		{
+			GC.getGame().setFairTieWonder(NO_BUILDINGCLASS, NO_TEAM);
+			// Not enough production to finish it this turn: the usual "beaten to the wonder"
+			// rules now (its production turns into gold, the queue is cleaned).
+			if(GET_TEAM(getTeam()).getBuildingClassCount(eFairTieClass) == 0)
+			{
+				doCheckProduction();
+			}
+		}
+#endif
 
 		doDecay();
 
@@ -3193,6 +3216,28 @@ void CvCity::SetResourceDemanded(ResourceTypes eResource)
 
 //	--------------------------------------------------------------------------------
 /// Picks a Resource for this City to want
+#ifdef TEAMER_BALANCE_MIRRORED_WLTKD
+//	--------------------------------------------------------------------------------
+/// TeamerBalance mirror map: a We Love the King Day dice roll that the city on the mirror spot rolls
+/// the same way (seed = the pair of plots, turns since founding, what is rolled). Otherwise the game's roll.
+int CvCity::GetWltkdRandNum(int iNum, const char* szLog, int iSalt)
+{
+	CvGame& kGame = GC.getGame();
+	if(iNum <= 0 || getOwner() >= MAX_MAJOR_CIVS || !kGame.IsTeamerMirrorMap())
+		return kGame.getJonRandNum(iNum, szLog);
+	CvPlot* pMirror = kGame.GetMirrorPlot(plot());
+	if(pMirror == NULL)
+		return kGame.getJonRandNum(iNum, szLog);
+
+	const unsigned int uiKey = (unsigned int)std::min(plot()->GetPlotIndex(), pMirror->GetPlotIndex());
+	const unsigned int uiAge = (unsigned int)std::max(0, kGame.getGameTurn() - getGameTurnFounded());
+	unsigned int uiSeed = (uiKey * 2654435761u) ^ ((uiAge + 1u) * 2246822519u) ^ ((unsigned int)iSalt * 374761393u);
+	uiSeed = uiSeed * 1103515245u + 12345u;
+	uiSeed = uiSeed * 1103515245u + 12345u;
+	return (int)((uiSeed >> 8) % (unsigned int)iNum);
+}
+#endif
+
 void CvCity::DoPickResourceDemanded(bool bCurrentResourceInvalid)
 {
 	VALIDATE_OBJECT
@@ -3310,7 +3355,11 @@ void CvCity::DoPickResourceDemanded(bool bCurrentResourceInvalid)
 
 	do
 	{
+#ifdef TEAMER_BALANCE_MIRRORED_WLTKD
+		iVectorIndex = GetWltkdRandNum(veValidLuxuryResources.size(), "Picking random Luxury for City to demand.", 100 + iNumAttempts);
+#else
 		iVectorIndex = GC.getGame().getJonRandNum(veValidLuxuryResources.size(), "Picking random Luxury for City to demand.");
+#endif
 		eResource = (ResourceTypes) veValidLuxuryResources[iVectorIndex];
 		bResourceValid = true;
 
@@ -3448,7 +3497,12 @@ void CvCity::DoSeedResourceDemandedCountdown()
 	}
 
 	int iRand = /*10*/ GC.getRESOURCE_DEMAND_COUNTDOWN_RAND();
+#ifdef TEAMER_BALANCE_MIRRORED_WLTKD
+	// Salt only: the first request comes the same number of turns after founding for both twins.
+	iNumTurns += GetWltkdRandNum(iRand, "City Resource demanded rand.", isCapital() ? 2 : 1);
+#else
 	iNumTurns += GC.getGame().getJonRandNum(iRand, "City Resource demanded rand.");
+#endif
 
 	SetResourceDemandedCountdown(iNumTurns);
 }
@@ -3662,6 +3716,52 @@ bool CvCity::isProductionProcess() const
 
 
 //	--------------------------------------------------------------------------------
+#ifdef TEAMER_BALANCE_SAME_TURN_WONDERS
+//	--------------------------------------------------------------------------------
+// TeamerBalance: the world wonder at the head of this city's queue when another team finished it
+// on this very turn, so this city may finish it too (one copy per team). NO_BUILDINGCLASS otherwise.
+// "This turn" comes from the year the game stamps on every building (saved), so a loaded game
+// and every machine agree. Wonders only complete in turn-start production, where years differ.
+BuildingClassTypes CvCity::GetFairTieWonderClass()
+{
+	VALIDATE_OBJECT
+	if(!isProductionBuilding() || !GC.getGame().isTeamerOption(TEAMER_OPTION_SAME_TURN_WONDERS))
+		return NO_BUILDINGCLASS;
+
+	const BuildingTypes eBuilding = getProductionBuilding();
+	CvBuildingEntry* pkInfo = GC.getBuildingInfo(eBuilding);
+	if(pkInfo == NULL || !isWorldWonderClass(pkInfo->GetBuildingClassInfo()))
+		return NO_BUILDINGCLASS;
+
+	const BuildingClassTypes eClass = (BuildingClassTypes)pkInfo->GetBuildingClassType();
+	CvGame& kGame = GC.getGame();
+	if(kGame.getBuildingClassCreatedCount(eClass) < pkInfo->GetBuildingClassInfo().getMaxGlobalInstances())
+		return NO_BUILDINGCLASS;	// still free: the normal rules apply
+
+	const TeamTypes eTeam = getTeam();
+	if(GET_TEAM(eTeam).getBuildingClassCount(eClass) > 0)
+		return NO_BUILDINGCLASS;	// one per team
+
+	const int iYear = kGame.getGameTurnYear();
+	for(int iPlayer = 0; iPlayer < MAX_CIV_PLAYERS; iPlayer++)
+	{
+		CvPlayer& kOther = GET_PLAYER((PlayerTypes)iPlayer);
+		if(!kOther.isAlive() || kOther.getTeam() == eTeam || kOther.getBuildingClassCount(eClass) <= 0)
+			continue;
+
+		int iLoop;
+		for(CvCity* pLoopCity = kOther.firstCity(&iLoop); pLoopCity != NULL; pLoopCity = kOther.nextCity(&iLoop))
+		{
+			CvCityBuildings* pBuildings = pLoopCity->GetCityBuildings();
+			if(pBuildings->GetNumRealBuilding(eBuilding) > 0 && pBuildings->GetBuildingOriginalTime(eBuilding) == iYear)
+				return eClass;
+		}
+	}
+
+	return NO_BUILDINGCLASS;
+}
+#endif
+
 bool CvCity::canContinueProduction(OrderData order)
 {
 	VALIDATE_OBJECT

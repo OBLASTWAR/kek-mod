@@ -125204,6 +125204,162 @@ The ship has weather'd every rack; the prize we sought is won."
 				Come to me, all who labor and are heavy burdened, and I will give you rest.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_OFF">
+			<Text>Off</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_WONDERS">
+			<Text>Balance: Same-turn wonders for both</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_WONDERS_HELP">
+			<Text>A world wonder finished on the same turn by players of different teams goes to each of them. One per team: a teammate still loses the race (the usual gold).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_PANTHEONS">
+			<Text>TeamerBalance: Same-turn pantheons for both</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_PANTHEONS_HELP">
+			<Text>Pantheons founded on the same turn all cost that turn's price (the price rises from the next turn), and a pantheon another team picked this turn can still be picked. Teammates can't share one. The same goes for the beliefs of religions founded on the same turn.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RELIGIOUS_CS">
+			<Text>TeamerBalance: No religious city-states</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RELIGIOUS_CS_HELP">
+			<Text>Religious city-states are swapped for other city-states at the start of the game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_MIRRORED_CITY_STATES">
+			<Text>TeamerBalance: Mirrored city-states</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_MIRRORED_CITY_STATES_HELP">
+			<Text>On a mirror map, city-states on mirrored spots get the same type (maritime, cultured...), the same personality, the same unique unit and the same build choices while their situation is the same. The game's city-state picks are changed so the types pair up.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RUIN_UPGRADE">
+			<Text>TeamerBalance: No unit upgrades from ruins</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RUIN_UPGRADE_HELP">
+			<Text>Ancient ruins never upgrade a unit (for example a warrior to a spearman). The other rewards are unchanged.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_BARBARIAN_CAMPS">
+			<Text>TeamerBalance: Fair barbarian camps</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_BARBARIAN_CAMPS_HELP">
+			<Text>Barbarian camps are only placed at the start: each civ gets the same number (see Barbarian camps per civ) at the same kind of distance from its start, closer to it than to anyone else. On a mirror map in TeamerBalance mode the camps are mirrored. No new camp appears for the rest of the game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_CS_QUESTS">
+			<Text>TeamerBalance: Fair city-state quests</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_CS_QUESTS_HELP">
+			<Text>Needs Mirrored city-states. City-states on mirrored spots give mirrored players the same quests at the same time (same quest, same wonder, resource or Great Person, mirrored targets) while their situation is the same.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_GUARANTEED_PROPHET">
+			<Text>ReligionOptions: Guaranteed Great Prophet</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_GUARANTEED_PROPHET_HELP">
+			<Text>When a civ has the faith a Great Prophet needs, it always gets the prophet (no luck roll). The usual rules still apply: a religion must still be free to found.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_RELIGION_FOR_ALL">
+			<Text>ReligionOptions: Every civ can found a religion</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_RELIGION_FOR_ALL_HELP">
+			<Text>As many religions can be founded as there are civs in the game (at most the number of religions in the game).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_WORKERS">
+			<Text>Balance: City-states prioritize Workers</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_WORKERS_HELP">
+			<Text>At the start of the game a city-state builds a Worker as its second build (and again if it loses it early on). After the first 30 turns (Standard speed) it builds as normal. It never stops a build to do so.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_GLOBAL_CS_QUESTS">
+			<Text>TeamerBalance: No global city-state quests</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_GLOBAL_CS_QUESTS_HELP">
+			<Text>City-states never start global quests (the contests and quests every player can take part in). They only give personal quests.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_QUESTS_OWN_SIDE">
+			<Text>TeamerBalance: City-state quests only for its own side</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_QUESTS_OWN_SIDE_HELP">
+			<Text>A city-state gives quests only to players who started on its own half of the map (west or east). A city-state on the centre line gives quests to both sides.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAM_BELIEFS">
+			<Text>TeamerBalance: Same religion choices for both teams</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAM_BELIEFS_HELP">
+			<Text>Beliefs are only taken within a team. A pantheon, founder, follower, enhancer or reformation belief the other team took can still be picked by your team, whenever they took it, so both teams have the same choices all game. Inside a team every belief can still be taken only once.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CAPTURE_POP_FLOOR">
+			<Text>Balance: Captured cities lose population at most twice</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CAPTURE_POP_FLOOR_HELP">
+			<Text>A captured city never drops below a quarter of the largest size it ever had. A city at its peak loses population on the first capture and on the next one, then no more, so a city cannot be recaptured down to size 1.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BARB_CAMPS_PER_PLAYER">
+			<Text>Barbarian camps per civ</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BARB_CAMPS_PER_PLAYER_HELP">
+			<Text>With Fair barbarian camps: how many camps each civ gets near its start (6 to 9 tiles away, closer to it than to anyone else).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_FFA">
+			<Text>KEK+ Balance</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE">
+			<Text>Game Mode</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_HELP">
+			<Text>KEK: the normal KEK game, none of the options below is used. TeamerBalance: fair rules for team games on mirror maps. Picking a mode sets its default options.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_NORMAL">
+			<Text>KEK</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_TEAMER">
+			<Text>TeamerBalance</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_RUINS">
+			<Text>TeamerBalance: Fair ruins</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_RUINS_HELP">
+			<Text>Every player's 1st ruin gives what the first 1st ruin anyone opened gave, the 2nd what the first 2nd gave, and so on. If that reward can't be given to you right then (example: population before you have a city), you get a random one.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_EXTRA_LUXURY_HAPPINESS">
+			<Text>TeamerBalance: Extra luxury copies +2 happiness</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_EXTRA_LUXURY_HAPPINESS_HELP">
+			<Text>Every extra copy of a luxury you keep (beyond the first) gives +2 [ICON_HAPPINESS_1] Happiness.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REVEAL_OWN_HALF">
+			<Text>TeamerBalance: Reveal your half of the map</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REVEAL_OWN_HALF_HELP">
+			<Text>At the start every player sees the half of the map (left or right of the middle) their capital starts on. Made for mirror maps.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_TURNS">
+			<Text>TeamerBalance: No war before turn</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_TURNS_HELP">
+			<Text>Players can't declare war on each other during the first turns of the game. City-states and barbarians are not affected.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_ERA">
+			<Text>TeamerBalance: No war before era</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_ERA_HELP">
+			<Text>Players can't declare war on each other until any player has reached this era. City-states and barbarians are not affected.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_LIBRARY">
+			<Text>TeamerBalance: Ban Great Library</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_LIBRARY_HELP">
+			<Text>Nobody can build Great Library in this game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_WALL">
+			<Text>TeamerBalance: Ban Great Wall</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_WALL_HELP">
+			<Text>Nobody can build Great Wall in this game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_TERRACOTTA_ARMY">
+			<Text>TeamerBalance: Ban Terracotta Army</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_TERRACOTTA_ARMY_HELP">
+			<Text>Nobody can build Terracotta Army in this game.</Text>
+		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
 			<Text>
 				Remap Vote
@@ -127636,6 +127792,162 @@ The ship has weather'd every rack; the prize we sought is won."
 			<Text>
 				„Kommt her zu mir, alle, die ihr mühselig und beladen seid; ich will euch erquicken.“
 			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_OFF">
+			<Text>Off</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_WONDERS">
+			<Text>Balance: Same-turn wonders for both</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_WONDERS_HELP">
+			<Text>A world wonder finished on the same turn by players of different teams goes to each of them. One per team: a teammate still loses the race (the usual gold).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_PANTHEONS">
+			<Text>TeamerBalance: Same-turn pantheons for both</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_PANTHEONS_HELP">
+			<Text>Pantheons founded on the same turn all cost that turn's price (the price rises from the next turn), and a pantheon another team picked this turn can still be picked. Teammates can't share one. The same goes for the beliefs of religions founded on the same turn.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RELIGIOUS_CS">
+			<Text>TeamerBalance: No religious city-states</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RELIGIOUS_CS_HELP">
+			<Text>Religious city-states are swapped for other city-states at the start of the game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_MIRRORED_CITY_STATES">
+			<Text>TeamerBalance: Mirrored city-states</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_MIRRORED_CITY_STATES_HELP">
+			<Text>On a mirror map, city-states on mirrored spots get the same type (maritime, cultured...), the same personality, the same unique unit and the same build choices while their situation is the same. The game's city-state picks are changed so the types pair up.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RUIN_UPGRADE">
+			<Text>TeamerBalance: No unit upgrades from ruins</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RUIN_UPGRADE_HELP">
+			<Text>Ancient ruins never upgrade a unit (for example a warrior to a spearman). The other rewards are unchanged.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_BARBARIAN_CAMPS">
+			<Text>TeamerBalance: Fair barbarian camps</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_BARBARIAN_CAMPS_HELP">
+			<Text>Barbarian camps are only placed at the start: each civ gets the same number (see Barbarian camps per civ) at the same kind of distance from its start, closer to it than to anyone else. On a mirror map in TeamerBalance mode the camps are mirrored. No new camp appears for the rest of the game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_CS_QUESTS">
+			<Text>TeamerBalance: Fair city-state quests</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_CS_QUESTS_HELP">
+			<Text>Needs Mirrored city-states. City-states on mirrored spots give mirrored players the same quests at the same time (same quest, same wonder, resource or Great Person, mirrored targets) while their situation is the same.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_GUARANTEED_PROPHET">
+			<Text>ReligionOptions: Guaranteed Great Prophet</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_GUARANTEED_PROPHET_HELP">
+			<Text>When a civ has the faith a Great Prophet needs, it always gets the prophet (no luck roll). The usual rules still apply: a religion must still be free to found.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_RELIGION_FOR_ALL">
+			<Text>ReligionOptions: Every civ can found a religion</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_RELIGION_FOR_ALL_HELP">
+			<Text>As many religions can be founded as there are civs in the game (at most the number of religions in the game).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_WORKERS">
+			<Text>Balance: City-states prioritize Workers</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_WORKERS_HELP">
+			<Text>At the start of the game a city-state builds a Worker as its second build (and again if it loses it early on). After the first 30 turns (Standard speed) it builds as normal. It never stops a build to do so.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_GLOBAL_CS_QUESTS">
+			<Text>TeamerBalance: No global city-state quests</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_GLOBAL_CS_QUESTS_HELP">
+			<Text>City-states never start global quests (the contests and quests every player can take part in). They only give personal quests.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_QUESTS_OWN_SIDE">
+			<Text>TeamerBalance: City-state quests only for its own side</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_QUESTS_OWN_SIDE_HELP">
+			<Text>A city-state gives quests only to players who started on its own half of the map (west or east). A city-state on the centre line gives quests to both sides.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAM_BELIEFS">
+			<Text>TeamerBalance: Same religion choices for both teams</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAM_BELIEFS_HELP">
+			<Text>Beliefs are only taken within a team. A pantheon, founder, follower, enhancer or reformation belief the other team took can still be picked by your team, whenever they took it, so both teams have the same choices all game. Inside a team every belief can still be taken only once.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CAPTURE_POP_FLOOR">
+			<Text>Balance: Captured cities lose population at most twice</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CAPTURE_POP_FLOOR_HELP">
+			<Text>A captured city never drops below a quarter of the largest size it ever had. A city at its peak loses population on the first capture and on the next one, then no more, so a city cannot be recaptured down to size 1.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BARB_CAMPS_PER_PLAYER">
+			<Text>Barbarian camps per civ</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BARB_CAMPS_PER_PLAYER_HELP">
+			<Text>With Fair barbarian camps: how many camps each civ gets near its start (6 to 9 tiles away, closer to it than to anyone else).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_FFA">
+			<Text>KEK+ Balance</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE">
+			<Text>Game Mode</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_HELP">
+			<Text>KEK: the normal KEK game, none of the options below is used. TeamerBalance: fair rules for team games on mirror maps. Picking a mode sets its default options.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_NORMAL">
+			<Text>KEK</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_TEAMER">
+			<Text>TeamerBalance</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_RUINS">
+			<Text>TeamerBalance: Fair ruins</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_RUINS_HELP">
+			<Text>Every player's 1st ruin gives what the first 1st ruin anyone opened gave, the 2nd what the first 2nd gave, and so on. If that reward can't be given to you right then (example: population before you have a city), you get a random one.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_EXTRA_LUXURY_HAPPINESS">
+			<Text>TeamerBalance: Extra luxury copies +2 happiness</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_EXTRA_LUXURY_HAPPINESS_HELP">
+			<Text>Every extra copy of a luxury you keep (beyond the first) gives +2 [ICON_HAPPINESS_1] Happiness.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REVEAL_OWN_HALF">
+			<Text>TeamerBalance: Reveal your half of the map</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REVEAL_OWN_HALF_HELP">
+			<Text>At the start every player sees the half of the map (left or right of the middle) their capital starts on. Made for mirror maps.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_TURNS">
+			<Text>TeamerBalance: No war before turn</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_TURNS_HELP">
+			<Text>Players can't declare war on each other during the first turns of the game. City-states and barbarians are not affected.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_ERA">
+			<Text>TeamerBalance: No war before era</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_ERA_HELP">
+			<Text>Players can't declare war on each other until any player has reached this era. City-states and barbarians are not affected.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_LIBRARY">
+			<Text>TeamerBalance: Ban Great Library</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_LIBRARY_HELP">
+			<Text>Nobody can build Great Library in this game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_WALL">
+			<Text>TeamerBalance: Ban Great Wall</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_WALL_HELP">
+			<Text>Nobody can build Great Wall in this game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_TERRACOTTA_ARMY">
+			<Text>TeamerBalance: Ban Terracotta Army</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_TERRACOTTA_ARMY_HELP">
+			<Text>Nobody can build Terracotta Army in this game.</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
 			<Text>
@@ -130185,6 +130497,162 @@ The ship has weather'd every rack; the prize we sought is won."
 				«Venid a mí todos los que estáis trabajados y cargados, y yo os haré descansar.»
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_OFF">
+			<Text>Off</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_WONDERS">
+			<Text>Balance: Same-turn wonders for both</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_WONDERS_HELP">
+			<Text>A world wonder finished on the same turn by players of different teams goes to each of them. One per team: a teammate still loses the race (the usual gold).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_PANTHEONS">
+			<Text>TeamerBalance: Same-turn pantheons for both</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_PANTHEONS_HELP">
+			<Text>Pantheons founded on the same turn all cost that turn's price (the price rises from the next turn), and a pantheon another team picked this turn can still be picked. Teammates can't share one. The same goes for the beliefs of religions founded on the same turn.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RELIGIOUS_CS">
+			<Text>TeamerBalance: No religious city-states</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RELIGIOUS_CS_HELP">
+			<Text>Religious city-states are swapped for other city-states at the start of the game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_MIRRORED_CITY_STATES">
+			<Text>TeamerBalance: Mirrored city-states</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_MIRRORED_CITY_STATES_HELP">
+			<Text>On a mirror map, city-states on mirrored spots get the same type (maritime, cultured...), the same personality, the same unique unit and the same build choices while their situation is the same. The game's city-state picks are changed so the types pair up.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RUIN_UPGRADE">
+			<Text>TeamerBalance: No unit upgrades from ruins</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RUIN_UPGRADE_HELP">
+			<Text>Ancient ruins never upgrade a unit (for example a warrior to a spearman). The other rewards are unchanged.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_BARBARIAN_CAMPS">
+			<Text>TeamerBalance: Fair barbarian camps</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_BARBARIAN_CAMPS_HELP">
+			<Text>Barbarian camps are only placed at the start: each civ gets the same number (see Barbarian camps per civ) at the same kind of distance from its start, closer to it than to anyone else. On a mirror map in TeamerBalance mode the camps are mirrored. No new camp appears for the rest of the game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_CS_QUESTS">
+			<Text>TeamerBalance: Fair city-state quests</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_CS_QUESTS_HELP">
+			<Text>Needs Mirrored city-states. City-states on mirrored spots give mirrored players the same quests at the same time (same quest, same wonder, resource or Great Person, mirrored targets) while their situation is the same.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_GUARANTEED_PROPHET">
+			<Text>ReligionOptions: Guaranteed Great Prophet</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_GUARANTEED_PROPHET_HELP">
+			<Text>When a civ has the faith a Great Prophet needs, it always gets the prophet (no luck roll). The usual rules still apply: a religion must still be free to found.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_RELIGION_FOR_ALL">
+			<Text>ReligionOptions: Every civ can found a religion</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_RELIGION_FOR_ALL_HELP">
+			<Text>As many religions can be founded as there are civs in the game (at most the number of religions in the game).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_WORKERS">
+			<Text>Balance: City-states prioritize Workers</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_WORKERS_HELP">
+			<Text>At the start of the game a city-state builds a Worker as its second build (and again if it loses it early on). After the first 30 turns (Standard speed) it builds as normal. It never stops a build to do so.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_GLOBAL_CS_QUESTS">
+			<Text>TeamerBalance: No global city-state quests</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_GLOBAL_CS_QUESTS_HELP">
+			<Text>City-states never start global quests (the contests and quests every player can take part in). They only give personal quests.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_QUESTS_OWN_SIDE">
+			<Text>TeamerBalance: City-state quests only for its own side</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_QUESTS_OWN_SIDE_HELP">
+			<Text>A city-state gives quests only to players who started on its own half of the map (west or east). A city-state on the centre line gives quests to both sides.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAM_BELIEFS">
+			<Text>TeamerBalance: Same religion choices for both teams</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAM_BELIEFS_HELP">
+			<Text>Beliefs are only taken within a team. A pantheon, founder, follower, enhancer or reformation belief the other team took can still be picked by your team, whenever they took it, so both teams have the same choices all game. Inside a team every belief can still be taken only once.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CAPTURE_POP_FLOOR">
+			<Text>Balance: Captured cities lose population at most twice</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CAPTURE_POP_FLOOR_HELP">
+			<Text>A captured city never drops below a quarter of the largest size it ever had. A city at its peak loses population on the first capture and on the next one, then no more, so a city cannot be recaptured down to size 1.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BARB_CAMPS_PER_PLAYER">
+			<Text>Barbarian camps per civ</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BARB_CAMPS_PER_PLAYER_HELP">
+			<Text>With Fair barbarian camps: how many camps each civ gets near its start (6 to 9 tiles away, closer to it than to anyone else).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_FFA">
+			<Text>KEK+ Balance</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE">
+			<Text>Game Mode</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_HELP">
+			<Text>KEK: the normal KEK game, none of the options below is used. TeamerBalance: fair rules for team games on mirror maps. Picking a mode sets its default options.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_NORMAL">
+			<Text>KEK</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_TEAMER">
+			<Text>TeamerBalance</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_RUINS">
+			<Text>TeamerBalance: Fair ruins</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_RUINS_HELP">
+			<Text>Every player's 1st ruin gives what the first 1st ruin anyone opened gave, the 2nd what the first 2nd gave, and so on. If that reward can't be given to you right then (example: population before you have a city), you get a random one.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_EXTRA_LUXURY_HAPPINESS">
+			<Text>TeamerBalance: Extra luxury copies +2 happiness</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_EXTRA_LUXURY_HAPPINESS_HELP">
+			<Text>Every extra copy of a luxury you keep (beyond the first) gives +2 [ICON_HAPPINESS_1] Happiness.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REVEAL_OWN_HALF">
+			<Text>TeamerBalance: Reveal your half of the map</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REVEAL_OWN_HALF_HELP">
+			<Text>At the start every player sees the half of the map (left or right of the middle) their capital starts on. Made for mirror maps.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_TURNS">
+			<Text>TeamerBalance: No war before turn</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_TURNS_HELP">
+			<Text>Players can't declare war on each other during the first turns of the game. City-states and barbarians are not affected.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_ERA">
+			<Text>TeamerBalance: No war before era</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_ERA_HELP">
+			<Text>Players can't declare war on each other until any player has reached this era. City-states and barbarians are not affected.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_LIBRARY">
+			<Text>TeamerBalance: Ban Great Library</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_LIBRARY_HELP">
+			<Text>Nobody can build Great Library in this game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_WALL">
+			<Text>TeamerBalance: Ban Great Wall</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_WALL_HELP">
+			<Text>Nobody can build Great Wall in this game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_TERRACOTTA_ARMY">
+			<Text>TeamerBalance: Ban Terracotta Army</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_TERRACOTTA_ARMY_HELP">
+			<Text>Nobody can build Terracotta Army in this game.</Text>
+		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
 			<Text>
 				Votación de remap
@@ -132732,6 +133200,162 @@ The ship has weather'd every rack; the prize we sought is won."
 			<Text>
 				« Venez à moi, vous tous qui êtes fatigués et chargés, et je vous donnerai du repos. »
 			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_OFF">
+			<Text>Off</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_WONDERS">
+			<Text>Balance: Same-turn wonders for both</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_WONDERS_HELP">
+			<Text>A world wonder finished on the same turn by players of different teams goes to each of them. One per team: a teammate still loses the race (the usual gold).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_PANTHEONS">
+			<Text>TeamerBalance: Same-turn pantheons for both</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_PANTHEONS_HELP">
+			<Text>Pantheons founded on the same turn all cost that turn's price (the price rises from the next turn), and a pantheon another team picked this turn can still be picked. Teammates can't share one. The same goes for the beliefs of religions founded on the same turn.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RELIGIOUS_CS">
+			<Text>TeamerBalance: No religious city-states</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RELIGIOUS_CS_HELP">
+			<Text>Religious city-states are swapped for other city-states at the start of the game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_MIRRORED_CITY_STATES">
+			<Text>TeamerBalance: Mirrored city-states</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_MIRRORED_CITY_STATES_HELP">
+			<Text>On a mirror map, city-states on mirrored spots get the same type (maritime, cultured...), the same personality, the same unique unit and the same build choices while their situation is the same. The game's city-state picks are changed so the types pair up.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RUIN_UPGRADE">
+			<Text>TeamerBalance: No unit upgrades from ruins</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RUIN_UPGRADE_HELP">
+			<Text>Ancient ruins never upgrade a unit (for example a warrior to a spearman). The other rewards are unchanged.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_BARBARIAN_CAMPS">
+			<Text>TeamerBalance: Fair barbarian camps</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_BARBARIAN_CAMPS_HELP">
+			<Text>Barbarian camps are only placed at the start: each civ gets the same number (see Barbarian camps per civ) at the same kind of distance from its start, closer to it than to anyone else. On a mirror map in TeamerBalance mode the camps are mirrored. No new camp appears for the rest of the game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_CS_QUESTS">
+			<Text>TeamerBalance: Fair city-state quests</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_CS_QUESTS_HELP">
+			<Text>Needs Mirrored city-states. City-states on mirrored spots give mirrored players the same quests at the same time (same quest, same wonder, resource or Great Person, mirrored targets) while their situation is the same.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_GUARANTEED_PROPHET">
+			<Text>ReligionOptions: Guaranteed Great Prophet</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_GUARANTEED_PROPHET_HELP">
+			<Text>When a civ has the faith a Great Prophet needs, it always gets the prophet (no luck roll). The usual rules still apply: a religion must still be free to found.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_RELIGION_FOR_ALL">
+			<Text>ReligionOptions: Every civ can found a religion</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_RELIGION_FOR_ALL_HELP">
+			<Text>As many religions can be founded as there are civs in the game (at most the number of religions in the game).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_WORKERS">
+			<Text>Balance: City-states prioritize Workers</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_WORKERS_HELP">
+			<Text>At the start of the game a city-state builds a Worker as its second build (and again if it loses it early on). After the first 30 turns (Standard speed) it builds as normal. It never stops a build to do so.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_GLOBAL_CS_QUESTS">
+			<Text>TeamerBalance: No global city-state quests</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_GLOBAL_CS_QUESTS_HELP">
+			<Text>City-states never start global quests (the contests and quests every player can take part in). They only give personal quests.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_QUESTS_OWN_SIDE">
+			<Text>TeamerBalance: City-state quests only for its own side</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_QUESTS_OWN_SIDE_HELP">
+			<Text>A city-state gives quests only to players who started on its own half of the map (west or east). A city-state on the centre line gives quests to both sides.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAM_BELIEFS">
+			<Text>TeamerBalance: Same religion choices for both teams</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAM_BELIEFS_HELP">
+			<Text>Beliefs are only taken within a team. A pantheon, founder, follower, enhancer or reformation belief the other team took can still be picked by your team, whenever they took it, so both teams have the same choices all game. Inside a team every belief can still be taken only once.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CAPTURE_POP_FLOOR">
+			<Text>Balance: Captured cities lose population at most twice</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CAPTURE_POP_FLOOR_HELP">
+			<Text>A captured city never drops below a quarter of the largest size it ever had. A city at its peak loses population on the first capture and on the next one, then no more, so a city cannot be recaptured down to size 1.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BARB_CAMPS_PER_PLAYER">
+			<Text>Barbarian camps per civ</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BARB_CAMPS_PER_PLAYER_HELP">
+			<Text>With Fair barbarian camps: how many camps each civ gets near its start (6 to 9 tiles away, closer to it than to anyone else).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_FFA">
+			<Text>KEK+ Balance</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE">
+			<Text>Game Mode</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_HELP">
+			<Text>KEK: the normal KEK game, none of the options below is used. TeamerBalance: fair rules for team games on mirror maps. Picking a mode sets its default options.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_NORMAL">
+			<Text>KEK</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_TEAMER">
+			<Text>TeamerBalance</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_RUINS">
+			<Text>TeamerBalance: Fair ruins</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_RUINS_HELP">
+			<Text>Every player's 1st ruin gives what the first 1st ruin anyone opened gave, the 2nd what the first 2nd gave, and so on. If that reward can't be given to you right then (example: population before you have a city), you get a random one.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_EXTRA_LUXURY_HAPPINESS">
+			<Text>TeamerBalance: Extra luxury copies +2 happiness</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_EXTRA_LUXURY_HAPPINESS_HELP">
+			<Text>Every extra copy of a luxury you keep (beyond the first) gives +2 [ICON_HAPPINESS_1] Happiness.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REVEAL_OWN_HALF">
+			<Text>TeamerBalance: Reveal your half of the map</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REVEAL_OWN_HALF_HELP">
+			<Text>At the start every player sees the half of the map (left or right of the middle) their capital starts on. Made for mirror maps.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_TURNS">
+			<Text>TeamerBalance: No war before turn</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_TURNS_HELP">
+			<Text>Players can't declare war on each other during the first turns of the game. City-states and barbarians are not affected.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_ERA">
+			<Text>TeamerBalance: No war before era</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_ERA_HELP">
+			<Text>Players can't declare war on each other until any player has reached this era. City-states and barbarians are not affected.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_LIBRARY">
+			<Text>TeamerBalance: Ban Great Library</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_LIBRARY_HELP">
+			<Text>Nobody can build Great Library in this game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_WALL">
+			<Text>TeamerBalance: Ban Great Wall</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_WALL_HELP">
+			<Text>Nobody can build Great Wall in this game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_TERRACOTTA_ARMY">
+			<Text>TeamerBalance: Ban Terracotta Army</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_TERRACOTTA_ARMY_HELP">
+			<Text>Nobody can build Terracotta Army in this game.</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
 			<Text>
@@ -135281,6 +135905,162 @@ The ship has weather'd every rack; the prize we sought is won."
 				«Venite a me, voi tutti che siete stanchi e oppressi, e io vi darò ristoro.»
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_OFF">
+			<Text>Off</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_WONDERS">
+			<Text>Balance: Same-turn wonders for both</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_WONDERS_HELP">
+			<Text>A world wonder finished on the same turn by players of different teams goes to each of them. One per team: a teammate still loses the race (the usual gold).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_PANTHEONS">
+			<Text>TeamerBalance: Same-turn pantheons for both</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_PANTHEONS_HELP">
+			<Text>Pantheons founded on the same turn all cost that turn's price (the price rises from the next turn), and a pantheon another team picked this turn can still be picked. Teammates can't share one. The same goes for the beliefs of religions founded on the same turn.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RELIGIOUS_CS">
+			<Text>TeamerBalance: No religious city-states</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RELIGIOUS_CS_HELP">
+			<Text>Religious city-states are swapped for other city-states at the start of the game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_MIRRORED_CITY_STATES">
+			<Text>TeamerBalance: Mirrored city-states</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_MIRRORED_CITY_STATES_HELP">
+			<Text>On a mirror map, city-states on mirrored spots get the same type (maritime, cultured...), the same personality, the same unique unit and the same build choices while their situation is the same. The game's city-state picks are changed so the types pair up.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RUIN_UPGRADE">
+			<Text>TeamerBalance: No unit upgrades from ruins</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RUIN_UPGRADE_HELP">
+			<Text>Ancient ruins never upgrade a unit (for example a warrior to a spearman). The other rewards are unchanged.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_BARBARIAN_CAMPS">
+			<Text>TeamerBalance: Fair barbarian camps</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_BARBARIAN_CAMPS_HELP">
+			<Text>Barbarian camps are only placed at the start: each civ gets the same number (see Barbarian camps per civ) at the same kind of distance from its start, closer to it than to anyone else. On a mirror map in TeamerBalance mode the camps are mirrored. No new camp appears for the rest of the game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_CS_QUESTS">
+			<Text>TeamerBalance: Fair city-state quests</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_CS_QUESTS_HELP">
+			<Text>Needs Mirrored city-states. City-states on mirrored spots give mirrored players the same quests at the same time (same quest, same wonder, resource or Great Person, mirrored targets) while their situation is the same.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_GUARANTEED_PROPHET">
+			<Text>ReligionOptions: Guaranteed Great Prophet</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_GUARANTEED_PROPHET_HELP">
+			<Text>When a civ has the faith a Great Prophet needs, it always gets the prophet (no luck roll). The usual rules still apply: a religion must still be free to found.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_RELIGION_FOR_ALL">
+			<Text>ReligionOptions: Every civ can found a religion</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_RELIGION_FOR_ALL_HELP">
+			<Text>As many religions can be founded as there are civs in the game (at most the number of religions in the game).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_WORKERS">
+			<Text>Balance: City-states prioritize Workers</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_WORKERS_HELP">
+			<Text>At the start of the game a city-state builds a Worker as its second build (and again if it loses it early on). After the first 30 turns (Standard speed) it builds as normal. It never stops a build to do so.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_GLOBAL_CS_QUESTS">
+			<Text>TeamerBalance: No global city-state quests</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_GLOBAL_CS_QUESTS_HELP">
+			<Text>City-states never start global quests (the contests and quests every player can take part in). They only give personal quests.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_QUESTS_OWN_SIDE">
+			<Text>TeamerBalance: City-state quests only for its own side</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_QUESTS_OWN_SIDE_HELP">
+			<Text>A city-state gives quests only to players who started on its own half of the map (west or east). A city-state on the centre line gives quests to both sides.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAM_BELIEFS">
+			<Text>TeamerBalance: Same religion choices for both teams</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAM_BELIEFS_HELP">
+			<Text>Beliefs are only taken within a team. A pantheon, founder, follower, enhancer or reformation belief the other team took can still be picked by your team, whenever they took it, so both teams have the same choices all game. Inside a team every belief can still be taken only once.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CAPTURE_POP_FLOOR">
+			<Text>Balance: Captured cities lose population at most twice</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CAPTURE_POP_FLOOR_HELP">
+			<Text>A captured city never drops below a quarter of the largest size it ever had. A city at its peak loses population on the first capture and on the next one, then no more, so a city cannot be recaptured down to size 1.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BARB_CAMPS_PER_PLAYER">
+			<Text>Barbarian camps per civ</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BARB_CAMPS_PER_PLAYER_HELP">
+			<Text>With Fair barbarian camps: how many camps each civ gets near its start (6 to 9 tiles away, closer to it than to anyone else).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_FFA">
+			<Text>KEK+ Balance</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE">
+			<Text>Game Mode</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_HELP">
+			<Text>KEK: the normal KEK game, none of the options below is used. TeamerBalance: fair rules for team games on mirror maps. Picking a mode sets its default options.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_NORMAL">
+			<Text>KEK</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_TEAMER">
+			<Text>TeamerBalance</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_RUINS">
+			<Text>TeamerBalance: Fair ruins</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_RUINS_HELP">
+			<Text>Every player's 1st ruin gives what the first 1st ruin anyone opened gave, the 2nd what the first 2nd gave, and so on. If that reward can't be given to you right then (example: population before you have a city), you get a random one.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_EXTRA_LUXURY_HAPPINESS">
+			<Text>TeamerBalance: Extra luxury copies +2 happiness</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_EXTRA_LUXURY_HAPPINESS_HELP">
+			<Text>Every extra copy of a luxury you keep (beyond the first) gives +2 [ICON_HAPPINESS_1] Happiness.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REVEAL_OWN_HALF">
+			<Text>TeamerBalance: Reveal your half of the map</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REVEAL_OWN_HALF_HELP">
+			<Text>At the start every player sees the half of the map (left or right of the middle) their capital starts on. Made for mirror maps.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_TURNS">
+			<Text>TeamerBalance: No war before turn</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_TURNS_HELP">
+			<Text>Players can't declare war on each other during the first turns of the game. City-states and barbarians are not affected.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_ERA">
+			<Text>TeamerBalance: No war before era</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_ERA_HELP">
+			<Text>Players can't declare war on each other until any player has reached this era. City-states and barbarians are not affected.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_LIBRARY">
+			<Text>TeamerBalance: Ban Great Library</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_LIBRARY_HELP">
+			<Text>Nobody can build Great Library in this game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_WALL">
+			<Text>TeamerBalance: Ban Great Wall</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_WALL_HELP">
+			<Text>Nobody can build Great Wall in this game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_TERRACOTTA_ARMY">
+			<Text>TeamerBalance: Ban Terracotta Army</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_TERRACOTTA_ARMY_HELP">
+			<Text>Nobody can build Terracotta Army in this game.</Text>
+		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
 			<Text>
 				Votazione remap
@@ -137828,6 +138608,162 @@ The ship has weather'd every rack; the prize we sought is won."
 			<Text>
 				「すべて疲れた人、重荷を負っている人は、わたしのもとに来なさい。休ませてあげよう。」
 			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_OFF">
+			<Text>Off</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_WONDERS">
+			<Text>Balance: Same-turn wonders for both</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_WONDERS_HELP">
+			<Text>A world wonder finished on the same turn by players of different teams goes to each of them. One per team: a teammate still loses the race (the usual gold).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_PANTHEONS">
+			<Text>TeamerBalance: Same-turn pantheons for both</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_PANTHEONS_HELP">
+			<Text>Pantheons founded on the same turn all cost that turn's price (the price rises from the next turn), and a pantheon another team picked this turn can still be picked. Teammates can't share one. The same goes for the beliefs of religions founded on the same turn.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RELIGIOUS_CS">
+			<Text>TeamerBalance: No religious city-states</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RELIGIOUS_CS_HELP">
+			<Text>Religious city-states are swapped for other city-states at the start of the game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_MIRRORED_CITY_STATES">
+			<Text>TeamerBalance: Mirrored city-states</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_MIRRORED_CITY_STATES_HELP">
+			<Text>On a mirror map, city-states on mirrored spots get the same type (maritime, cultured...), the same personality, the same unique unit and the same build choices while their situation is the same. The game's city-state picks are changed so the types pair up.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RUIN_UPGRADE">
+			<Text>TeamerBalance: No unit upgrades from ruins</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RUIN_UPGRADE_HELP">
+			<Text>Ancient ruins never upgrade a unit (for example a warrior to a spearman). The other rewards are unchanged.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_BARBARIAN_CAMPS">
+			<Text>TeamerBalance: Fair barbarian camps</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_BARBARIAN_CAMPS_HELP">
+			<Text>Barbarian camps are only placed at the start: each civ gets the same number (see Barbarian camps per civ) at the same kind of distance from its start, closer to it than to anyone else. On a mirror map in TeamerBalance mode the camps are mirrored. No new camp appears for the rest of the game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_CS_QUESTS">
+			<Text>TeamerBalance: Fair city-state quests</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_CS_QUESTS_HELP">
+			<Text>Needs Mirrored city-states. City-states on mirrored spots give mirrored players the same quests at the same time (same quest, same wonder, resource or Great Person, mirrored targets) while their situation is the same.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_GUARANTEED_PROPHET">
+			<Text>ReligionOptions: Guaranteed Great Prophet</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_GUARANTEED_PROPHET_HELP">
+			<Text>When a civ has the faith a Great Prophet needs, it always gets the prophet (no luck roll). The usual rules still apply: a religion must still be free to found.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_RELIGION_FOR_ALL">
+			<Text>ReligionOptions: Every civ can found a religion</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_RELIGION_FOR_ALL_HELP">
+			<Text>As many religions can be founded as there are civs in the game (at most the number of religions in the game).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_WORKERS">
+			<Text>Balance: City-states prioritize Workers</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_WORKERS_HELP">
+			<Text>At the start of the game a city-state builds a Worker as its second build (and again if it loses it early on). After the first 30 turns (Standard speed) it builds as normal. It never stops a build to do so.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_GLOBAL_CS_QUESTS">
+			<Text>TeamerBalance: No global city-state quests</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_GLOBAL_CS_QUESTS_HELP">
+			<Text>City-states never start global quests (the contests and quests every player can take part in). They only give personal quests.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_QUESTS_OWN_SIDE">
+			<Text>TeamerBalance: City-state quests only for its own side</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_QUESTS_OWN_SIDE_HELP">
+			<Text>A city-state gives quests only to players who started on its own half of the map (west or east). A city-state on the centre line gives quests to both sides.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAM_BELIEFS">
+			<Text>TeamerBalance: Same religion choices for both teams</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAM_BELIEFS_HELP">
+			<Text>Beliefs are only taken within a team. A pantheon, founder, follower, enhancer or reformation belief the other team took can still be picked by your team, whenever they took it, so both teams have the same choices all game. Inside a team every belief can still be taken only once.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CAPTURE_POP_FLOOR">
+			<Text>Balance: Captured cities lose population at most twice</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CAPTURE_POP_FLOOR_HELP">
+			<Text>A captured city never drops below a quarter of the largest size it ever had. A city at its peak loses population on the first capture and on the next one, then no more, so a city cannot be recaptured down to size 1.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BARB_CAMPS_PER_PLAYER">
+			<Text>Barbarian camps per civ</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BARB_CAMPS_PER_PLAYER_HELP">
+			<Text>With Fair barbarian camps: how many camps each civ gets near its start (6 to 9 tiles away, closer to it than to anyone else).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_FFA">
+			<Text>KEK+ Balance</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE">
+			<Text>Game Mode</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_HELP">
+			<Text>KEK: the normal KEK game, none of the options below is used. TeamerBalance: fair rules for team games on mirror maps. Picking a mode sets its default options.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_NORMAL">
+			<Text>KEK</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_TEAMER">
+			<Text>TeamerBalance</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_RUINS">
+			<Text>TeamerBalance: Fair ruins</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_RUINS_HELP">
+			<Text>Every player's 1st ruin gives what the first 1st ruin anyone opened gave, the 2nd what the first 2nd gave, and so on. If that reward can't be given to you right then (example: population before you have a city), you get a random one.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_EXTRA_LUXURY_HAPPINESS">
+			<Text>TeamerBalance: Extra luxury copies +2 happiness</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_EXTRA_LUXURY_HAPPINESS_HELP">
+			<Text>Every extra copy of a luxury you keep (beyond the first) gives +2 [ICON_HAPPINESS_1] Happiness.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REVEAL_OWN_HALF">
+			<Text>TeamerBalance: Reveal your half of the map</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REVEAL_OWN_HALF_HELP">
+			<Text>At the start every player sees the half of the map (left or right of the middle) their capital starts on. Made for mirror maps.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_TURNS">
+			<Text>TeamerBalance: No war before turn</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_TURNS_HELP">
+			<Text>Players can't declare war on each other during the first turns of the game. City-states and barbarians are not affected.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_ERA">
+			<Text>TeamerBalance: No war before era</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_ERA_HELP">
+			<Text>Players can't declare war on each other until any player has reached this era. City-states and barbarians are not affected.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_LIBRARY">
+			<Text>TeamerBalance: Ban Great Library</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_LIBRARY_HELP">
+			<Text>Nobody can build Great Library in this game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_WALL">
+			<Text>TeamerBalance: Ban Great Wall</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_WALL_HELP">
+			<Text>Nobody can build Great Wall in this game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_TERRACOTTA_ARMY">
+			<Text>TeamerBalance: Ban Terracotta Army</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_TERRACOTTA_ARMY_HELP">
+			<Text>Nobody can build Terracotta Army in this game.</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
 			<Text>
@@ -140377,6 +141313,162 @@ The ship has weather'd every rack; the prize we sought is won."
 				"수고하고 무거운 짐 진 자들아 다 내게로 오라 내가 너희를 쉬게 하리라"
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_OFF">
+			<Text>Off</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_WONDERS">
+			<Text>Balance: Same-turn wonders for both</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_WONDERS_HELP">
+			<Text>A world wonder finished on the same turn by players of different teams goes to each of them. One per team: a teammate still loses the race (the usual gold).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_PANTHEONS">
+			<Text>TeamerBalance: Same-turn pantheons for both</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_PANTHEONS_HELP">
+			<Text>Pantheons founded on the same turn all cost that turn's price (the price rises from the next turn), and a pantheon another team picked this turn can still be picked. Teammates can't share one. The same goes for the beliefs of religions founded on the same turn.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RELIGIOUS_CS">
+			<Text>TeamerBalance: No religious city-states</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RELIGIOUS_CS_HELP">
+			<Text>Religious city-states are swapped for other city-states at the start of the game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_MIRRORED_CITY_STATES">
+			<Text>TeamerBalance: Mirrored city-states</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_MIRRORED_CITY_STATES_HELP">
+			<Text>On a mirror map, city-states on mirrored spots get the same type (maritime, cultured...), the same personality, the same unique unit and the same build choices while their situation is the same. The game's city-state picks are changed so the types pair up.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RUIN_UPGRADE">
+			<Text>TeamerBalance: No unit upgrades from ruins</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RUIN_UPGRADE_HELP">
+			<Text>Ancient ruins never upgrade a unit (for example a warrior to a spearman). The other rewards are unchanged.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_BARBARIAN_CAMPS">
+			<Text>TeamerBalance: Fair barbarian camps</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_BARBARIAN_CAMPS_HELP">
+			<Text>Barbarian camps are only placed at the start: each civ gets the same number (see Barbarian camps per civ) at the same kind of distance from its start, closer to it than to anyone else. On a mirror map in TeamerBalance mode the camps are mirrored. No new camp appears for the rest of the game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_CS_QUESTS">
+			<Text>TeamerBalance: Fair city-state quests</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_CS_QUESTS_HELP">
+			<Text>Needs Mirrored city-states. City-states on mirrored spots give mirrored players the same quests at the same time (same quest, same wonder, resource or Great Person, mirrored targets) while their situation is the same.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_GUARANTEED_PROPHET">
+			<Text>ReligionOptions: Guaranteed Great Prophet</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_GUARANTEED_PROPHET_HELP">
+			<Text>When a civ has the faith a Great Prophet needs, it always gets the prophet (no luck roll). The usual rules still apply: a religion must still be free to found.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_RELIGION_FOR_ALL">
+			<Text>ReligionOptions: Every civ can found a religion</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_RELIGION_FOR_ALL_HELP">
+			<Text>As many religions can be founded as there are civs in the game (at most the number of religions in the game).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_WORKERS">
+			<Text>Balance: City-states prioritize Workers</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_WORKERS_HELP">
+			<Text>At the start of the game a city-state builds a Worker as its second build (and again if it loses it early on). After the first 30 turns (Standard speed) it builds as normal. It never stops a build to do so.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_GLOBAL_CS_QUESTS">
+			<Text>TeamerBalance: No global city-state quests</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_GLOBAL_CS_QUESTS_HELP">
+			<Text>City-states never start global quests (the contests and quests every player can take part in). They only give personal quests.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_QUESTS_OWN_SIDE">
+			<Text>TeamerBalance: City-state quests only for its own side</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_QUESTS_OWN_SIDE_HELP">
+			<Text>A city-state gives quests only to players who started on its own half of the map (west or east). A city-state on the centre line gives quests to both sides.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAM_BELIEFS">
+			<Text>TeamerBalance: Same religion choices for both teams</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAM_BELIEFS_HELP">
+			<Text>Beliefs are only taken within a team. A pantheon, founder, follower, enhancer or reformation belief the other team took can still be picked by your team, whenever they took it, so both teams have the same choices all game. Inside a team every belief can still be taken only once.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CAPTURE_POP_FLOOR">
+			<Text>Balance: Captured cities lose population at most twice</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CAPTURE_POP_FLOOR_HELP">
+			<Text>A captured city never drops below a quarter of the largest size it ever had. A city at its peak loses population on the first capture and on the next one, then no more, so a city cannot be recaptured down to size 1.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BARB_CAMPS_PER_PLAYER">
+			<Text>Barbarian camps per civ</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BARB_CAMPS_PER_PLAYER_HELP">
+			<Text>With Fair barbarian camps: how many camps each civ gets near its start (6 to 9 tiles away, closer to it than to anyone else).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_FFA">
+			<Text>KEK+ Balance</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE">
+			<Text>Game Mode</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_HELP">
+			<Text>KEK: the normal KEK game, none of the options below is used. TeamerBalance: fair rules for team games on mirror maps. Picking a mode sets its default options.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_NORMAL">
+			<Text>KEK</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_TEAMER">
+			<Text>TeamerBalance</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_RUINS">
+			<Text>TeamerBalance: Fair ruins</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_RUINS_HELP">
+			<Text>Every player's 1st ruin gives what the first 1st ruin anyone opened gave, the 2nd what the first 2nd gave, and so on. If that reward can't be given to you right then (example: population before you have a city), you get a random one.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_EXTRA_LUXURY_HAPPINESS">
+			<Text>TeamerBalance: Extra luxury copies +2 happiness</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_EXTRA_LUXURY_HAPPINESS_HELP">
+			<Text>Every extra copy of a luxury you keep (beyond the first) gives +2 [ICON_HAPPINESS_1] Happiness.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REVEAL_OWN_HALF">
+			<Text>TeamerBalance: Reveal your half of the map</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REVEAL_OWN_HALF_HELP">
+			<Text>At the start every player sees the half of the map (left or right of the middle) their capital starts on. Made for mirror maps.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_TURNS">
+			<Text>TeamerBalance: No war before turn</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_TURNS_HELP">
+			<Text>Players can't declare war on each other during the first turns of the game. City-states and barbarians are not affected.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_ERA">
+			<Text>TeamerBalance: No war before era</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_ERA_HELP">
+			<Text>Players can't declare war on each other until any player has reached this era. City-states and barbarians are not affected.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_LIBRARY">
+			<Text>TeamerBalance: Ban Great Library</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_LIBRARY_HELP">
+			<Text>Nobody can build Great Library in this game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_WALL">
+			<Text>TeamerBalance: Ban Great Wall</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_WALL_HELP">
+			<Text>Nobody can build Great Wall in this game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_TERRACOTTA_ARMY">
+			<Text>TeamerBalance: Ban Terracotta Army</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_TERRACOTTA_ARMY_HELP">
+			<Text>Nobody can build Terracotta Army in this game.</Text>
+		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
 			<Text>
 				리맵 투표
@@ -142924,6 +144016,162 @@ The ship has weather'd every rack; the prize we sought is won."
 			<Text>
 				„Przyjdźcie do Mnie wszyscy, którzy utrudzeni i obciążeni jesteście, a Ja was pokrzepię.”
 			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_OFF">
+			<Text>Off</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_WONDERS">
+			<Text>Balance: Same-turn wonders for both</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_WONDERS_HELP">
+			<Text>A world wonder finished on the same turn by players of different teams goes to each of them. One per team: a teammate still loses the race (the usual gold).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_PANTHEONS">
+			<Text>TeamerBalance: Same-turn pantheons for both</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_PANTHEONS_HELP">
+			<Text>Pantheons founded on the same turn all cost that turn's price (the price rises from the next turn), and a pantheon another team picked this turn can still be picked. Teammates can't share one. The same goes for the beliefs of religions founded on the same turn.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RELIGIOUS_CS">
+			<Text>TeamerBalance: No religious city-states</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RELIGIOUS_CS_HELP">
+			<Text>Religious city-states are swapped for other city-states at the start of the game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_MIRRORED_CITY_STATES">
+			<Text>TeamerBalance: Mirrored city-states</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_MIRRORED_CITY_STATES_HELP">
+			<Text>On a mirror map, city-states on mirrored spots get the same type (maritime, cultured...), the same personality, the same unique unit and the same build choices while their situation is the same. The game's city-state picks are changed so the types pair up.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RUIN_UPGRADE">
+			<Text>TeamerBalance: No unit upgrades from ruins</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RUIN_UPGRADE_HELP">
+			<Text>Ancient ruins never upgrade a unit (for example a warrior to a spearman). The other rewards are unchanged.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_BARBARIAN_CAMPS">
+			<Text>TeamerBalance: Fair barbarian camps</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_BARBARIAN_CAMPS_HELP">
+			<Text>Barbarian camps are only placed at the start: each civ gets the same number (see Barbarian camps per civ) at the same kind of distance from its start, closer to it than to anyone else. On a mirror map in TeamerBalance mode the camps are mirrored. No new camp appears for the rest of the game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_CS_QUESTS">
+			<Text>TeamerBalance: Fair city-state quests</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_CS_QUESTS_HELP">
+			<Text>Needs Mirrored city-states. City-states on mirrored spots give mirrored players the same quests at the same time (same quest, same wonder, resource or Great Person, mirrored targets) while their situation is the same.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_GUARANTEED_PROPHET">
+			<Text>ReligionOptions: Guaranteed Great Prophet</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_GUARANTEED_PROPHET_HELP">
+			<Text>When a civ has the faith a Great Prophet needs, it always gets the prophet (no luck roll). The usual rules still apply: a religion must still be free to found.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_RELIGION_FOR_ALL">
+			<Text>ReligionOptions: Every civ can found a religion</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_RELIGION_FOR_ALL_HELP">
+			<Text>As many religions can be founded as there are civs in the game (at most the number of religions in the game).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_WORKERS">
+			<Text>Balance: City-states prioritize Workers</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_WORKERS_HELP">
+			<Text>At the start of the game a city-state builds a Worker as its second build (and again if it loses it early on). After the first 30 turns (Standard speed) it builds as normal. It never stops a build to do so.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_GLOBAL_CS_QUESTS">
+			<Text>TeamerBalance: No global city-state quests</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_GLOBAL_CS_QUESTS_HELP">
+			<Text>City-states never start global quests (the contests and quests every player can take part in). They only give personal quests.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_QUESTS_OWN_SIDE">
+			<Text>TeamerBalance: City-state quests only for its own side</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_QUESTS_OWN_SIDE_HELP">
+			<Text>A city-state gives quests only to players who started on its own half of the map (west or east). A city-state on the centre line gives quests to both sides.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAM_BELIEFS">
+			<Text>TeamerBalance: Same religion choices for both teams</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAM_BELIEFS_HELP">
+			<Text>Beliefs are only taken within a team. A pantheon, founder, follower, enhancer or reformation belief the other team took can still be picked by your team, whenever they took it, so both teams have the same choices all game. Inside a team every belief can still be taken only once.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CAPTURE_POP_FLOOR">
+			<Text>Balance: Captured cities lose population at most twice</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CAPTURE_POP_FLOOR_HELP">
+			<Text>A captured city never drops below a quarter of the largest size it ever had. A city at its peak loses population on the first capture and on the next one, then no more, so a city cannot be recaptured down to size 1.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BARB_CAMPS_PER_PLAYER">
+			<Text>Barbarian camps per civ</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BARB_CAMPS_PER_PLAYER_HELP">
+			<Text>With Fair barbarian camps: how many camps each civ gets near its start (6 to 9 tiles away, closer to it than to anyone else).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_FFA">
+			<Text>KEK+ Balance</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE">
+			<Text>Game Mode</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_HELP">
+			<Text>KEK: the normal KEK game, none of the options below is used. TeamerBalance: fair rules for team games on mirror maps. Picking a mode sets its default options.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_NORMAL">
+			<Text>KEK</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_TEAMER">
+			<Text>TeamerBalance</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_RUINS">
+			<Text>TeamerBalance: Fair ruins</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_RUINS_HELP">
+			<Text>Every player's 1st ruin gives what the first 1st ruin anyone opened gave, the 2nd what the first 2nd gave, and so on. If that reward can't be given to you right then (example: population before you have a city), you get a random one.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_EXTRA_LUXURY_HAPPINESS">
+			<Text>TeamerBalance: Extra luxury copies +2 happiness</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_EXTRA_LUXURY_HAPPINESS_HELP">
+			<Text>Every extra copy of a luxury you keep (beyond the first) gives +2 [ICON_HAPPINESS_1] Happiness.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REVEAL_OWN_HALF">
+			<Text>TeamerBalance: Reveal your half of the map</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REVEAL_OWN_HALF_HELP">
+			<Text>At the start every player sees the half of the map (left or right of the middle) their capital starts on. Made for mirror maps.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_TURNS">
+			<Text>TeamerBalance: No war before turn</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_TURNS_HELP">
+			<Text>Players can't declare war on each other during the first turns of the game. City-states and barbarians are not affected.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_ERA">
+			<Text>TeamerBalance: No war before era</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_ERA_HELP">
+			<Text>Players can't declare war on each other until any player has reached this era. City-states and barbarians are not affected.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_LIBRARY">
+			<Text>TeamerBalance: Ban Great Library</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_LIBRARY_HELP">
+			<Text>Nobody can build Great Library in this game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_WALL">
+			<Text>TeamerBalance: Ban Great Wall</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_WALL_HELP">
+			<Text>Nobody can build Great Wall in this game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_TERRACOTTA_ARMY">
+			<Text>TeamerBalance: Ban Terracotta Army</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_TERRACOTTA_ARMY_HELP">
+			<Text>Nobody can build Terracotta Army in this game.</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
 			<Text>
@@ -145507,6 +146755,162 @@ The ship has weather'd every rack; the prize we sought is won."
 				"Придите ко Мне все трудящиеся и обремененные, и Я успокою вас".
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_OFF">
+			<Text>Выкл.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_WONDERS">
+			<Text>Balance: Чудо в один ход — обоим</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_WONDERS_HELP">
+			<Text>Мировое чудо, достроенное в один ход игроками разных команд, получает каждый из них. Одно на команду: союзник по команде проигрывает гонку как обычно (золото).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_PANTHEONS">
+			<Text>TeamerBalance: Пантеон в один ход — обоим</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_PANTHEONS_HELP">
+			<Text>Пантеоны, основанные в один ход, стоят одинаково (цена растёт со следующего хода), а пантеон, выбранный другой командой в этот же ход, ещё можно выбрать. Союзники по команде делить не могут. То же для верований религий, основанных в один ход.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RELIGIOUS_CS">
+			<Text>TeamerBalance: Без религиозных городов-государств</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RELIGIOUS_CS_HELP">
+			<Text>Религиозные города-государства в начале игры заменяются другими.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_MIRRORED_CITY_STATES">
+			<Text>TeamerBalance: Зеркальные города-государства</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_MIRRORED_CITY_STATES_HELP">
+			<Text>На зеркальной карте города-государства на зеркальных местах получают одинаковый тип (морской, культурный...), одинаковый характер, одинаковый уникальный юнит и одинаковые постройки, пока их положение одинаково. Выбор городов-государств меняется так, чтобы типы шли парами.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RUIN_UPGRADE">
+			<Text>TeamerBalance: No unit upgrades from ruins</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RUIN_UPGRADE_HELP">
+			<Text>Ancient ruins never upgrade a unit (for example a warrior to a spearman). The other rewards are unchanged.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_BARBARIAN_CAMPS">
+			<Text>TeamerBalance: Fair barbarian camps</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_BARBARIAN_CAMPS_HELP">
+			<Text>Barbarian camps are only placed at the start: each civ gets the same number (see Barbarian camps per civ) at the same kind of distance from its start, closer to it than to anyone else. On a mirror map in TeamerBalance mode the camps are mirrored. No new camp appears for the rest of the game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_CS_QUESTS">
+			<Text>TeamerBalance: Fair city-state quests</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_CS_QUESTS_HELP">
+			<Text>Needs Mirrored city-states. City-states on mirrored spots give mirrored players the same quests at the same time (same quest, same wonder, resource or Great Person, mirrored targets) while their situation is the same.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_GUARANTEED_PROPHET">
+			<Text>ReligionOptions: Guaranteed Great Prophet</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_GUARANTEED_PROPHET_HELP">
+			<Text>When a civ has the faith a Great Prophet needs, it always gets the prophet (no luck roll). The usual rules still apply: a religion must still be free to found.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_RELIGION_FOR_ALL">
+			<Text>ReligionOptions: Every civ can found a religion</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_RELIGION_FOR_ALL_HELP">
+			<Text>As many religions can be founded as there are civs in the game (at most the number of religions in the game).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_WORKERS">
+			<Text>Balance: City-states prioritize Workers</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_WORKERS_HELP">
+			<Text>At the start of the game a city-state builds a Worker as its second build (and again if it loses it early on). After the first 30 turns (Standard speed) it builds as normal. It never stops a build to do so.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_GLOBAL_CS_QUESTS">
+			<Text>TeamerBalance: No global city-state quests</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_GLOBAL_CS_QUESTS_HELP">
+			<Text>City-states never start global quests (the contests and quests every player can take part in). They only give personal quests.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_QUESTS_OWN_SIDE">
+			<Text>TeamerBalance: City-state quests only for its own side</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_QUESTS_OWN_SIDE_HELP">
+			<Text>A city-state gives quests only to players who started on its own half of the map (west or east). A city-state on the centre line gives quests to both sides.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAM_BELIEFS">
+			<Text>TeamerBalance: Same religion choices for both teams</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAM_BELIEFS_HELP">
+			<Text>Beliefs are only taken within a team. A pantheon, founder, follower, enhancer or reformation belief the other team took can still be picked by your team, whenever they took it, so both teams have the same choices all game. Inside a team every belief can still be taken only once.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CAPTURE_POP_FLOOR">
+			<Text>Balance: Captured cities lose population at most twice</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CAPTURE_POP_FLOOR_HELP">
+			<Text>A captured city never drops below a quarter of the largest size it ever had. A city at its peak loses population on the first capture and on the next one, then no more, so a city cannot be recaptured down to size 1.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BARB_CAMPS_PER_PLAYER">
+			<Text>Barbarian camps per civ</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BARB_CAMPS_PER_PLAYER_HELP">
+			<Text>With Fair barbarian camps: how many camps each civ gets near its start (6 to 9 tiles away, closer to it than to anyone else).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_FFA">
+			<Text>KEK+ Balance</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE">
+			<Text>Режим игры</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_HELP">
+			<Text>KEK: the normal KEK game, none of the options below is used. TeamerBalance: fair rules for team games on mirror maps. Picking a mode sets its default options.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_NORMAL">
+			<Text>KEK</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_TEAMER">
+			<Text>TeamerBalance</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_RUINS">
+			<Text>TeamerBalance: Честные руины</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_RUINS_HELP">
+			<Text>1-я руина каждого игрока даёт то же, что первая 1-я руина в игре, 2-я — то же, что первая 2-я, и так далее. Если такую награду дать нельзя (например, население без города), — случайная.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_EXTRA_LUXURY_HAPPINESS">
+			<Text>TeamerBalance: Лишние копии роскоши +2 счастья</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_EXTRA_LUXURY_HAPPINESS_HELP">
+			<Text>Каждая лишняя копия ресурса роскоши, которую вы оставили себе (сверх первой), даёт +2 [ICON_HAPPINESS_1] счастья.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REVEAL_OWN_HALF">
+			<Text>TeamerBalance: Открыть свою половину карты</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REVEAL_OWN_HALF_HELP">
+			<Text>В начале игры каждый игрок видит ту половину карты (слева или справа от середины), где стоит его столица. Для зеркальных карт.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_TURNS">
+			<Text>TeamerBalance: Без войны до хода</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_TURNS_HELP">
+			<Text>Игроки не могут объявлять друг другу войну в первые ходы игры. Города-государства и варвары не затронуты.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_ERA">
+			<Text>TeamerBalance: Без войны до эпохи</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_ERA_HELP">
+			<Text>Игроки не могут объявлять друг другу войну, пока кто-то из игроков не достигнет этой эпохи. Города-государства и варвары не затронуты.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_LIBRARY">
+			<Text>TeamerBalance: Запрет — Александрийская библиотека</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_LIBRARY_HELP">
+			<Text>В этой игре никто не может построить: Александрийская библиотека.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_WALL">
+			<Text>TeamerBalance: Запрет — Великая стена</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_WALL_HELP">
+			<Text>В этой игре никто не может построить: Великая стена.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_TERRACOTTA_ARMY">
+			<Text>TeamerBalance: Запрет — Терракотовая армия</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_TERRACOTTA_ARMY_HELP">
+			<Text>В этой игре никто не может построить: Терракотовая армия.</Text>
+		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
 			<Text>
 				Голосование за ремап
@@ -148069,6 +149473,162 @@ The ship has weather'd every rack; the prize we sought is won."
 			<Text>
 				「凡勞苦擔重擔的人可以到我這裡來，我就使你們得安息。」
 			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_OFF">
+			<Text>Off</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_WONDERS">
+			<Text>Balance: Same-turn wonders for both</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_WONDERS_HELP">
+			<Text>A world wonder finished on the same turn by players of different teams goes to each of them. One per team: a teammate still loses the race (the usual gold).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_PANTHEONS">
+			<Text>TeamerBalance: Same-turn pantheons for both</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_SAME_TURN_PANTHEONS_HELP">
+			<Text>Pantheons founded on the same turn all cost that turn's price (the price rises from the next turn), and a pantheon another team picked this turn can still be picked. Teammates can't share one. The same goes for the beliefs of religions founded on the same turn.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RELIGIOUS_CS">
+			<Text>TeamerBalance: No religious city-states</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RELIGIOUS_CS_HELP">
+			<Text>Religious city-states are swapped for other city-states at the start of the game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_MIRRORED_CITY_STATES">
+			<Text>TeamerBalance: Mirrored city-states</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_MIRRORED_CITY_STATES_HELP">
+			<Text>On a mirror map, city-states on mirrored spots get the same type (maritime, cultured...), the same personality, the same unique unit and the same build choices while their situation is the same. The game's city-state picks are changed so the types pair up.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RUIN_UPGRADE">
+			<Text>TeamerBalance: No unit upgrades from ruins</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_RUIN_UPGRADE_HELP">
+			<Text>Ancient ruins never upgrade a unit (for example a warrior to a spearman). The other rewards are unchanged.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_BARBARIAN_CAMPS">
+			<Text>TeamerBalance: Fair barbarian camps</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_BARBARIAN_CAMPS_HELP">
+			<Text>Barbarian camps are only placed at the start: each civ gets the same number (see Barbarian camps per civ) at the same kind of distance from its start, closer to it than to anyone else. On a mirror map in TeamerBalance mode the camps are mirrored. No new camp appears for the rest of the game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_CS_QUESTS">
+			<Text>TeamerBalance: Fair city-state quests</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_CS_QUESTS_HELP">
+			<Text>Needs Mirrored city-states. City-states on mirrored spots give mirrored players the same quests at the same time (same quest, same wonder, resource or Great Person, mirrored targets) while their situation is the same.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_GUARANTEED_PROPHET">
+			<Text>ReligionOptions: Guaranteed Great Prophet</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_GUARANTEED_PROPHET_HELP">
+			<Text>When a civ has the faith a Great Prophet needs, it always gets the prophet (no luck roll). The usual rules still apply: a religion must still be free to found.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_RELIGION_FOR_ALL">
+			<Text>ReligionOptions: Every civ can found a religion</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_RELIGION_FOR_ALL_HELP">
+			<Text>As many religions can be founded as there are civs in the game (at most the number of religions in the game).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_WORKERS">
+			<Text>Balance: City-states prioritize Workers</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_WORKERS_HELP">
+			<Text>At the start of the game a city-state builds a Worker as its second build (and again if it loses it early on). After the first 30 turns (Standard speed) it builds as normal. It never stops a build to do so.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_GLOBAL_CS_QUESTS">
+			<Text>TeamerBalance: No global city-state quests</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_GLOBAL_CS_QUESTS_HELP">
+			<Text>City-states never start global quests (the contests and quests every player can take part in). They only give personal quests.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_QUESTS_OWN_SIDE">
+			<Text>TeamerBalance: City-state quests only for its own side</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CS_QUESTS_OWN_SIDE_HELP">
+			<Text>A city-state gives quests only to players who started on its own half of the map (west or east). A city-state on the centre line gives quests to both sides.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAM_BELIEFS">
+			<Text>TeamerBalance: Same religion choices for both teams</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAM_BELIEFS_HELP">
+			<Text>Beliefs are only taken within a team. A pantheon, founder, follower, enhancer or reformation belief the other team took can still be picked by your team, whenever they took it, so both teams have the same choices all game. Inside a team every belief can still be taken only once.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CAPTURE_POP_FLOOR">
+			<Text>Balance: Captured cities lose population at most twice</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_CAPTURE_POP_FLOOR_HELP">
+			<Text>A captured city never drops below a quarter of the largest size it ever had. A city at its peak loses population on the first capture and on the next one, then no more, so a city cannot be recaptured down to size 1.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BARB_CAMPS_PER_PLAYER">
+			<Text>Barbarian camps per civ</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BARB_CAMPS_PER_PLAYER_HELP">
+			<Text>With Fair barbarian camps: how many camps each civ gets near its start (6 to 9 tiles away, closer to it than to anyone else).</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_FFA">
+			<Text>KEK+ Balance</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE">
+			<Text>Game Mode</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_HELP">
+			<Text>KEK: the normal KEK game, none of the options below is used. TeamerBalance: fair rules for team games on mirror maps. Picking a mode sets its default options.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_NORMAL">
+			<Text>KEK</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_TEAMER_MODE_TEAMER">
+			<Text>TeamerBalance</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_RUINS">
+			<Text>TeamerBalance: Fair ruins</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_FAIR_RUINS_HELP">
+			<Text>Every player's 1st ruin gives what the first 1st ruin anyone opened gave, the 2nd what the first 2nd gave, and so on. If that reward can't be given to you right then (example: population before you have a city), you get a random one.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_EXTRA_LUXURY_HAPPINESS">
+			<Text>TeamerBalance: Extra luxury copies +2 happiness</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_EXTRA_LUXURY_HAPPINESS_HELP">
+			<Text>Every extra copy of a luxury you keep (beyond the first) gives +2 [ICON_HAPPINESS_1] Happiness.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REVEAL_OWN_HALF">
+			<Text>TeamerBalance: Reveal your half of the map</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_REVEAL_OWN_HALF_HELP">
+			<Text>At the start every player sees the half of the map (left or right of the middle) their capital starts on. Made for mirror maps.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_TURNS">
+			<Text>TeamerBalance: No war before turn</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_TURNS_HELP">
+			<Text>Players can't declare war on each other during the first turns of the game. City-states and barbarians are not affected.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_ERA">
+			<Text>TeamerBalance: No war before era</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_NO_WAR_ERA_HELP">
+			<Text>Players can't declare war on each other until any player has reached this era. City-states and barbarians are not affected.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_LIBRARY">
+			<Text>TeamerBalance: Ban Great Library</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_LIBRARY_HELP">
+			<Text>Nobody can build Great Library in this game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_WALL">
+			<Text>TeamerBalance: Ban Great Wall</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_GREAT_WALL_HELP">
+			<Text>Nobody can build Great Wall in this game.</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_TERRACOTTA_ARMY">
+			<Text>TeamerBalance: Ban Terracotta Army</Text>
+		</Row>
+		<Row Tag="TXT_KEY_GAME_OPTION_BAN_BUILDING_TERRACOTTA_ARMY_HELP">
+			<Text>Nobody can build Terracotta Army in this game.</Text>
 		</Row>
 		<Row Tag="TXT_KEY_GAME_OPTION_REMAP_VOTE"> 
 			<Text>

@@ -60,6 +60,9 @@ public:
 	CvPlayer* GetPlayer();
 
 	void doTurn();
+#ifdef TEAMER_BALANCE_SAME_TURN_WONDERS
+	BuildingClassTypes GetFairTieWonderClass();
+#endif
 
 	bool isCitySelected();
 	bool canBeSelected() const;
@@ -128,6 +131,9 @@ public:
 	ResourceTypes GetResourceDemanded(bool bHideUnknown = true) const;
 	void SetResourceDemanded(ResourceTypes eResource);
 	void DoPickResourceDemanded(bool bCurrentResourceInvalid = true);
+#ifdef TEAMER_BALANCE_MIRRORED_WLTKD
+	int GetWltkdRandNum(int iNum, const char* szLog, int iSalt);
+#endif
 	void DoTestResourceDemanded();
 
 	void DoSeedResourceDemandedCountdown();

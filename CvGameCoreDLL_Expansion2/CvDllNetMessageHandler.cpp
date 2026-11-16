@@ -514,7 +514,7 @@ void CvDllNetMessageHandler::ResponseFoundPantheon(PlayerTypes ePlayer, BeliefTy
 			CvGameReligions::FOUNDING_RESULT eResult = pkGameReligions->CanCreatePantheon(ePlayer, true);
 			if(eResult == CvGameReligions::FOUNDING_OK)
 			{
-				if(pkGameReligions->IsPantheonBeliefAvailable(eBelief))
+				if(pkGameReligions->IsPantheonBeliefAvailable(eBelief, ePlayer))
 				{
 					pkGameReligions->FoundPantheon(ePlayer, eBelief);
 				}
@@ -1074,6 +1074,10 @@ void CvDllNetMessageHandler::ResponseGiftUnit(PlayerTypes ePlayer, PlayerTypes e
 #endif
 	switch (iUnitID) {
 	case -2:
+#ifdef TEAMER_BALANCE_TEAM_CC
+		if (!pkMPVotingSystem->IsTeamerProposalAllowed(PROPOSAL_IRR, ePlayer, ePlayer))
+			return;  // TeamerBalance mode: no IRR
+#endif
 #ifdef REPLAY_EVENTS
 		GC.getGame().addReplayEvent(REPLAYEVENT_ProposalIrr, ePlayer, vArgs);
 #endif
@@ -1081,6 +1085,10 @@ void CvDllNetMessageHandler::ResponseGiftUnit(PlayerTypes ePlayer, PlayerTypes e
 		DLLUI->AddMessage(0, CvPreGame::activePlayer(), true, GC.getEVENT_MESSAGE_TIME(), GetLocalizedText("TXT_KEY_MP_MESSAGE_PROPOSED_IRR", GET_PLAYER(ePlayer).getName()).GetCString());
 		return;
 	case -3:
+#ifdef TEAMER_BALANCE_TEAM_CC
+		if (!pkMPVotingSystem->IsTeamerProposalAllowed(PROPOSAL_CC, ePlayer, eMinor))
+			return;  // TeamerBalance mode: a CC only to another team
+#endif
 #ifdef REPLAY_EVENTS
 		GC.getGame().addReplayEvent(REPLAYEVENT_ProposalCc, ePlayer, vArgs);
 #endif

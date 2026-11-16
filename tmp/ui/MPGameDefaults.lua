@@ -70,6 +70,9 @@ function ResetMultiplayerOptions()
 		-- kek: remap vote defaults to Unanimous (5, see MPGameOptions.lua g_RemapVoteValues)
 		PreGame.SetGameOption("GAMEOPTION_REMAP_VOTE", 5);
 	end
+
+	-- TeamerBalance: every new multiplayer setup starts in Normal KEK (the lobby clears its options there).
+	PreGame.SetGameOption("GAMEOPTION_TEAMER_MODE", 0);
 end
 
 -------------------------------------------------

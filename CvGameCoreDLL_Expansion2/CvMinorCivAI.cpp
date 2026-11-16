@@ -2060,6 +2060,12 @@ void CvMinorCivAI::DoPickPersonality()
 	int* pFlavors = pFlavorManager->GetAllPersonalityFlavors();
 
 	MinorCivPersonalityTypes eRandPersonality = (MinorCivPersonalityTypes) GC.getGame().getJonRandNum(NUM_MINOR_CIV_PERSONALITY_TYPES, "Minor Civ AI: Picking Personality for this Game (should happen only once per player)");
+#ifdef TEAMER_BALANCE_MIRRORED_CITY_STATES
+	// TeamerBalance: the twin on the mirror spot already picked (lower player IDs go first): same personality.
+	const PlayerTypes eTwin = GC.getGame().GetMirrorTwin(m_pPlayer->GetID());
+	if(eTwin != NO_PLAYER && eTwin < m_pPlayer->GetID())
+		eRandPersonality = GET_PLAYER(eTwin).GetMinorCivAI()->GetPersonality();
+#endif
 	m_ePersonality = eRandPersonality;
 
 	switch(eRandPersonality)
@@ -2123,6 +2129,12 @@ void CvMinorCivAI::DoPickUniqueUnit()
 	{
 		// Units from our starting era or before would be no fun because players won't get the chance to use them
 		m_eUniqueUnit = GC.getGame().GetRandomUniqueUnitType(/*bIncludeCivsInGame*/false, /*bIncludeStartEraUnits*/false, /*bIncludeOldEras*/false, /*bIncludeRanged*/true);
+#ifdef TEAMER_BALANCE_MIRRORED_CITY_STATES
+		// TeamerBalance: a militaristic twin on the mirror spot gives the same unique unit.
+		const PlayerTypes eTwin = GC.getGame().GetMirrorTwin(m_pPlayer->GetID());
+		if(eTwin != NO_PLAYER && eTwin < m_pPlayer->GetID() && GET_PLAYER(eTwin).GetMinorCivAI()->GetTrait() == MINOR_CIV_TRAIT_MILITARISTIC)
+			m_eUniqueUnit = GET_PLAYER(eTwin).GetMinorCivAI()->GetUniqueUnit();
+#endif
 	}
 }
 
@@ -2981,6 +2993,59 @@ bool CvMinorCivAI::IsProxyWarActiveForMajor(PlayerTypes eMajor)
 // ******************************
 
 /// Update turn for Quests
+#ifdef TEAMER_BALANCE_FAIR_CS_QUESTS
+/// TeamerBalance fair quests: a quest dice roll. Twin city-states (mirror spots) roll the same
+/// number towards mirrored majors on the same turn (seed = city-state pair, major pair, turn, what
+/// is rolled), so in the same situation they give the same quest at the same time. eMajor = NO_PLAYER
+/// for global quests. Without a twin (or a mirrored major) it is the game's normal roll.
+int CvMinorCivAI::GetQuestRandNum(int iNum, const char* szLog, PlayerTypes eMajor, int iSalt)
+{
+	CvGame& kGame = GC.getGame();
+	const PlayerTypes eMe = GetPlayer()->GetID();
+	const PlayerTypes eTwin = kGame.isTeamerOption(TEAMER_OPTION_FAIR_CS_QUESTS) ? kGame.GetMirrorTwin(eMe) : NO_PLAYER;
+	if(eTwin == NO_PLAYER || iNum <= 0)
+		return kGame.getJonRandNum(iNum, szLog);
+
+	unsigned int uiMajorKey = 255;
+	if(eMajor != NO_PLAYER)
+	{
+		const PlayerTypes eMirrorMajor = kGame.GetMirrorMajor(eMajor);
+		if(eMirrorMajor == NO_PLAYER)
+			return kGame.getJonRandNum(iNum, szLog);
+		uiMajorKey = (unsigned int)std::min((int)eMajor, (int)eMirrorMajor);
+	}
+
+	const unsigned int uiPair = (unsigned int)std::min((int)eMe, (int)eTwin);
+	unsigned int uiSeed = (uiPair * 2654435761u) ^ ((uiMajorKey + 1u) * 2246822519u) ^ ((unsigned int)kGame.getGameTurn() * 40503u) ^ ((unsigned int)iSalt * 374761393u);
+	uiSeed = uiSeed * 1103515245u + 12345u;
+	uiSeed = uiSeed * 1103515245u + 12345u;
+	return (int)((uiSeed >> 8) % (unsigned int)iNum);
+}
+
+/// TeamerBalance fair quests: a sort key for quest targets so mirrored askers list mirrored
+/// targets in the same order (the target's mirror pair, then whether it is on the asker's side).
+int CvMinorCivAI::GetFairQuestTargetKey(PlayerTypes eAsker, PlayerTypes eTarget)
+{
+	CvGame& kGame = GC.getGame();
+	const PlayerTypes eAskerTwin = (eAsker < MAX_MAJOR_CIVS) ? kGame.GetMirrorMajor(eAsker) : kGame.GetMirrorTwin(eAsker);
+	const PlayerTypes eTargetTwin = (eTarget < MAX_MAJOR_CIVS) ? kGame.GetMirrorMajor(eTarget) : kGame.GetMirrorTwin(eTarget);
+	const bool bAskerHigh = (eAskerTwin != NO_PLAYER && eAskerTwin < eAsker);
+	const bool bTargetHigh = (eTargetTwin != NO_PLAYER && eTargetTwin < eTarget);
+	const int iPair = (eTargetTwin != NO_PLAYER) ? std::min((int)eTarget, (int)eTargetTwin) : (int)eTarget;
+	return iPair * 2 + ((bAskerHigh != bTargetHigh) ? 1 : 0);
+}
+
+/// Picks one of the targets: the game's roll, or the fair quests' roll on mirror-ordered targets.
+static PlayerTypes FairQuestPickTarget(CvMinorCivAI* pAI, PlayerTypes eAsker, PlayerTypes eMajor, const std::vector<PlayerTypes>& aeTargets, const char* szLog, int iSalt)
+{
+	std::vector< std::pair<int, int> > aKeyed;
+	for(size_t i = 0; i < aeTargets.size(); i++)
+		aKeyed.push_back(std::make_pair(pAI->GetFairQuestTargetKey(eAsker, aeTargets[i]), (int)aeTargets[i]));
+	std::sort(aKeyed.begin(), aKeyed.end());
+	return (PlayerTypes)aKeyed[pAI->GetQuestRandNum((int)aKeyed.size(), szLog, eMajor, iSalt)].second;
+}
+#endif
+
 void CvMinorCivAI::DoTurnQuests()
 {
 	// ********************
@@ -3073,6 +3138,13 @@ int CvMinorCivAI::GetMaxActiveGlobalQuests() const
 /// See if it is time to start a global (multiple player) quest
 void CvMinorCivAI::DoTestStartGlobalQuest()
 {
+#ifdef TEAMER_BALANCE_CS_QUEST_SIDES
+	// TeamerBalance: no global city-state quests at all
+	if(GC.getGame().isTeamerOption(TEAMER_OPTION_NO_GLOBAL_CS_QUESTS))
+	{
+		return;
+	}
+#endif
 	if(GetGlobalQuestCountdown() > 0)
 	{
 		return;
@@ -3122,7 +3194,11 @@ void CvMinorCivAI::DoTestStartGlobalQuest()
 	}
 
 	// There are valid quests, so pick one at random
+#ifdef TEAMER_BALANCE_FAIR_CS_QUESTS
+	int iRandIndex = GetQuestRandNum(veValidQuests.size(), "Picking random global quest for Minor to give to players.", NO_PLAYER, 1);
+#else
 	int iRandIndex = GC.getGame().getJonRandNum(veValidQuests.size(), "Picking random global quest for Minor to give to players.");
+#endif
 	eQuest = veValidQuests[iRandIndex];
 
 	// Give out the quest
@@ -3185,7 +3261,11 @@ void CvMinorCivAI::DoTestStartPersonalQuest(PlayerTypes ePlayer)
 		return;
 	}
 
+#ifdef TEAMER_BALANCE_FAIR_CS_QUESTS
+	int iRandIndex = GetQuestRandNum(veValidQuests.size(), "Picking random quest for Minor to give to a player.", ePlayer, 2);
+#else
 	int iRandIndex = GC.getGame().getJonRandNum(veValidQuests.size(), "Picking random quest for Minor to give to a player.");
+#endif
 	eQuest = veValidQuests[iRandIndex];
 
 	AddQuestForPlayer(ePlayer, eQuest, GC.getGame().getGameTurn());
@@ -3668,6 +3748,34 @@ bool CvMinorCivAI::IsEnabledQuest(MinorCivQuestTypes eQuest)
 }
 
 /// Is eQuest valid for this minor to give to ePlayer?
+#ifdef TEAMER_BALANCE_CS_QUEST_SIDES
+/// TeamerBalance: which half of the map a player belongs to, by its starting plot (its capital if it
+/// has none): -1 west, 1 east, 0 on the centre line (the mirror line x + (y odd)/2 = (width - 1) / 2).
+int CvMinorCivAI::GetTeamerMapSide(PlayerTypes ePlayer)
+{
+	if(ePlayer < 0 || ePlayer >= MAX_CIV_PLAYERS)
+		return 0;
+	CvPlayer& kPlayer = GET_PLAYER(ePlayer);
+	CvPlot* pPlot = kPlayer.getStartingPlot();
+	if(pPlot == NULL)
+	{
+		CvCity* pCapital = kPlayer.getCapitalCity();
+		if(pCapital != NULL)
+			pPlot = pCapital->plot();
+	}
+	if(pPlot == NULL)
+		return 0;
+	if(GC.getGame().IsTeamerRotatedMap())
+		return (2 * pPlot->getX() < GC.getMap().getGridWidth()) ? -1 : 1;	// turned map: halves split by column
+	const int iTwice = 2 * pPlot->getX() + (pPlot->getY() & 1) - (GC.getMap().getGridWidth() - 1);
+	if(iTwice < 0)
+		return -1;
+	if(iTwice > 0)
+		return 1;
+	return 0;
+}
+#endif
+
 bool CvMinorCivAI::IsValidQuestForPlayer(PlayerTypes ePlayer, MinorCivQuestTypes eQuest)
 {
 	// The quest type must be enabled
@@ -3685,6 +3793,17 @@ bool CvMinorCivAI::IsValidQuestForPlayer(PlayerTypes ePlayer, MinorCivQuestTypes
 	// No quests are valid if we don't know you yet
 	if(!IsHasMetPlayer(ePlayer))
 		return false;
+
+#ifdef TEAMER_BALANCE_CS_QUEST_SIDES
+	// TeamerBalance: a city-state only gives quests to majors on its own half of the map
+	if(GC.getGame().isTeamerOption(TEAMER_OPTION_CS_QUESTS_OWN_SIDE))
+	{
+		const int iMySide = GetTeamerMapSide(GetPlayer()->GetID());
+		const int iTheirSide = GetTeamerMapSide(ePlayer);
+		if(iMySide != 0 && iTheirSide != 0 && iMySide != iTheirSide)
+			return false;
+	}
+#endif
 
 	// This player cannot already have an active quest of the same type
 	if(IsActiveQuestForPlayer(ePlayer, eQuest))
@@ -4588,7 +4707,11 @@ void CvMinorCivAI::DoTestSeedGlobalQuestCountdown(bool bForceSeed)
 	if(GC.getGame().getElapsedGameTurns() == GetFirstPossibleTurnForGlobalQuests())
 	{
 		int iRand = /*20*/ GC.getMINOR_CIV_GLOBAL_QUEST_FIRST_POSSIBLE_TURN_RAND();
+#ifdef TEAMER_BALANCE_FAIR_CS_QUESTS
+		iNumTurns += GetQuestRandNum(iRand, "Random # of turns for Minor Civ global quest counter - first time.", NO_PLAYER, 3);
+#else
 		iNumTurns += GC.getGame().getJonRandNum(iRand, "Random # of turns for Minor Civ global quest counter - first time.");
+#endif
 	}
 	else
 	{
@@ -4600,7 +4723,11 @@ void CvMinorCivAI::DoTestSeedGlobalQuestCountdown(bool bForceSeed)
 			iRand *= /*200*/ GC.getMINOR_CIV_GLOBAL_QUEST_RAND_TURNS_BETWEEN_HOSTILE_MULTIPLIER();
 			iRand /= 100;
 		}
+#ifdef TEAMER_BALANCE_FAIR_CS_QUESTS
+		iNumTurns += GetQuestRandNum(iRand, "Random # of turns for Minor Civ global quest counter.", NO_PLAYER, 4);
+#else
 		iNumTurns += GC.getGame().getJonRandNum(iRand, "Random # of turns for Minor Civ global quest counter.");
+#endif
 	}
 
 	// Modify for Game Speed
@@ -4649,7 +4776,11 @@ void CvMinorCivAI::DoTestSeedQuestCountdownForPlayer(PlayerTypes ePlayer, bool b
 	if(GC.getGame().getElapsedGameTurns() == GetFirstPossibleTurnForPersonalQuests())
 	{
 		int iRand = /*20*/ GC.getMINOR_CIV_PERSONAL_QUEST_FIRST_POSSIBLE_TURN_RAND();
+#ifdef TEAMER_BALANCE_FAIR_CS_QUESTS
+		iNumTurns += GetQuestRandNum(iRand, "Random # of turns for Minor Civ personal quest counter - first time.", ePlayer, 5);
+#else
 		iNumTurns += GC.getGame().getJonRandNum(iRand, "Random # of turns for Minor Civ personal quest counter - first time.");
+#endif
 	}
 	else
 	{
@@ -4661,7 +4792,11 @@ void CvMinorCivAI::DoTestSeedQuestCountdownForPlayer(PlayerTypes ePlayer, bool b
 			iRand *= /*200*/ GC.getMINOR_CIV_PERSONAL_QUEST_RAND_TURNS_BETWEEN_HOSTILE_MULTIPLIER();
 			iRand /= 100;
 		}
+#ifdef TEAMER_BALANCE_FAIR_CS_QUESTS
+		iNumTurns += GetQuestRandNum(iRand, "Random # of turns for Minor Civ personal quest counter.", ePlayer, 6);
+#else
 		iNumTurns += GC.getGame().getJonRandNum(iRand, "Random # of turns for Minor Civ personal quest counter.");
+#endif
 	}
 
 	// Modify for Game Speed
@@ -5028,7 +5163,11 @@ ResourceTypes CvMinorCivAI::GetNearbyResourceForQuest(PlayerTypes ePlayer)
 			return NO_RESOURCE;
 		}
 
+#ifdef TEAMER_BALANCE_FAIR_CS_QUESTS
+		int iRandIndex = GetQuestRandNum(veValidResources.size(), "Finding random Resource for Minor to give out a quest to connect.", ePlayer, 7);
+#else
 		int iRandIndex = GC.getGame().getJonRandNum(veValidResources.size(), "Finding random Resource for Minor to give out a quest to connect.");
+#endif
 		eBestResource = veValidResources[iRandIndex];
 	}
 
@@ -5108,7 +5247,11 @@ BuildingTypes CvMinorCivAI::GetBestWonderForQuest(PlayerTypes ePlayer)
 		return NO_BUILDING;
 	}
 
+#ifdef TEAMER_BALANCE_FAIR_CS_QUESTS
+	int iRandIndex = GetQuestRandNum(veValidBuildings.size(), "Finding random Wonder for Minor to give out a quest to construct.", ePlayer, 8);
+#else
 	int iRandIndex = GC.getGame().getJonRandNum(veValidBuildings.size(), "Finding random Wonder for Minor to give out a quest to construct.");
+#endif
 	eBestWonder = veValidBuildings[iRandIndex];
 
 	return eBestWonder;
@@ -5193,7 +5336,11 @@ UnitTypes CvMinorCivAI::GetBestGreatPersonForQuest(PlayerTypes ePlayer)
 		return NO_UNIT;
 	}
 
+#ifdef TEAMER_BALANCE_FAIR_CS_QUESTS
+	int iRandIndex = GetQuestRandNum(veValidUnits.size(), "Finding random Great Person for Minor to give out a quest to spawn.", ePlayer, 9);
+#else
 	int iRandIndex = GC.getGame().getJonRandNum(veValidUnits.size(), "Finding random Great Person for Minor to give out a quest to spawn.");
+#endif
 	eBestUnit = veValidUnits[iRandIndex];
 
 	return eBestUnit;
@@ -5262,8 +5409,15 @@ PlayerTypes CvMinorCivAI::GetBestCityStateTarget(PlayerTypes eForPlayer)
 	if(veValidTargets.size() == 0)
 		return NO_PLAYER;
 
+#ifdef TEAMER_BALANCE_FAIR_CS_QUESTS
+	{
+		std::vector<PlayerTypes> aeTargets(veValidTargets.begin(), veValidTargets.end());
+		eBestCityStateTarget = FairQuestPickTarget(this, GetPlayer()->GetID(), eForPlayer, aeTargets, "Finding random City State Target for Minor to give out a quest to kill.", 10);
+	}
+#else
 	int iRandIndex = GC.getGame().getJonRandNum(veValidTargets.size(), "Finding random City State Target for Minor to give out a quest to kill.");
 	eBestCityStateTarget = veValidTargets[iRandIndex];
+#endif
 
 	return eBestCityStateTarget;
 }
@@ -5366,8 +5520,15 @@ PlayerTypes CvMinorCivAI::GetBestPlayerToFind(PlayerTypes ePlayer)
 		return NO_PLAYER;
 	}
 
+#ifdef TEAMER_BALANCE_FAIR_CS_QUESTS
+	{
+		std::vector<PlayerTypes> aeTargets(veValidTargets.begin(), veValidTargets.end());
+		eBestTargetPlayer = FairQuestPickTarget(this, ePlayer, ePlayer, aeTargets, "Finding random Major player Target for Minor to give out a quest to find.", 11);
+	}
+#else
 	int iRandIndex = GC.getGame().getJonRandNum(veValidTargets.size(), "Finding random Major player Target for Minor to give out a quest to find.");
 	eBestTargetPlayer = veValidTargets[iRandIndex];
+#endif
 
 	return eBestTargetPlayer;
 }

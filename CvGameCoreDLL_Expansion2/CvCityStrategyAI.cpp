@@ -725,6 +725,20 @@ double CvCityStrategyAI::GetDeficientYieldValue(YieldTypes eYieldType)
 	return fDesiredYield;
 }
 
+#ifdef TEAMER_BALANCE_MIRRORED_CITY_STATES
+// TeamerBalance: a tiny dice for mirrored city-state pairs (see ChooseProduction).
+struct CvTeamerPairRandom
+{
+	unsigned int m_uiSeed;
+	CvTeamerPairRandom() : m_uiSeed(0) {}
+	int Get(int iNum, const char*)
+	{
+		m_uiSeed = m_uiSeed * 1103515245u + 12345u;
+		return (iNum > 0) ? (int)((m_uiSeed >> 8) % (unsigned int)iNum) : 0;
+	}
+};
+#endif
+
 /// Pick the next build for a city (unit, building or wonder)
 void CvCityStrategyAI::ChooseProduction(bool bUseAsyncRandom, BuildingTypes eIgnoreBldg /* = NO_BUILDING */, UnitTypes eIgnoreUnit/*  = NO_UNIT */)
 {
@@ -748,6 +762,41 @@ void CvCityStrategyAI::ChooseProduction(bool bUseAsyncRandom, BuildingTypes eIgn
 	else
 	{
 		fcn = MakeDelegate(&GC.getGame(), &CvGame::getJonRandNum);
+	}
+
+#ifdef TEAMER_BALANCE_MIRRORED_CITY_STATES
+	// TeamerBalance: mirrored city-states roll the same dice for their builds (seed = the pair and
+	// the turn), so twins in the same situation build the same things. Same on every machine.
+	CvTeamerPairRandom kPairRandom;
+	if(!bUseAsyncRandom && kPlayer.isMinorCiv())
+	{
+		const PlayerTypes eTwin = GC.getGame().GetMirrorTwin(kPlayer.GetID());
+		if(eTwin != NO_PLAYER)
+		{
+			const unsigned int uiPair = (unsigned int)std::min((int)eTwin, (int)kPlayer.GetID());
+			kPairRandom.m_uiSeed = (uiPair * 2654435761u) ^ ((unsigned int)GC.getGame().getGameTurn() * 40503u);
+			fcn = MakeDelegate(&kPairRandom, &CvTeamerPairRandom::Get);
+		}
+	}
+#endif
+
+	// GAMEOPTION_CS_WORKERS: early in the game a city-state with no Worker (none on the map, none being
+	// built) makes one as soon as its first build is done, and again if it loses it then. It never
+	// drops a build for it: this only runs when the city picks its next build.
+	if(kPlayer.isMinorCiv() && GC.getGame().isTeamerOption(TEAMER_OPTION_CS_WORKERS)
+		&& GC.getGame().getGameTurn() > m_pCity->getGameTurnFounded()
+		// only at the start of the game: the first 30 turns at Standard speed (20 Quick, 45 Epic),
+		// then the city-state builds as normal
+		&& GC.getGame().getElapsedGameTurns() < 30 * GC.getGame().getGameSpeedInfo().getTrainPercent() / 100
+		&& kPlayer.GetNumUnitsWithUnitAI(UNITAI_WORKER, true, false) == 0)
+	{
+		const UnitClassTypes eWorkerClass = (UnitClassTypes) GC.getInfoTypeForString("UNITCLASS_WORKER", true);
+		const UnitTypes eWorker = (eWorkerClass != NO_UNITCLASS) ? (UnitTypes) kPlayer.getCivilizationInfo().getCivilizationUnits(eWorkerClass) : NO_UNIT;
+		if(eWorker != NO_UNIT && m_pCity->canTrain(eWorker))
+		{
+			m_pCity->pushOrder(ORDER_TRAIN, eWorker, UNITAI_WORKER, false, true, false, false);
+			return;
+		}
 	}
 
 	// Reset vector holding items we can currently build
