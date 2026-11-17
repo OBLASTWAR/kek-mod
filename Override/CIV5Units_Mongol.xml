@@ -44142,7 +44142,7 @@ The second sack of Ulundi is considered by historians to be the definitive end o
 		</Replace>
 		<Replace Tag="TXT_KEY_DIPLO_DEF_PACT"> 
 			<Text>
-				NON-AGRESSION PACT
+				NON-AGGRESSION PACT
 			</Text>
 		</Replace>
 		<Replace Tag="TXT_KEY_DIPLO_DEF_PACT_EXISTS"> 
