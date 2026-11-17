@@ -12,6 +12,83 @@
 #include "CvDllWorldInfo.h"
 #include "CvPreGame.h"
 
+//------------------------------------------------------------------------------
+// kekmod: "Copy lobby link" in the staging room. The front end can't reach the
+// DLL's Lua (Game.* exists only in game), but PreGame is ours, so StagingRoom.lua
+// calls PreGame.GetGameOption("KEK_COPY_LOBBY_LINK:<own Steam id>"). We ask Steam
+// which Civ V lobby we're in (ISteamFriends::GetFriendGamePlayed on our own id,
+// through the game's own steam_api.dll) and put steam://joinlobby/8930/<lobby>/<id>
+// on the clipboard. Local only: nothing is stored in PreGame or sent to anyone.
+namespace KekLobbyLink
+{
+typedef unsigned __int64 u64;
+#pragma pack(push, 8)
+struct SteamId { u64 v; };
+struct FriendGameInfo { u64 gameId; unsigned int ip; unsigned short port; unsigned short queryPort; u64 lobby; };
+#pragma pack(pop)
+
+// ISteamFriends011 (the version Civ V's steam_api.dll returns): GetFriendGamePlayed is the 9th virtual.
+class ISteamFriendsMin
+{
+public:
+	virtual void f0() = 0; virtual void f1() = 0; virtual void f2() = 0; virtual void f3() = 0;
+	virtual void f4() = 0; virtual void f5() = 0; virtual void f6() = 0; virtual void f7() = 0;
+	virtual bool GetFriendGamePlayed(SteamId id, FriendGameInfo* pInfo) = 0;
+};
+
+// CF_TEXT on the clipboard. user32 is looked up at run time (the DLL doesn't link it).
+static bool CopyText(const char* s)
+{
+	size_t n = strlen(s);
+	HMODULE hU = GetModuleHandleA("user32.dll");
+	typedef BOOL (WINAPI *PFN_Open)(HWND);
+	typedef BOOL (WINAPI *PFN_Void)();
+	typedef HANDLE (WINAPI *PFN_Set)(UINT, HANDLE);
+	PFN_Open pOpen = hU ? (PFN_Open)GetProcAddress(hU, "OpenClipboard") : NULL;
+	PFN_Void pEmpty = hU ? (PFN_Void)GetProcAddress(hU, "EmptyClipboard") : NULL;
+	PFN_Set pSet = hU ? (PFN_Set)GetProcAddress(hU, "SetClipboardData") : NULL;
+	PFN_Void pClose = hU ? (PFN_Void)GetProcAddress(hU, "CloseClipboard") : NULL;
+	if(!pOpen || !pEmpty || !pSet || !pClose)
+		return false;
+	HGLOBAL hMem = GlobalAlloc(GMEM_MOVEABLE, n + 1);
+	char* p = hMem ? (char*)GlobalLock(hMem) : NULL;
+	if(!p)
+	{
+		if(hMem) GlobalFree(hMem);
+		return false;
+	}
+	memcpy(p, s, n + 1);
+	GlobalUnlock(hMem);
+	bool bOk = false;
+	if(pOpen(NULL))
+	{
+		pEmpty();
+		bOk = pSet(1 /*CF_TEXT*/, hMem) != NULL;	// the clipboard owns hMem now
+		pClose();
+	}
+	if(!bOk) GlobalFree(hMem);
+	return bOk;
+}
+
+// 1 copied, 0 not in a Civ V Steam lobby, -1 no Steam, -2 clipboard failed.
+static int CopyLobbyLink(const char* szMe)
+{
+	HMODULE h = GetModuleHandleA("steam_api.dll");
+	typedef void* (__cdecl *PFN_Iface)();
+	PFN_Iface pfn = h ? (PFN_Iface)GetProcAddress(h, "SteamFriends") : NULL;
+	ISteamFriendsMin* pFriends = pfn ? (ISteamFriendsMin*)pfn() : NULL;
+	if(!pFriends || !szMe)
+		return -1;
+	SteamId me; me.v = _strtoui64(szMe, NULL, 10);
+	FriendGameInfo info; memset(&info, 0, sizeof(info));
+	if(!me.v || !pFriends->GetFriendGamePlayed(me, &info) || (info.gameId & 0xFFFFFF) != 8930 || !info.lobby)
+		return 0;
+	char szLink[128];
+	_snprintf_s(szLink, sizeof(szLink), _TRUNCATE, "steam://joinlobby/8930/%I64u/%I64u", info.lobby, me.v);
+	return CopyText(szLink) ? 1 : -2;
+}
+}
+
 CvDllPreGame::CvDllPreGame()
 {
 }
@@ -199,6 +276,13 @@ bool CvDllPreGame::gameStarted()
 //------------------------------------------------------------------------------
 bool CvDllPreGame::GetGameOption(const char* szOptionName, int& iValue)
 {
+	// kekmod: not an option, the staging room's "Copy lobby link" (see KekLobbyLink above)
+	static const char kCopyLink[] = "KEK_COPY_LOBBY_LINK:";
+	if(szOptionName != NULL && strncmp(szOptionName, kCopyLink, sizeof(kCopyLink) - 1) == 0)
+	{
+		iValue = KekLobbyLink::CopyLobbyLink(szOptionName + sizeof(kCopyLink) - 1);
+		return true;
+	}
 	return CvPreGame::GetGameOption(szOptionName, iValue);
 }
 //------------------------------------------------------------------------------
