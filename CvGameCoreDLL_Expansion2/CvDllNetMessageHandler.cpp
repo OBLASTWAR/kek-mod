@@ -1721,6 +1721,13 @@ void CvDllNetMessageHandler::ResponseResearch(PlayerTypes ePlayer, TechTypes eTe
 			kTeam.setHasTech(eTech, true, ePlayer, true, true);
 			kPlayer.GetEspionage()->m_aiNumTechsToStealList[ePlayerToStealFrom]--;
 #endif
+#ifdef SPY_STEAL_COUNT_NEVER_NEGATIVE
+			// setHasTech above already set the count to 0 if that was the last stealable tech
+			if (kPlayer.GetEspionage()->m_aiNumTechsToStealList[ePlayerToStealFrom] < 0)
+			{
+				kPlayer.GetEspionage()->m_aiNumTechsToStealList[ePlayerToStealFrom] = 0;
+			}
+#endif
 		}
 	}
 	// Normal tech

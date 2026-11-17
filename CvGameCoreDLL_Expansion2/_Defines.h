@@ -1771,4 +1771,13 @@
 // embarked defense. Air strikes now use it too.
 #define EMBARKED_UNITS_USE_EMBARK_DEFENSE_VS_AIR
 
+// Stealing the last tech a spy could take from a player left that player's
+// steal count at -1: ResponseResearch gives the tech first (setHasTech sets the
+// count to 0 when nothing stealable is left) and then takes 1 off. The next
+// successful mission against the same player only brought it back to 0, so the
+// spy was promoted but no steal-tech notification or menu came up (game 9443,
+// T128 -> T141). Same order in the original Firaxis code. The count now never
+// goes below 0, and loading a save repairs a -1 left by an older build.
+#define SPY_STEAL_COUNT_NEVER_NEGATIVE
+
 #endif

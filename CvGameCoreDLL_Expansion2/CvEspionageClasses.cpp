@@ -4128,6 +4128,13 @@ FDataStream& operator>>(FDataStream& loadFrom, CvPlayerEspionage& writeTo)
 	{
 		int iNumTechsToSteal;
 		loadFrom >> iNumTechsToSteal;
+#ifdef SPY_STEAL_COUNT_NEVER_NEGATIVE
+		// saves from older builds can hold -1 here (see _Defines.h)
+		if (iNumTechsToSteal < 0)
+		{
+			iNumTechsToSteal = 0;
+		}
+#endif
 		writeTo.m_aiNumTechsToStealList.push_back(iNumTechsToSteal);
 	}
 
