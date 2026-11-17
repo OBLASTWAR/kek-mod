@@ -126,6 +126,32 @@ end
 Controls.InviteButton:RegisterCallback( Mouse.eLClick, OnInviteButton );
 
 -------------------------------------------------
+-- kekmod: Copy Link. The KEK DLL asks Steam which lobby we're in and puts
+-- steam://joinlobby/8930/<lobby>/<our Steam id> on the clipboard (CvDllPreGame.cpp,
+-- KekLobbyLink): PreGame.GetGameOption is the front end's way into the DLL.
+-- Local only; anyone who opens the link joins, no Steam friendship or invite needed.
+-------------------------------------------------
+function ShowHideKekCopyLinkButton()
+	local bShow = PreGame.IsInternetGame() and not Network.IsDedicatedServer();
+	Controls.KekCopyLinkButton:SetHide( not bShow );
+end
+function OnKekCopyLinkButton()
+	local tMe = Steam.GetMySteamID();
+	local iResult = -1;
+	if( tMe ~= nil and tMe.ID ~= nil ) then
+		iResult = PreGame.GetGameOption( "KEK_COPY_LOBBY_LINK:" .. tostring( tMe.ID ) ) or -1;
+	end
+	if( iResult == 1 ) then
+		KekAddSystemChat( "[COLOR_POSITIVE_TEXT]" .. Locale.ConvertTextKey( "TXT_KEY_KEK_COPY_LOBBY_LINK_DONE" ) .. "[ENDCOLOR]" );
+	elseif( iResult == 0 ) then
+		KekAddSystemChat( "[COLOR_YELLOW]" .. Locale.ConvertTextKey( "TXT_KEY_KEK_COPY_LOBBY_LINK_NONE" ) .. "[ENDCOLOR]" );
+	else
+		KekAddSystemChat( "[COLOR_NEGATIVE_TEXT]" .. Locale.ConvertTextKey( "TXT_KEY_KEK_COPY_LOBBY_LINK_FAILED" ) .. "[ENDCOLOR]" );
+	end
+end
+Controls.KekCopyLinkButton:RegisterCallback( Mouse.eLClick, OnKekCopyLinkButton );
+
+-------------------------------------------------
 -------------------------------------------------
 function ShowHideSaveButton()
 	local bDisable = g_fCountdownTimer ~= -1; -- Disable the save game button while the countdown is active.
@@ -1078,6 +1104,7 @@ function OnDisconnectOrPossiblyUpdate()
 		UpdateDisplay();
 		UpdatePageTabView(true);
 		ShowHideInviteButton();
+		ShowHideKekCopyLinkButton();
 		ShowHideSaveButton();
 		CheckGameAutoStart(); -- Player disconnects can affect the game start countdown.
 	end
@@ -1099,6 +1126,7 @@ function OnDisconnect( playerID )
     		OnChat( playerID, -1, Locale.ConvertTextKey( "TXT_KEY_DISCONNECTED" ) );
 			end
     	ShowHideInviteButton();
+    	ShowHideKekCopyLinkButton();
 	end
 end
 Events.MultiplayerGamePlayerDisconnected.Add( OnDisconnect );
@@ -1569,6 +1597,7 @@ function ShowHideHandler( bIsHide, bIsInit )
 		ShowHideExitButton();
 		ShowHideBackButton();
 		ShowHideInviteButton();		
+		ShowHideKekCopyLinkButton();
 		ShowHideStrategicViewButton();
 		UpdatePageTabView(true);
 		StopCountdown(); -- Make sure the countdown is stopped if we're toggling the hide status of the screen.

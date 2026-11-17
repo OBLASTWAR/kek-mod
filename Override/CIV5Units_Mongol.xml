@@ -124929,6 +124929,31 @@ The ship has weather'd every rack; the prize we sought is won."
 				You can't ready up yet: the host has not sent its KEK Mod version (it may run an older KEK Mod). Everyone in a game needs the same KEK Mod version.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK">
+			<Text>
+				Copy Link
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_TT">
+			<Text>
+				Copies a Steam link to this lobby. Paste it in Discord: anyone who opens it joins this lobby, no Steam friendship or invite needed.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_DONE">
+			<Text>
+				Lobby link copied to the clipboard. Paste it in Discord: anyone who opens it joins this lobby.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_NONE">
+			<Text>
+				No lobby link yet: Steam doesn't show you in this lobby. Try again in a few seconds.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_FAILED">
+			<Text>
+				Couldn't copy the lobby link (Steam or the clipboard isn't available).
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_KEK_VERSION_MISMATCH">
 			<Text>
 				{1_PlayerName} has KEK Mod v{2_Theirs}, this game is v{3_Ours}: the game can't start until they leave or are kicked.
@@ -127355,6 +127380,31 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_KEK_VERSION_HOST_UNKNOWN">
 			<Text>
 				Du kannst dich noch nicht bereit melden: Der Host hat seine KEK-Mod-Version nicht gesendet (vielleicht eine ältere KEK Mod). Alle Spieler brauchen dieselbe KEK-Mod-Version.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK">
+			<Text>
+				Link kopieren
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_TT">
+			<Text>
+				Kopiert einen Steam-Link zu dieser Lobby. Füge ihn in Discord ein: Wer ihn öffnet, tritt dieser Lobby bei, ohne Steam-Freundschaft oder Einladung.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_DONE">
+			<Text>
+				Lobby-Link in die Zwischenablage kopiert. Füge ihn in Discord ein: Wer ihn öffnet, tritt dieser Lobby bei.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_NONE">
+			<Text>
+				Noch kein Lobby-Link: Steam zeigt dich nicht in dieser Lobby. Versuche es in ein paar Sekunden erneut.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_FAILED">
+			<Text>
+				Der Lobby-Link konnte nicht kopiert werden (Steam oder die Zwischenablage ist nicht verfügbar).
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_KEK_VERSION_MISMATCH">
@@ -129905,6 +129955,31 @@ The ship has weather'd every rack; the prize we sought is won."
 				Aún no puedes marcarte como listo: el anfitrión no ha enviado su versión de KEK Mod (quizá una más antigua). Todos los jugadores necesitan la misma versión de KEK Mod.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK">
+			<Text>
+				Copiar enlace
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_TT">
+			<Text>
+				Copia un enlace de Steam a esta sala. Pégalo en Discord: quien lo abra se une a esta sala, sin amistad ni invitación de Steam.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_DONE">
+			<Text>
+				Enlace de la sala copiado al portapapeles. Pégalo en Discord: quien lo abra se une a esta sala.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_NONE">
+			<Text>
+				Aún no hay enlace de la sala: Steam no te muestra en esta sala. Vuelve a intentarlo en unos segundos.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_FAILED">
+			<Text>
+				No se pudo copiar el enlace de la sala (Steam o el portapapeles no están disponibles).
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_KEK_VERSION_MISMATCH">
 			<Text>
 				{1_PlayerName} tiene KEK Mod v{2_Theirs} y esta partida usa v{3_Ours}: la partida no puede empezar hasta que salga o sea expulsado.
@@ -132451,6 +132526,31 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_KEK_VERSION_HOST_UNKNOWN">
 			<Text>
 				Vous ne pouvez pas encore vous déclarer prêt : l'hôte n'a pas envoyé sa version de KEK Mod (peut-être une version plus ancienne). Tous les joueurs doivent avoir la même version de KEK Mod.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK">
+			<Text>
+				Copier le lien
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_TT">
+			<Text>
+				Copie un lien Steam vers ce salon. Collez-le sur Discord : quiconque l'ouvre rejoint ce salon, sans amitié ni invitation Steam.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_DONE">
+			<Text>
+				Lien du salon copié dans le presse-papiers. Collez-le sur Discord : quiconque l'ouvre rejoint ce salon.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_NONE">
+			<Text>
+				Pas encore de lien de salon : Steam ne vous montre pas dans ce salon. Réessayez dans quelques secondes.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_FAILED">
+			<Text>
+				Impossible de copier le lien du salon (Steam ou le presse-papiers n'est pas disponible).
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_KEK_VERSION_MISMATCH">
@@ -135001,6 +135101,31 @@ The ship has weather'd every rack; the prize we sought is won."
 				Non puoi ancora dichiararti pronto: l'host non ha inviato la sua versione di KEK Mod (forse una più vecchia). Tutti i giocatori devono avere la stessa versione di KEK Mod.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK">
+			<Text>
+				Copia link
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_TT">
+			<Text>
+				Copia un link di Steam a questa lobby. Incollalo su Discord: chi lo apre entra in questa lobby, senza amicizia o invito di Steam.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_DONE">
+			<Text>
+				Link della lobby copiato negli appunti. Incollalo su Discord: chi lo apre entra in questa lobby.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_NONE">
+			<Text>
+				Ancora nessun link della lobby: Steam non ti mostra in questa lobby. Riprova tra qualche secondo.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_FAILED">
+			<Text>
+				Impossibile copiare il link della lobby (Steam o gli appunti non sono disponibili).
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_KEK_VERSION_MISMATCH">
 			<Text>
 				{1_PlayerName} ha KEK Mod v{2_Theirs}, questa partita usa v{3_Ours}: la partita non può iniziare finché non esce o viene rimosso.
@@ -137547,6 +137672,31 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_KEK_VERSION_HOST_UNKNOWN">
 			<Text>
 				まだ準備完了にできません：ホストが KEK Mod のバージョンを送ってきていません（古い KEK Mod の可能性があります）。全員が同じバージョンの KEK Mod を使う必要があります。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK">
+			<Text>
+				リンクをコピー
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_TT">
+			<Text>
+				このロビーへの Steam リンクをコピーします。Discord に貼り付けてください：開いた人はこのロビーに参加できます（Steam のフレンドや招待は不要）。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_DONE">
+			<Text>
+				ロビーのリンクをクリップボードにコピーしました。Discord に貼り付けてください：開いた人はこのロビーに参加できます。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_NONE">
+			<Text>
+				まだロビーのリンクがありません：Steam 上でこのロビーにいることが表示されていません。数秒後にもう一度お試しください。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_FAILED">
+			<Text>
+				ロビーのリンクをコピーできませんでした（Steam またはクリップボードが利用できません）。
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_KEK_VERSION_MISMATCH">
@@ -140097,6 +140247,31 @@ The ship has weather'd every rack; the prize we sought is won."
 				아직 준비할 수 없습니다: 호스트가 KEK Mod 버전을 보내지 않았습니다 (이전 KEK Mod일 수 있음). 모든 플레이어가 같은 KEK Mod 버전을 사용해야 합니다.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK">
+			<Text>
+				링크 복사
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_TT">
+			<Text>
+				이 로비의 Steam 링크를 복사합니다. Discord에 붙여 넣으세요: 링크를 연 사람은 Steam 친구나 초대 없이 이 로비에 참가합니다.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_DONE">
+			<Text>
+				로비 링크를 클립보드에 복사했습니다. Discord에 붙여 넣으세요: 링크를 연 사람은 이 로비에 참가합니다.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_NONE">
+			<Text>
+				아직 로비 링크가 없습니다: Steam에 이 로비에 있는 것으로 표시되지 않습니다. 몇 초 후 다시 시도하세요.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_FAILED">
+			<Text>
+				로비 링크를 복사할 수 없습니다 (Steam 또는 클립보드를 사용할 수 없음).
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_KEK_VERSION_MISMATCH">
 			<Text>
 				{1_PlayerName} 님은 KEK Mod v{2_Theirs}이고 이 게임은 v{3_Ours}입니다: 나가거나 추방될 때까지 게임을 시작할 수 없습니다.
@@ -142643,6 +142818,31 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_KEK_VERSION_HOST_UNKNOWN">
 			<Text>
 				Nie możesz jeszcze zgłosić gotowości: host nie przesłał swojej wersji KEK Mod (może to starsza wersja). Wszyscy gracze muszą mieć tę samą wersję KEK Mod.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK">
+			<Text>
+				Kopiuj link
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_TT">
+			<Text>
+				Kopiuje link Steam do tego lobby. Wklej go na Discordzie: każdy, kto go otworzy, dołączy do lobby bez znajomości ani zaproszenia na Steam.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_DONE">
+			<Text>
+				Link do lobby skopiowany do schowka. Wklej go na Discordzie: każdy, kto go otworzy, dołączy do lobby.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_NONE">
+			<Text>
+				Jeszcze nie ma linku do lobby: Steam nie pokazuje cię w tym lobby. Spróbuj ponownie za kilka sekund.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_FAILED">
+			<Text>
+				Nie udało się skopiować linku do lobby (Steam lub schowek jest niedostępny).
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_KEK_VERSION_MISMATCH">
@@ -145227,6 +145427,31 @@ The ship has weather'd every rack; the prize we sought is won."
 				Пока нельзя отметить готовность: хост не прислал свою версию KEK Mod (возможно, у него более старая). У всех игроков должна быть одна и та же версия KEK Mod.
 			</Text>
 		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK">
+			<Text>
+				Ссылка на лобби
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_TT">
+			<Text>
+				Копирует ссылку Steam на это лобби. Вставьте её в Discord: кто её откроет, войдёт в это лобби без дружбы и приглашения в Steam.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_DONE">
+			<Text>
+				Ссылка на лобби скопирована в буфер обмена. Вставьте её в Discord: кто её откроет, войдёт в это лобби.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_NONE">
+			<Text>
+				Ссылки на лобби пока нет: Steam не показывает вас в этом лобби. Попробуйте ещё раз через несколько секунд.
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_FAILED">
+			<Text>
+				Не удалось скопировать ссылку на лобби (Steam или буфер обмена недоступен).
+			</Text>
+		</Row>
 		<Row Tag="TXT_KEY_KEK_VERSION_MISMATCH">
 			<Text>
 				У {1_PlayerName} KEK Mod v{2_Theirs}, а в этой игре v{3_Ours}: игра не начнётся, пока он не выйдет или не будет исключён.
@@ -147788,6 +148013,31 @@ The ship has weather'd every rack; the prize we sought is won."
 		<Row Tag="TXT_KEY_KEK_VERSION_HOST_UNKNOWN">
 			<Text>
 				目前還不能準備：主持人尚未傳送其 KEK Mod 版本（可能是較舊的 KEK Mod）。所有玩家都必須使用相同版本的 KEK Mod。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK">
+			<Text>
+				複製連結
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_TT">
+			<Text>
+				複製此大廳的 Steam 連結。貼到 Discord：任何開啟連結的人都會加入此大廳，無需 Steam 好友或邀請。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_DONE">
+			<Text>
+				大廳連結已複製到剪貼簿。貼到 Discord：任何開啟連結的人都會加入此大廳。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_NONE">
+			<Text>
+				尚無大廳連結：Steam 沒有顯示你在此大廳中。請過幾秒再試。
+			</Text>
+		</Row>
+		<Row Tag="TXT_KEY_KEK_COPY_LOBBY_LINK_FAILED">
+			<Text>
+				無法複製大廳連結（Steam 或剪貼簿無法使用）。
 			</Text>
 		</Row>
 		<Row Tag="TXT_KEY_KEK_VERSION_MISMATCH">
