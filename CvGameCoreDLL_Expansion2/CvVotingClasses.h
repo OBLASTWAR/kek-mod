@@ -1367,6 +1367,10 @@ public:
 	int m_iLastProposalID;
 
 	int GetLastProposalID();
+#ifdef MP_VOTE_VALIDATION
+	bool IsValidProposalID(int iProposalID);
+	static bool IsValidVoter(PlayerTypes ePlayerID);
+#endif
 	Proposal* GetProposalByID(int iProposalID);
 	int GetProposalUIid(int iProposalID);
 	int GetProposalIDbyUIid(int iProposalUIid);

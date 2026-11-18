@@ -1780,4 +1780,16 @@
 // goes below 0, and loading a save repairs a -1 left by an older build.
 #define SPY_STEAL_COUNT_NEVER_NEGATIVE
 
+// MP votes and proposals arrive as gift-unit net messages that carry a proposal
+// id (vote yes/no) or a subject player (CC). Neither was checked: a vote for an
+// unknown proposal id (-1, seen 2026-11-17 on the laptops) dereferenced a null
+// proposal in DoVote and crashed every client in the game at once
+// (+0x0027142D), and a CC subject outside the major civs indexed past the
+// proposal's voter lists. The Lua getters (Game.GetProposal*) crashed the local
+// client the same way on a UI id that no longer names a proposal (+0x0025E214).
+// Now the handler drops such a message on every client alike (the proposal list
+// is game state, so all clients agree: no desync), and the getters return
+// "no proposal" values instead of crashing.
+#define MP_VOTE_VALIDATION
+
 #endif

@@ -1072,6 +1072,17 @@ void CvDllNetMessageHandler::ResponseGiftUnit(PlayerTypes ePlayer, PlayerTypes e
 	std::vector<int> vArgs;
 	vArgs.push_back(eMinor);
 #endif
+#ifdef MP_VOTE_VALIDATION
+	// A vote must name a proposal and a CC a major civ (MP_VOTE_VALIDATION):
+	// drop anything else before it is logged or used. Every client holds the
+	// same proposals, so every client drops the same messages.
+	if ((iUnitID == -5 || iUnitID == -6) && (!pkMPVotingSystem->IsValidProposalID((int)eMinor) || !CvMPVotingSystem::IsValidVoter(ePlayer)))
+		return;
+	if ((iUnitID == -2 || iUnitID == -3 || iUnitID == -4) && !CvMPVotingSystem::IsValidVoter(ePlayer))
+		return;
+	if (iUnitID == -3 && !CvMPVotingSystem::IsValidVoter(eMinor))
+		return;
+#endif
 	switch (iUnitID) {
 	case -2:
 #ifdef REPLAY_EVENTS
