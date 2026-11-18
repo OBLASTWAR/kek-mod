@@ -11007,6 +11007,22 @@ int CvMPVotingSystem::GetLastProposalID()
 	return m_iLastProposalID;
 }
 
+#ifdef MP_VOTE_VALIDATION
+// Proposal ids are handed out in order from 0 and proposals are never removed
+// during a game, so a known id is also its index in m_vProposals (the getters
+// below index by it).
+bool CvMPVotingSystem::IsValidProposalID(int iProposalID)
+{
+	return iProposalID >= 0 && iProposalID < (int)m_vProposals.size() && m_vProposals.at(iProposalID).iID == iProposalID;
+}
+
+// The voter lists hold one entry per major civ.
+bool CvMPVotingSystem::IsValidVoter(PlayerTypes ePlayerID)
+{
+	return ePlayerID >= 0 && ePlayerID < MAX_MAJOR_CIVS;
+}
+#endif
+
 CvMPVotingSystem::Proposal* CvMPVotingSystem::GetProposalByID(int iProposalID)
 {
 	for (uint i = 0; i < m_vProposals.size(); i++)
@@ -11030,12 +11046,20 @@ int CvMPVotingSystem::GetProposalIDbyUIid(int iProposalUIid)
 
 int CvMPVotingSystem::GetProposalUIid(int iProposalID)
 {
+#ifdef MP_VOTE_VALIDATION
+	if (!IsValidProposalID(iProposalID))
+		return -1;
+#endif
 	return m_vProposals.at(iProposalID).iUIid;
 }
 
 
 int CvMPVotingSystem::GetProposalExpirationCounter(int iProposalID)
 {
+#ifdef MP_VOTE_VALIDATION
+	if (!IsValidProposalID(iProposalID))
+		return 0;
+#endif
 	return m_vProposals.at(iProposalID).iExpirationCounter;
 }
 
@@ -11061,47 +11085,83 @@ int CvMPVotingSystem::GetProposalTypeCooldownResetTurn(MPVotingSystemProposalTyp
 
 MPVotingSystemProposalTypes CvMPVotingSystem::GetProposalType(int iProposalID)
 {
+#ifdef MP_VOTE_VALIDATION
+	if (!IsValidProposalID(iProposalID))
+		return NO_PROPOSAL;
+#endif
 	return m_vProposals.at(iProposalID).eType;
 }
 
 MPVotingSystemProposalStatus CvMPVotingSystem::GetProposalStatus(int iProposalID)
 {
+#ifdef MP_VOTE_VALIDATION
+	if (!IsValidProposalID(iProposalID))
+		return STATUS_INVALID;
+#endif
 	return m_vProposals.at(iProposalID).eStatus;
 }
 
 PlayerTypes CvMPVotingSystem::GetProposalOwner(int iProposalID)
 {
+#ifdef MP_VOTE_VALIDATION
+	if (!IsValidProposalID(iProposalID))
+		return NO_PLAYER;
+#endif
 	return m_vProposals.at(iProposalID).eProposalOwner;
 }
 
 PlayerTypes CvMPVotingSystem::GetProposalSubject(int iProposalID)
 {
+#ifdef MP_VOTE_VALIDATION
+	if (!IsValidProposalID(iProposalID))
+		return NO_PLAYER;
+#endif
 	return m_vProposals.at(iProposalID).eProposalSubject;
 }
 
 bool CvMPVotingSystem::GetProposalCompletion(int iProposalID)
 {
+#ifdef MP_VOTE_VALIDATION
+	if (!IsValidProposalID(iProposalID))
+		return true;
+#endif
 	return m_vProposals.at(iProposalID).bComplete;
 }
 
 bool CvMPVotingSystem::GetVoterEligibility(int iProposalID, PlayerTypes ePlayerID)
 {
+#ifdef MP_VOTE_VALIDATION
+	if (!IsValidProposalID(iProposalID) || !IsValidVoter(ePlayerID))
+		return false;
+#endif
 	return m_vProposals.at(iProposalID).vIsEligible.at((int)ePlayerID);
 }
 
 bool CvMPVotingSystem::GetVoterHasVoted(int iProposalID, PlayerTypes ePlayerID)
 {
+#ifdef MP_VOTE_VALIDATION
+	if (!IsValidProposalID(iProposalID) || !IsValidVoter(ePlayerID))
+		return false;
+#endif
 	return m_vProposals.at(iProposalID).vHasVoted.at((int)ePlayerID);
 }
 
 bool CvMPVotingSystem::GetVoterVote(int iProposalID, PlayerTypes ePlayerID)
 {
+#ifdef MP_VOTE_VALIDATION
+	if (!IsValidProposalID(iProposalID) || !IsValidVoter(ePlayerID))
+		return false;
+#endif
 	return m_vProposals.at(iProposalID).vVotes.at((int)ePlayerID);
 }
 
 
 int CvMPVotingSystem::GetYesVotes(int iProposalID)
 {
+#ifdef MP_VOTE_VALIDATION
+	if (!IsValidProposalID(iProposalID))
+		return 0;
+#endif
 	int yesVotes = 0;
 	for (uint i = 0; i < MAX_MAJOR_CIVS; i++)
 	{
@@ -11113,6 +11173,10 @@ int CvMPVotingSystem::GetYesVotes(int iProposalID)
 
 int CvMPVotingSystem::GetNoVotes(int iProposalID)
 {
+#ifdef MP_VOTE_VALIDATION
+	if (!IsValidProposalID(iProposalID))
+		return 0;
+#endif
 	int noVotes = 0;
 	Proposal pProposal = *GetProposalByID(iProposalID);
 	for (uint i = 0; i < MAX_MAJOR_CIVS; i++)
@@ -11125,6 +11189,10 @@ int CvMPVotingSystem::GetNoVotes(int iProposalID)
 
 int CvMPVotingSystem::GetMaxVotes(int iProposalID)
 {
+#ifdef MP_VOTE_VALIDATION
+	if (!IsValidProposalID(iProposalID))
+		return 0;
+#endif
 	int iMaxVotes = 0;
 	Proposal pProposal = *GetProposalByID(iProposalID);
 	for (uint i = 0; i < MAX_MAJOR_CIVS; i++)
@@ -11344,6 +11412,10 @@ void CvMPVotingSystem::AddProposal(MPVotingSystemProposalTypes eProposalType, Pl
 
 void CvMPVotingSystem::DoVote(int iProposalID, PlayerTypes ePlayerID, bool bVote)
 {
+#ifdef MP_VOTE_VALIDATION
+	if (!IsValidProposalID(iProposalID) || !IsValidVoter(ePlayerID))
+		return;
+#endif
 	if (!GetProposalByID(iProposalID)->bComplete && GetProposalByID(iProposalID)->vIsEligible.at((int)ePlayerID))
 	{
 		SetVoterHasVoted(iProposalID, ePlayerID, true);
