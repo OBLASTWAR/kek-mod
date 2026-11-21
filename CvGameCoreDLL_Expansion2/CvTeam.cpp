@@ -5943,7 +5943,10 @@ void CvTeam::setHasTech(TechTypes eIndex, bool bNewValue, PlayerTypes ePlayer, b
 					DLLUI->AddPopup(kPopup);
 				}
 #ifdef REPLAY_EVENTS
+				// KEK_RESULT_LOG: every team's techs (AI, city-states, barbarians), not only humans'.
+#ifndef KEK_RESULT_LOG
 				if (isHuman())
+#endif
 				{
 					std::vector<int> vArgs;
 					vArgs.push_back(static_cast<int>(GetID()));

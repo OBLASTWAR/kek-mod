@@ -5902,6 +5902,12 @@ void CvMinorCivAI::SetAlly(PlayerTypes eNewAlly)
 	int iNumPlots = GC.getMap().numPlots();
 
 	PlayerTypes eOldAlly = GetAlly();
+#ifdef KEK_RESULT_LOG
+	if(eOldAlly != eNewAlly)
+	{
+		GC.getGame().resultLogMinorAlly(m_pPlayer->GetID(), eOldAlly, eNewAlly);
+	}
+#endif
 
 #ifdef CS_ALLYING_WAR_RESCTRICTION
 	if (GC.getGame().isOption(GAMEOPTION_END_TURN_TIMER_ENABLED))
