@@ -2679,7 +2679,16 @@ void CvPlayer::acquireCity(CvCity* pOldCity, bool bConquest, bool bGift)
 		int iInfluenceReduction = GetCulture()->GetInfluenceCityConquestReduction(eOldOwner);
 		iPercentPopulationRetained += (iInfluenceReduction * (100 - iPercentPopulationRetained) / 100);
 
+		const int iPopBeforeCapture = iPopulation;
 		iPopulation = max(1, iPopulation * iPercentPopulationRetained / 100);
+#ifdef TEAMER_BALANCE_CAPTURE_POP_FLOOR
+		// TeamerBalance / KEK+ Balance: never below a quarter of the city's highest population (rounded up)
+		if(GC.getGame().isTeamerOption(TEAMER_OPTION_CAPTURE_POP_FLOOR))
+		{
+			const int iFloor = std::min(iPopBeforeCapture, (iHighestPopulation + 3) / 4);
+			iPopulation = std::max(iPopulation, iFloor);
+		}
+#endif
 	}
 
 	pNewCity->setPopulation(iPopulation);
@@ -6735,6 +6744,9 @@ bool CvPlayer::canReceiveGoody(CvPlot* pPlot, GoodyTypes eGoody, CvUnit* pUnit) 
 	// Unit Upgrade
 	if(kGoodyInfo.isUpgradeUnit())
 	{
+		// TeamerBalance: lobby checkbox "No unit upgrades from ruins"
+		if(GC.getGame().isTeamerOption(TEAMER_OPTION_NO_RUIN_UPGRADE))
+			return false;
 		if(pUnit == NULL)
 		{
 			return false;
@@ -7766,8 +7778,15 @@ void CvPlayer::doGoody(CvPlot* pPlot, CvUnit* pUnit)
 				}
 				else
 				{
-					int iRand = GC.getGame().getJonRandNum(avValidGoodies.size(), "Picking a Goody result");
-					eGoody = (GoodyTypes) avValidGoodies[iRand];
+#ifdef TEAMER_BALANCE_FAIR_RUINS
+					// Fair ruins: the same n-th result as the first civ to open an n-th ruin.
+					eGoody = GC.getGame().GetFairRuinGoody(GetID(), avValidGoodies);
+					if(eGoody == NO_GOODY)
+#endif
+					{
+						int iRand = GC.getGame().getJonRandNum(avValidGoodies.size(), "Picking a Goody result");
+						eGoody = (GoodyTypes) avValidGoodies[iRand];
+					}
 					receiveGoody(pPlot, eGoody, pUnit);
 				}
 				
@@ -8345,6 +8364,13 @@ bool CvPlayer::canConstruct(BuildingTypes eBuilding, bool bContinue, bool bTestV
 	}
 
 	CvBuildingEntry& pBuildingInfo = *pkBuildingInfo;
+
+#ifdef TEAMER_BALANCE_WONDER_BANS
+	if(GC.getGame().isWonderBanned(eBuilding))
+	{
+		return false;
+	}
+#endif
 
 #ifdef DUEL_BAN_WORLD_WONDERS
 	if(GC.getGame().isOption("GAMEOPTION_DUEL_STUFF"))
@@ -13220,6 +13246,9 @@ void CvPlayer::ChangeExtraHappinessPerXPolicies(int iChange)
 int CvPlayer::GetHappinessFromResources() const
 {
 	int iTotalHappiness = 0;
+#ifdef TEAMER_BALANCE_EXTRA_LUXURY_HAPPINESS
+	const bool bFairExtraCopies = GC.getGame().isTeamerOption(TEAMER_OPTION_EXTRA_LUXURY);
+#endif
 
 	int iBaseHappiness;
 
@@ -13241,6 +13270,17 @@ int CvPlayer::GetHappinessFromResources() const
 
 			iTotalHappiness += iBaseHappiness;
 			iTotalHappiness += GetExtraHappinessPerLuxury();
+#ifdef TEAMER_BALANCE_EXTRA_LUXURY_HAPPINESS
+			// TeamerBalance option: every extra copy kept (beyond the first) gives happiness too.
+			if(bFairExtraCopies)
+			{
+				const int iCopies = getNumResourceAvailable(eResource, true);
+				if(iCopies > 1)
+				{
+					iTotalHappiness += TEAMER_BALANCE_EXTRA_LUXURY_COPY_HAPPINESS * (iCopies - 1);
+				}
+			}
+#endif
 		}
 	}
 

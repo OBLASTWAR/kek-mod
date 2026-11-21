@@ -1031,6 +1031,13 @@ bool CvTeam::canDeclareWar(TeamTypes eTeam) const
 		return false;
 	}
 
+#ifdef TEAMER_BALANCE_WAR_BLOCK
+	if(GC.getGame().IsFairWarBlocked(GetID(), eTeam))
+	{
+		return false;
+	}
+#endif
+
 #ifdef NEW_DEFENSIVE_PACT
 	if(GET_TEAM(eTeam).IsHasDefensivePact(GetID()))
 	{
@@ -1114,6 +1121,14 @@ void CvTeam::DoDeclareWar(TeamTypes eTeam, bool bDefensivePact, bool bMinorAllyP
 	{
 		return;
 	}
+
+#ifdef TEAMER_BALANCE_WAR_BLOCK
+	// TeamerBalance: also for wars that don't go through canDeclareWar (defensive pacts, deals, scripts).
+	if(GC.getGame().IsFairWarBlocked(GetID(), eTeam))
+	{
+		return;
+	}
+#endif
 
 	CvAssertMsg(eTeam != GetID(), "eTeam is not expected to be equal with GetID()");
 	if(!isBarbarian())
@@ -5943,7 +5958,10 @@ void CvTeam::setHasTech(TechTypes eIndex, bool bNewValue, PlayerTypes ePlayer, b
 					DLLUI->AddPopup(kPopup);
 				}
 #ifdef REPLAY_EVENTS
+				// KEK_RESULT_LOG: every team's techs (AI, city-states, barbarians), not only humans'.
+#ifndef KEK_RESULT_LOG
 				if (isHuman())
+#endif
 				{
 					std::vector<int> vArgs;
 					vArgs.push_back(static_cast<int>(GetID()));

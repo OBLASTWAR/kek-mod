@@ -2343,6 +2343,9 @@ void CvPlayerPolicies::SetPolicy(PolicyTypes eIndex, bool bNewValue)
 	if(HasPolicy(eIndex) != bNewValue)
 	{
 		m_pabHasPolicy[eIndex] = bNewValue;
+#ifdef KEK_RESULT_LOG
+		GC.getGame().resultLogPolicy(m_pPlayer->GetID(), (int)eIndex, bNewValue);
+#endif
 
 		int iChange = bNewValue ? 1 : -1;
 		GetPlayer()->ChangeNumPolicies(iChange);
@@ -3256,6 +3259,9 @@ void CvPlayerPolicies::SetPolicyBranchUnlocked(PolicyBranchTypes eBranchType, bo
 
 	if(IsPolicyBranchUnlocked(eBranchType) != bNewValue)
 	{
+#ifdef KEK_RESULT_LOG
+		GC.getGame().resultLogPolicyBranch(m_pPlayer->GetID(), (int)eBranchType, bNewValue);
+#endif
 		// Unlocked?
 		if (bNewValue)
 		{

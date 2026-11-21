@@ -152,6 +152,9 @@ CvGame::CvGame() :
 
 	m_pAdvisorCounsel = NULL;
 	m_pAdvisorRecommender = NULL;
+#ifdef KEK_RESULT_LOG
+	m_pResultLogUnitInInit = NULL;
+#endif
 
 	m_endTurnTimer.Start();
 	m_endTurnTimer.Stop();
@@ -666,6 +669,123 @@ void CvGame::InitPlayers()
 		iNumMinors = kWorldInfo.getDefaultMinorCivs();
 	}
 
+#ifdef TEAMER_BALANCE_NO_RELIGIOUS_CITY_STATES
+	// TeamerBalance: no religious city-states. The game picked the city-states before this runs, so
+	// each religious one is swapped for a city-state nobody has. Removing the rows from the
+	// database instead would renumber every city-state after them (saves store them by ID).
+	// The pick uses only the map seed from the lobby data every machine shares.
+	if(isTeamerOption(TEAMER_OPTION_NO_RELIGIOUS_CS))
+	{
+		const int iNumMinorInfos = GC.getNumMinorCivInfos();
+		std::vector<bool> abUsed(iNumMinorInfos, false);
+		for(int iSlot = MAX_MAJOR_CIVS; iSlot < MAX_MAJOR_CIVS + iNumMinors && iSlot < MAX_CIV_PLAYERS; iSlot++)
+		{
+			const MinorCivTypes eType = CvPreGame::minorCivType((PlayerTypes)iSlot);
+			if(eType >= 0 && eType < iNumMinorInfos)
+				abUsed[eType] = true;
+		}
+
+		unsigned int uiSeed = CvPreGame::mapRandomSeed() ^ 0x5bd1e995;
+		for(int iSlot = MAX_MAJOR_CIVS; iSlot < MAX_MAJOR_CIVS + iNumMinors && iSlot < MAX_CIV_PLAYERS; iSlot++)
+		{
+			const MinorCivTypes eType = CvPreGame::minorCivType((PlayerTypes)iSlot);
+			CvMinorCivInfo* pkInfo = (eType >= 0 && eType < iNumMinorInfos) ? GC.getMinorCivInfo(eType) : NULL;
+			if(pkInfo == NULL || pkInfo->GetMinorCivTrait() != MINOR_CIV_TRAIT_RELIGIOUS)
+				continue;
+
+			std::vector<MinorCivTypes> aeFree;
+			for(int iI = 0; iI < iNumMinorInfos; iI++)
+			{
+				CvMinorCivInfo* pkOther = GC.getMinorCivInfo((MinorCivTypes)iI);
+				if(pkOther != NULL && !abUsed[iI] && pkOther->GetMinorCivTrait() != MINOR_CIV_TRAIT_RELIGIOUS)
+					aeFree.push_back((MinorCivTypes)iI);
+			}
+			if(aeFree.empty())
+				continue;	// more city-states than non-religious ones: keep it rather than leave the slot empty
+
+			uiSeed = uiSeed * 1103515245u + 12345u;
+			const MinorCivTypes eNew = aeFree[(uiSeed >> 8) % aeFree.size()];
+			CvPreGame::setMinorCivType((PlayerTypes)iSlot, eNew);
+			abUsed[eNew] = true;
+		}
+	}
+#endif
+
+#ifdef TEAMER_BALANCE_MIRRORED_CITY_STATES
+	// TeamerBalance: mirrored city-states come in pairs of the same type, so the game's random picks
+	// are changed until every type appears an even number of times (with an odd number of city-states
+	// one type stays odd: that city-state goes on the middle line). The map script then puts same-type
+	// city-states on mirrored spots. Only lobby data every machine shares is used.
+	if(isTeamerOption(TEAMER_OPTION_MIRRORED_CS))
+	{
+		const int iNumMinorInfos = GC.getNumMinorCivInfos();
+		const int iFirstSlot = MAX_MAJOR_CIVS;
+		const int iEndSlot = std::min((int)MAX_CIV_PLAYERS, MAX_MAJOR_CIVS + iNumMinors);
+		const bool bNoReligious = isTeamerOption(TEAMER_OPTION_NO_RELIGIOUS_CS);
+		unsigned int uiSeed = CvPreGame::mapRandomSeed() ^ 0x27d4eb2d;
+		for(int iGuard = 0; iGuard < 32; iGuard++)
+		{
+			std::vector<int> aiCount(NUM_MINOR_CIV_TRAIT_TYPES, 0);
+			std::vector<bool> abUsed(iNumMinorInfos, false);
+			for(int iSlot = iFirstSlot; iSlot < iEndSlot; iSlot++)
+			{
+				const MinorCivTypes eType = CvPreGame::minorCivType((PlayerTypes)iSlot);
+				CvMinorCivInfo* pkInfo = (eType >= 0 && eType < iNumMinorInfos) ? GC.getMinorCivInfo(eType) : NULL;
+				if(pkInfo == NULL)
+					continue;
+				abUsed[eType] = true;
+				const int iTrait = pkInfo->GetMinorCivTrait();
+				if(iTrait >= 0 && iTrait < NUM_MINOR_CIV_TRAIT_TYPES)
+					aiCount[iTrait]++;
+			}
+			int iOddA = -1, iOddB = -1;
+			for(int iTrait = 0; iTrait < NUM_MINOR_CIV_TRAIT_TYPES; iTrait++)
+			{
+				if(aiCount[iTrait] % 2 == 0)
+					continue;
+				if(iOddA < 0)
+					iOddA = iTrait;
+				else if(iOddB < 0)
+					iOddB = iTrait;
+			}
+			if(iOddB < 0)
+				break;	// at most one odd type left
+
+			// Turn one city-state of one odd type into an unused city-state of the other odd type.
+			bool bSwapped = false;
+			for(int iTry = 0; iTry < 2 && !bSwapped; iTry++)
+			{
+				const int iFrom = (iTry == 0) ? iOddA : iOddB;
+				const int iTo = (iTry == 0) ? iOddB : iOddA;
+				if(bNoReligious && iTo == MINOR_CIV_TRAIT_RELIGIOUS)
+					continue;
+				std::vector<MinorCivTypes> aeFree;
+				for(int iI = 0; iI < iNumMinorInfos; iI++)
+				{
+					CvMinorCivInfo* pkOther = GC.getMinorCivInfo((MinorCivTypes)iI);
+					if(pkOther != NULL && !abUsed[iI] && pkOther->GetMinorCivTrait() == iTo)
+						aeFree.push_back((MinorCivTypes)iI);
+				}
+				if(aeFree.empty())
+					continue;
+				for(int iSlot = iEndSlot - 1; iSlot >= iFirstSlot; iSlot--)
+				{
+					const MinorCivTypes eType = CvPreGame::minorCivType((PlayerTypes)iSlot);
+					CvMinorCivInfo* pkInfo = (eType >= 0 && eType < iNumMinorInfos) ? GC.getMinorCivInfo(eType) : NULL;
+					if(pkInfo == NULL || pkInfo->GetMinorCivTrait() != iFrom)
+						continue;
+					uiSeed = uiSeed * 1103515245u + 12345u;
+					CvPreGame::setMinorCivType((PlayerTypes)iSlot, aeFree[(uiSeed >> 8) % aeFree.size()]);
+					bSwapped = true;
+					break;
+				}
+			}
+			if(!bSwapped)
+				break;
+		}
+	}
+#endif
+
 	PlayerTypes eMinorPlayer;
 
 	// Players
@@ -748,7 +868,18 @@ void CvGame::setInitialItems(CvGameInitialItemsOverrides& kInitialItemOverrides)
 		}
 	}
 
+#ifdef TEAMER_BALANCE_MIRRORED_CITY_STATES
+	m_bTeamerMirrorTwinsRead = false;	// the map script has just set the starting plots
+	m_bTeamerRotated = false;
+#endif
 	initFreeUnits(kInitialItemOverrides);
+
+#ifdef TEAMER_BALANCE_REVEAL_OWN_HALF
+	FairRevealOwnHalves();
+#endif
+#ifdef TEAMER_BALANCE_START_ITEMS
+	TeamerStartItems();
+#endif
 
 	m_iEarliestBarbarianReleaseTurn = getHandicapInfo().getEarliestBarbarianReleaseTurn() + GC.getGame().getJonRandNum(GC.getAI_TACTICAL_BARBARIAN_RELEASE_VARIATION(), "Barbarian Release Turn") + 1;
 
@@ -998,6 +1129,9 @@ void CvGame::uninit()
 #ifdef REPLAY_EVENTS
 	clearReplayEventMap();
 #endif
+#ifdef KEK_RESULT_LOG
+	resultLogClear();
+#endif
 
 	m_aPlotExtraYields.clear();
 	m_aPlotExtraCosts.clear();
@@ -1157,6 +1291,21 @@ void CvGame::reset(HandicapTypes eHandicap, bool bConstructorCall)
 
 
 	m_eHandicap = eHandicap;
+
+	m_iTeamerOptions = -1;
+#ifdef TEAMER_BALANCE_MIRRORED_CITY_STATES
+	m_aiTeamerMirrorTwin.clear();
+	m_bTeamerMirrorTwinsRead = false;
+	m_bTeamerRotated = false;
+#endif
+#ifdef TEAMER_BALANCE_WONDER_BANS
+	m_abFairWonderBanned.clear();
+	m_bFairWonderBansRead = false;
+#endif
+#ifdef TEAMER_BALANCE_SAME_TURN_WONDERS
+	m_eFairTieWonderClass = NO_BUILDINGCLASS;
+	m_eFairTieWonderTeam = NO_TEAM;
+#endif
 
 	if(!bConstructorCall)
 	{
@@ -7809,7 +7958,17 @@ bool CvGame::isBuildingClassMaxedOut(BuildingClassTypes eIndex, int iExtra)
 	{
 		return false;
 	}
-	
+
+#ifdef TEAMER_BALANCE_SAME_TURN_WONDERS
+	// TeamerBalance: while a city that tied for this wonder runs its turn (CvCity::doTurn), the copy
+	// another team finished this very turn does not count, so this city can finish it too. As soon
+	// as its team has one, the wonder is taken again (one per team).
+	if(eIndex == m_eFairTieWonderClass && m_eFairTieWonderTeam != NO_TEAM && GET_TEAM(m_eFairTieWonderTeam).getBuildingClassCount(eIndex) == 0)
+	{
+		return false;
+	}
+#endif
+
 #ifdef DUEL_WORLD_WONDERS_SAME_TURN
 	if(isOption("GAMEOPTION_DUEL_STUFF") && isWorldWonderClass(*pkBuildingClassInfo) && getBuildingClassCreationTurn(eIndex) > 0 && getBuildingClassCreationTurn(eIndex) == getGameTurn())
 	{
@@ -7829,6 +7988,392 @@ void CvGame::incrementBuildingClassCreatedCount(BuildingClassTypes eIndex)
 	CvAssertMsg(eIndex < GC.getNumBuildingClassInfos(), "eIndex is expected to be within maximum bounds (invalid Index)");
 	m_paiBuildingClassCreatedCount[eIndex]++;
 }
+
+//	--------------------------------------------------------------------------------
+// TeamerBalance: is this rule's lobby checkbox ticked? Each rule has its own; all unticked =
+// normal KEK. Read once per game (cleared by reset(), which runs at the top of init and of Read).
+bool CvGame::isTeamerOption(int iFlag)
+{
+	if(m_iTeamerOptions < 0)
+	{
+		m_iTeamerOptions = 0;
+		// Only in the TeamerBalance game mode (lobby dropdown GAMEOPTION_TEAMER_MODE = 1).
+		int iMode = 0;
+		CvPreGame::GetGameOption("GAMEOPTION_TEAMER_MODE", iMode);
+		// Modes (lobby dropdown GAMEOPTION_TEAMER_MODE): 0 = KEK (none of this counts), 1 = TeamerBalance,
+		// 2 = KEK+ Balance (free-for-all extras; hidden in the lobby for now).
+		// Every rule below only counts in the mode that shows it, so mode 0 is plain KEK.
+		const bool bTeamer = (iMode == 1);
+		const bool bExtra  = (iMode == 2);
+		if(bTeamer || bExtra)
+		{
+			m_iTeamerOptions |= bTeamer ? TEAMER_OPTION_MODE : TEAMER_OPTION_FFA_MODE;
+			// every mode
+			if(isOption("GAMEOPTION_SAME_TURN_WONDERS"))      m_iTeamerOptions |= TEAMER_OPTION_SAME_TURN_WONDERS;
+			if(isOption("GAMEOPTION_GUARANTEED_PROPHET"))     m_iTeamerOptions |= TEAMER_OPTION_GUARANTEED_PROPHET;
+			if(isOption("GAMEOPTION_RELIGION_FOR_ALL"))       m_iTeamerOptions |= TEAMER_OPTION_RELIGION_FOR_ALL;
+			if(isOption("GAMEOPTION_CAPTURE_POP_FLOOR"))      m_iTeamerOptions |= TEAMER_OPTION_CAPTURE_POP_FLOOR;
+			if(isOption("GAMEOPTION_CS_WORKERS"))             m_iTeamerOptions |= TEAMER_OPTION_CS_WORKERS;
+			// TeamerBalance modes: the fairness rules
+			if(bTeamer)
+			{
+				if(isOption("GAMEOPTION_SAME_TURN_PANTHEONS"))    m_iTeamerOptions |= TEAMER_OPTION_SAME_TURN_PANTHEONS;
+				if(isOption("GAMEOPTION_NO_RELIGIOUS_CS"))        m_iTeamerOptions |= TEAMER_OPTION_NO_RELIGIOUS_CS;
+				if(isOption("GAMEOPTION_FAIR_RUINS"))             m_iTeamerOptions |= TEAMER_OPTION_FAIR_RUINS;
+				// Extra luxury copies: 1v1 only (never in team vs team games).
+				if(isOption("GAMEOPTION_EXTRA_LUXURY_HAPPINESS"))
+				{
+					int aiTeamSize[MAX_CIV_TEAMS] = {0};
+					bool bTeamGame = false;
+					for(int iI = 0; iI < MAX_MAJOR_CIVS; iI++)
+					{
+						const SlotStatus eStatus = CvPreGame::slotStatus((PlayerTypes)iI);
+						if(eStatus != SS_TAKEN && eStatus != SS_COMPUTER) continue;
+						const TeamTypes eTeam = CvPreGame::teamType((PlayerTypes)iI);
+						if(eTeam >= 0 && eTeam < MAX_CIV_TEAMS && ++aiTeamSize[eTeam] > 1) bTeamGame = true;
+					}
+					if(!bTeamGame) m_iTeamerOptions |= TEAMER_OPTION_EXTRA_LUXURY;
+				}
+				if(isOption("GAMEOPTION_REVEAL_OWN_HALF"))        m_iTeamerOptions |= TEAMER_OPTION_REVEAL_OWN_HALF;
+				if(isOption("GAMEOPTION_MIRRORED_CITY_STATES"))   m_iTeamerOptions |= TEAMER_OPTION_MIRRORED_CS;
+				if(isOption("GAMEOPTION_NO_RUIN_UPGRADE"))        m_iTeamerOptions |= TEAMER_OPTION_NO_RUIN_UPGRADE;
+				if(isOption("GAMEOPTION_FAIR_BARBARIAN_CAMPS"))   m_iTeamerOptions |= TEAMER_OPTION_FAIR_BARB_CAMPS;
+				if(isOption("GAMEOPTION_FAIR_CS_QUESTS"))         m_iTeamerOptions |= TEAMER_OPTION_FAIR_CS_QUESTS;
+				if(isOption("GAMEOPTION_NO_GLOBAL_CS_QUESTS"))    m_iTeamerOptions |= TEAMER_OPTION_NO_GLOBAL_CS_QUESTS;
+				if(isOption("GAMEOPTION_CS_QUESTS_OWN_SIDE"))     m_iTeamerOptions |= TEAMER_OPTION_CS_QUESTS_OWN_SIDE;
+				if(isOption("GAMEOPTION_TEAM_BELIEFS"))           m_iTeamerOptions |= TEAMER_OPTION_TEAM_BELIEFS;
+			}
+		}
+	}
+	return (m_iTeamerOptions & iFlag) != 0;
+}
+
+#ifdef TEAMER_BALANCE_WONDER_BANS
+//	--------------------------------------------------------------------------------
+// TeamerBalance: the host can ban world wonders in the lobby, one checkbox per wonder
+// (GameOptions row GAMEOPTION_BAN_<BUILDING_TYPE>). A banned wonder is never buildable.
+bool CvGame::isWonderBanned(BuildingTypes eBuilding)
+{
+	if(!m_bFairWonderBansRead)
+	{
+		const int iNumBuildings = GC.getNumBuildingInfos();
+		m_abFairWonderBanned.assign(iNumBuildings, 0);
+		for(int iI = 0; iI < iNumBuildings && isTeamerOption(TEAMER_OPTION_MODE); iI++)
+		{
+			CvBuildingEntry* pkInfo = GC.getBuildingInfo((BuildingTypes)iI);
+			if(pkInfo == NULL || !isWorldWonderClass(pkInfo->GetBuildingClassInfo()))
+				continue;
+
+			CvString strOption = "GAMEOPTION_BAN_";
+			strOption += pkInfo->GetType();
+			int iValue = 0;
+			if(CvPreGame::GetGameOption(strOption.c_str(), iValue) && iValue > 0)
+				m_abFairWonderBanned[iI] = 1;
+		}
+		m_bFairWonderBansRead = true;
+	}
+
+	return eBuilding >= 0 && eBuilding < (int)m_abFairWonderBanned.size() && m_abFairWonderBanned[eBuilding] != 0;
+}
+#endif
+
+#ifdef TEAMER_BALANCE_WAR_BLOCK
+//	--------------------------------------------------------------------------------
+// TeamerBalance: the lobby can block war between major civs before turn N (GAMEOPTION_NO_WAR_TURNS,
+// counted in turns played, so a later-era start counts from its own first turn) and/or until
+// any major civ has reached era E (GAMEOPTION_NO_WAR_ERA, an era ID; 0 = off). City-states
+// and barbarians are never blocked.
+bool CvGame::IsFairWarBlocked(TeamTypes eTeamA, TeamTypes eTeamB)
+{
+	if(eTeamA == NO_TEAM || eTeamB == NO_TEAM || !isTeamerOption(TEAMER_OPTION_MODE))
+		return false;
+
+	CvTeam& kTeamA = GET_TEAM(eTeamA);
+	CvTeam& kTeamB = GET_TEAM(eTeamB);
+	if(kTeamA.isMinorCiv() || kTeamB.isMinorCiv() || kTeamA.isBarbarian() || kTeamB.isBarbarian())
+		return false;
+
+	int iTurns = 0;
+	CvPreGame::GetGameOption("GAMEOPTION_NO_WAR_TURNS", iTurns);
+	if(iTurns > 0 && getElapsedGameTurns() < iTurns)
+		return true;
+
+	int iEra = 0;
+	CvPreGame::GetGameOption("GAMEOPTION_NO_WAR_ERA", iEra);
+	if(iEra > 0)
+	{
+		for(int iPlayer = 0; iPlayer < MAX_MAJOR_CIVS; iPlayer++)
+		{
+			CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)iPlayer);
+			if(kPlayer.isAlive() && (int)kPlayer.GetCurrentEra() >= iEra)
+				return false;
+		}
+		return true;
+	}
+
+	return false;
+}
+#endif
+
+#ifdef TEAMER_BALANCE_REVEAL_OWN_HALF
+//	--------------------------------------------------------------------------------
+// TeamerBalance: with GAMEOPTION_REVEAL_OWN_HALF each civ starts knowing its half of the map, the
+// plots on its start's side of the vertical middle line (the two halves of a mirror map; the
+// plots right on the line count for both sides). Hex centres of odd rows sit half a plot to
+// the right, so positions are doubled to stay whole: centre2 = 2x + (y odd), middle = W - 1.
+void CvGame::FairRevealOwnHalves()
+{
+	if(!isTeamerOption(TEAMER_OPTION_REVEAL_OWN_HALF))
+		return;
+
+	CvMap& kMap = GC.getMap();
+	const int iMiddle2 = kMap.getGridWidth() - 1;
+	const int iNumPlots = kMap.numPlots();
+
+	for(int iPlayer = 0; iPlayer < MAX_MAJOR_CIVS; iPlayer++)
+	{
+		CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)iPlayer);
+		CvPlot* pStart = kPlayer.isAlive() ? kPlayer.getStartingPlot() : NULL;
+		if(pStart == NULL)
+			continue;
+
+		// A turned (180 degree) map splits its halves by column: west = 2x < W (= iMiddle2 + 1).
+		const bool bRotated = IsTeamerRotatedMap();
+		const int iStart2 = 2 * pStart->getX() + (pStart->getY() & 1);
+		if(!bRotated && iStart2 == iMiddle2)
+			continue;	// a start right on the middle line has no half
+		const bool bLeft = bRotated ? (2 * pStart->getX() < iMiddle2 + 1) : (iStart2 < iMiddle2);
+		const TeamTypes eTeam = kPlayer.getTeam();
+
+		for(int iI = 0; iI < iNumPlots; iI++)
+		{
+			CvPlot* pPlot = kMap.plotByIndexUnchecked(iI);
+			const int iPlot2 = 2 * pPlot->getX() + (pPlot->getY() & 1);
+			bool bMine;
+			if(bRotated)
+				bMine = (bLeft == (2 * pPlot->getX() < iMiddle2 + 1));
+			else
+				bMine = bLeft ? (iPlot2 <= iMiddle2) : (iPlot2 >= iMiddle2);
+			if(bMine)
+				pPlot->setRevealed(eTeam, true);
+		}
+	}
+}
+#endif
+
+#ifdef TEAMER_BALANCE_MIRRORED_CITY_STATES
+//	--------------------------------------------------------------------------------
+// TeamerBalance: the city-state whose starting plot is the exact left-right mirror of this one's
+// (same row; hex centres 2x + (y odd) summing to 2W - 2, the mirror maps' formula). Starting plots
+// are saved, so a loaded game finds the same pairs. NO_PLAYER when there is none or the option is off.
+PlayerTypes CvGame::GetMirrorTwin(PlayerTypes ePlayer)
+{
+	if(ePlayer < MAX_MAJOR_CIVS || ePlayer >= MAX_CIV_PLAYERS || !isTeamerOption(TEAMER_OPTION_MIRRORED_CS))
+		return NO_PLAYER;
+
+	ReadTeamerMirrorTwins();
+	return (PlayerTypes)m_aiTeamerMirrorTwin[ePlayer];
+}
+
+//	--------------------------------------------------------------------------------
+// TeamerBalance fair city-state quests: the major civ on the exact mirror start of this one (the
+// mirror maps place every start's twin on the other side). Used to give mirrored players the same quests.
+PlayerTypes CvGame::GetMirrorMajor(PlayerTypes ePlayer)
+{
+	if(ePlayer < 0 || ePlayer >= MAX_MAJOR_CIVS || !isTeamerOption(TEAMER_OPTION_FAIR_CS_QUESTS) || !isTeamerOption(TEAMER_OPTION_MIRRORED_CS))
+		return NO_PLAYER;
+
+	ReadTeamerMirrorTwins();
+	return (PlayerTypes)m_aiTeamerMirrorTwin[ePlayer];
+}
+
+//	--------------------------------------------------------------------------------
+// Pairs players (majors with majors, city-states with city-states) whose starting plots mirror.
+void CvGame::ReadTeamerMirrorTwins()
+{
+	if(m_bTeamerMirrorTwinsRead)
+		return;
+
+	// Two kinds of mirror map: mirrored left-right (same row, x1 + x2 + (y odd) = W - 1) or turned
+	// 180 degrees (Mirror Map: Pangaea "Rotated": x1 + x2 = W - 1, y1 + y2 = H - 1). Whichever pairs
+	// more majors' starting plots is the map's kind.
+	const int iWidth = GC.getMap().getGridWidth();
+	const int iHeight = GC.getMap().getGridHeight();
+	int iBestPairs = -1;
+	std::vector<int> aiBest;
+	bool bBestRotated = false;
+	for(int iKind = 0; iKind < 2; iKind++)
+	{
+	const bool bRotated = (iKind == 1);
+	m_aiTeamerMirrorTwin.assign(MAX_PLAYERS, (int)NO_PLAYER);
+	for(int iPass = 0; iPass < 2; iPass++)
+	{
+		const bool bMinors = (iPass == 1);
+		const int iFirst = bMinors ? MAX_MAJOR_CIVS : 0;
+		const int iEnd = bMinors ? MAX_CIV_PLAYERS : MAX_MAJOR_CIVS;
+		for(int iA = iFirst; iA < iEnd; iA++)
+		{
+			CvPlayer& kA = GET_PLAYER((PlayerTypes)iA);
+			CvPlot* pA = (kA.isEverAlive() && kA.isMinorCiv() == bMinors) ? kA.getStartingPlot() : NULL;
+			if(pA == NULL || m_aiTeamerMirrorTwin[iA] != NO_PLAYER)
+				continue;
+			for(int iB = iA + 1; iB < iEnd; iB++)
+			{
+				CvPlayer& kB = GET_PLAYER((PlayerTypes)iB);
+				CvPlot* pB = (kB.isEverAlive() && kB.isMinorCiv() == bMinors) ? kB.getStartingPlot() : NULL;
+				const bool bPair = (pB != NULL) && (bRotated
+					? (pA->getX() + pB->getX() == iWidth - 1 && pA->getY() + pB->getY() == iHeight - 1)
+					: (pB->getY() == pA->getY() && pA->getX() + pB->getX() + (pA->getY() & 1) == iWidth - 1));
+				if(bPair)
+				{
+					m_aiTeamerMirrorTwin[iA] = iB;
+					m_aiTeamerMirrorTwin[iB] = iA;
+					break;
+				}
+			}
+		}
+	}
+	int iPairs = 0;
+	for(int iPlayer = 0; iPlayer < MAX_MAJOR_CIVS; iPlayer++)
+	{
+		if(m_aiTeamerMirrorTwin[iPlayer] != NO_PLAYER)
+			iPairs++;
+	}
+	if(iPairs > iBestPairs)
+	{
+		iBestPairs = iPairs;
+		aiBest = m_aiTeamerMirrorTwin;
+		bBestRotated = bRotated;
+	}
+	}
+	m_aiTeamerMirrorTwin = aiBest;
+	m_bTeamerRotated = bBestRotated;
+	m_bTeamerMirrorTwinsRead = true;
+}
+
+//	--------------------------------------------------------------------------------
+bool CvGame::IsTeamerRotatedMap()
+{
+	ReadTeamerMirrorTwins();
+	return m_bTeamerRotated;
+}
+
+//	--------------------------------------------------------------------------------
+bool CvGame::IsTeamerMirrorMap()
+{
+	if(!isTeamerOption(TEAMER_OPTION_MODE))
+		return false;
+	ReadTeamerMirrorTwins();
+	int iMajors = 0;
+	for(int iPlayer = 0; iPlayer < MAX_MAJOR_CIVS; iPlayer++)
+	{
+		CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)iPlayer);
+		if(!kPlayer.isEverAlive() || kPlayer.isMinorCiv() || kPlayer.getStartingPlot() == NULL)
+			continue;
+		if(m_aiTeamerMirrorTwin[iPlayer] == NO_PLAYER)
+			return false;
+		iMajors++;
+	}
+	return iMajors >= 2;
+}
+
+//	--------------------------------------------------------------------------------
+PlayerTypes CvGame::GetMirrorStartTwin(PlayerTypes ePlayer)
+{
+	if(ePlayer < 0 || ePlayer >= MAX_MAJOR_CIVS || !IsTeamerMirrorMap())
+		return NO_PLAYER;
+	return (PlayerTypes)m_aiTeamerMirrorTwin[ePlayer];
+}
+
+//	--------------------------------------------------------------------------------
+CvPlot* CvGame::GetMirrorPlot(CvPlot* pPlot)
+{
+	if(pPlot == NULL)
+		return NULL;
+	if(IsTeamerRotatedMap())
+		return GC.getMap().plot(GC.getMap().getGridWidth() - 1 - pPlot->getX(), GC.getMap().getGridHeight() - 1 - pPlot->getY());
+	const int iX = GC.getMap().getGridWidth() - 1 - pPlot->getX() - (pPlot->getY() & 1);
+	return GC.getMap().plot(iX, pPlot->getY());
+}
+
+#endif
+
+#ifdef TEAMER_BALANCE_START_ITEMS
+//	--------------------------------------------------------------------------------
+// TeamerBalance / KEK+ Balance things every civ gets at game start, after the starting units (setInitialItems).
+// Only lobby data and the synced game dice are used, so every machine does the same.
+void CvGame::TeamerStartItems()
+{
+	CvBarbarians::DoFairStartCamps();
+}
+#endif
+
+#ifdef TEAMER_BALANCE_SAME_TURN_WONDERS
+//	--------------------------------------------------------------------------------
+void CvGame::setFairTieWonder(BuildingClassTypes eClass, TeamTypes eTeam)
+{
+	m_eFairTieWonderClass = eClass;
+	m_eFairTieWonderTeam = eTeam;
+}
+#endif
+
+#ifdef TEAMER_BALANCE_FAIR_RUINS
+//	--------------------------------------------------------------------------------
+// TeamerBalance ruins: the n-th ruin of every major civ gives what the first civ to open an
+// n-th ruin got. The order comes from the save's own goody-hut events (KEK_SAVE_DATA logs
+// one REPLAYEVENT_GoodyHut per ruin for every player, first arg = the goody), so a loaded
+// game and every machine agree without new saved data. Ruins picked from the Pathfinder's
+// menu (REPLAYEVENT_GoodyChoice) neither count nor set the order.
+// Returns NO_GOODY when this civ is the first to its n-th ruin, or when that goody can't be
+// given right now (e.g. population with no city): the caller then picks at random as usual.
+GoodyTypes CvGame::GetFairRuinGoody(PlayerTypes ePlayer, const std::vector<GoodyTypes>& aeValid) const
+{
+	if(ePlayer < 0 || ePlayer >= MAX_MAJOR_CIVS || !const_cast<CvGame*>(this)->isTeamerOption(TEAMER_OPTION_FAIR_RUINS))
+		return NO_GOODY;
+
+	std::vector<int> aiCount(MAX_MAJOR_CIVS, 0);
+	std::vector<bool> abChoicePending(MAX_MAJOR_CIVS, false);
+	std::vector<int> aiOrder;	// aiOrder[n] = what the first n-th ruin gave
+
+	for(ReplayEventList::const_iterator it = m_listReplayEvents.begin(); it != m_listReplayEvents.end(); ++it)
+	{
+		const PlayerTypes eEventPlayer = it->m_ePlayer;
+		if(eEventPlayer < 0 || eEventPlayer >= MAX_MAJOR_CIVS)
+			continue;
+
+		if(it->m_eEventType == REPLAYEVENT_GoodyChoice)
+		{
+			abChoicePending[eEventPlayer] = true;
+			continue;
+		}
+		if(it->m_eEventType != REPLAYEVENT_GoodyHut || it->m_vNumericArgs.empty())
+			continue;
+
+		if(abChoicePending[eEventPlayer])
+		{
+			abChoicePending[eEventPlayer] = false;
+			continue;
+		}
+
+		const int iNth = aiCount[eEventPlayer]++;
+		if(iNth == (int)aiOrder.size())
+			aiOrder.push_back(it->m_vNumericArgs[0]);
+	}
+
+	const int iMine = aiCount[ePlayer];
+	if(iMine >= (int)aiOrder.size())
+		return NO_GOODY;
+
+	const GoodyTypes eWanted = (GoodyTypes)aiOrder[iMine];
+	for(std::vector<GoodyTypes>::const_iterator it = aeValid.begin(); it != aeValid.end(); ++it)
+	{
+		if(*it == eWanted)
+			return eWanted;
+	}
+
+	return NO_GOODY;
+}
+#endif
 
 
 #ifdef DUEL_WORLD_WONDERS_SAME_TURN
@@ -10315,6 +10860,676 @@ void CvGame::addReplayEvent(int eType, PlayerTypes ePlayer, std::vector<int> vNu
 	m_listReplayEvents.push_back(event);
 }
 
+#ifdef KEK_RESULT_LOG
+//	--------------------------------------------------------------------------------
+// Result log (REPLAYEVENT_RL_*). What the game DID, for every player, so that one
+// final save rebuilds every turn of the replay. Each hook sits in simulation code
+// that runs alike on every machine; the samples run right before an autosave
+// (recordKekReplayData) and end with RL_SaveMarker. Nothing in the game reads
+// these events or this state back, so they cannot change the game.
+
+CvResultLogScope::CvResultLogScope(ResultLogScopeKind eKind, int iValue, int iSource1, int iSource2)
+	: m_eKind(eKind)
+{
+	m_iOldValue = GC.getGame().getResultLogScope(eKind, m_iOldSource1, m_iOldSource2);
+	GC.getGame().setResultLogScope(eKind, iValue, iSource1, iSource2);
+}
+
+CvResultLogScope::~CvResultLogScope()
+{
+	GC.getGame().setResultLogScope(m_eKind, m_iOldValue, m_iOldSource1, m_iOldSource2);
+}
+
+//	--------------------------------------------------------------------------------
+int CvGame::getResultLogScope(int iKind, int& iSource1, int& iSource2) const
+{
+	if (iKind < 0 || iKind >= RESULTLOG_NUM_SCOPES)
+	{
+		iSource1 = -1;
+		iSource2 = -1;
+		return -1;
+	}
+	iSource1 = m_aiResultLogScope[iKind][1];
+	iSource2 = m_aiResultLogScope[iKind][2];
+	return m_aiResultLogScope[iKind][0];
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::setResultLogScope(int iKind, int iValue, int iSource1, int iSource2)
+{
+	if (iKind < 0 || iKind >= RESULTLOG_NUM_SCOPES)
+		return;
+	m_aiResultLogScope[iKind][0] = iValue;
+	m_aiResultLogScope[iKind][1] = iSource1;
+	m_aiResultLogScope[iKind][2] = iSource2;
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogClear()
+{
+	m_kResultLogUnits.clear();
+	m_kResultLogCities.clear();
+	for (int iRecord = 0; iRecord < RESULTLOG_NUM_CITYRECS; iRecord++)
+	{
+		m_akResultLogCityRecords[iRecord].clear();
+	}
+	m_kResultLogPlayers.clear();
+	for (int iI = 0; iI < MAX_TEAMS; iI++)
+	{
+		m_aiResultLogRevealed[iI].clear();
+	}
+	m_pResultLogUnitInInit = NULL;
+	for (int iKind = 0; iKind < RESULTLOG_NUM_SCOPES; iKind++)
+	{
+		m_aiResultLogScope[iKind][0] = -1;
+		m_aiResultLogScope[iKind][1] = -1;
+		m_aiResultLogScope[iKind][2] = -1;
+	}
+}
+
+//	--------------------------------------------------------------------------------
+/// The plot index (y * map width + x) the result log uses for every tile, as KEK's CityPlot.
+static int ResultLogPlotIndex(int iX, int iY)
+{
+	const CvPlot* pPlot = GC.getMap().plot(iX, iY);
+	return (pPlot != NULL) ? pPlot->GetPlotIndex() : -1;
+}
+
+//	--------------------------------------------------------------------------------
+/// The values RL_CitySample carries after the city plot, in its order.
+static void ResultLogReadCity(const CvCity& kCity, int* aiValues)
+{
+	const OrderData* pOrder = kCity.headOrderQueueNode();
+	aiValues[0] = pOrder ? (int)pOrder->eOrderType : -1;
+	aiValues[1] = pOrder ? pOrder->iData1 : -1;
+	aiValues[2] = kCity.getFoodTimes100();
+	aiValues[3] = kCity.getProductionTimes100();
+
+	unsigned int uiWorkedLow = 0;
+	unsigned int uiWorkedHigh = 0;
+	const CvCityCitizens* pCitizens = kCity.GetCityCitizens();
+	if (pCitizens != NULL)
+	{
+		for (int iI = 0; iI < NUM_CITY_PLOTS; iI++)
+		{
+			const CvPlot* pPlot = pCitizens->GetCityPlotFromIndex(iI);
+			if (pPlot != NULL && pCitizens->IsWorkingPlot(pPlot))
+			{
+				if (iI < 32)
+					uiWorkedLow |= (1u << iI);
+				else
+					uiWorkedHigh |= (1u << (iI - 32));
+			}
+		}
+	}
+	aiValues[4] = (int)uiWorkedLow;
+	aiValues[5] = (int)uiWorkedHigh;
+
+	CvCityReligions* pReligions = kCity.GetCityReligions();
+	aiValues[6] = (pReligions != NULL) ? (int)pReligions->GetReligiousMajority() : -1;
+
+	int iFlags = 0;
+	if (kCity.IsPuppet())
+		iFlags |= 1;
+	if (kCity.IsRazing())
+		iFlags |= 2;
+	if (kCity.IsResistance())
+		iFlags |= 4;
+	if (kCity.IsOccupied())
+		iFlags |= 8;
+	if (kCity.GetWeLoveTheKingDayCounter() > 0)
+		iFlags |= 16;
+	aiValues[7] = iFlags;
+}
+
+//	--------------------------------------------------------------------------------
+/// The values of one v3 city record (RL_CityYields .. RL_CitySpecialists), in its order.
+/// Only getters the city screen calls on every machine: reading them changes nothing.
+static void ResultLogReadCityRecord(const CvCity& kCity, int iRecord, std::vector<int>& vValues)
+{
+	vValues.clear();
+	switch (iRecord)
+	{
+	case RESULTLOG_CITYREC_YIELDS:
+		vValues.push_back(kCity.foodDifferenceTimes100());
+		vValues.push_back(kCity.getYieldRateTimes100(YIELD_PRODUCTION, false));
+		vValues.push_back(kCity.getCurrentProductionDifferenceTimes100(false, false));
+		vValues.push_back(kCity.getYieldRateTimes100(YIELD_GOLD, false));
+		vValues.push_back(kCity.getYieldRateTimes100(YIELD_SCIENCE, false));
+		vValues.push_back(kCity.getJONSCulturePerTurn());
+		vValues.push_back(kCity.GetFaithPerTurn());
+		break;
+	case RESULTLOG_CITYREC_CULTURE:
+		vValues.push_back(kCity.GetJONSCultureStored());
+		break;
+	case RESULTLOG_CITYREC_QUEUE:
+		for (const OrderData* pOrder = kCity.headOrderQueueNode(); pOrder != NULL; pOrder = kCity.nextOrderQueueNode(pOrder))
+		{
+			vValues.push_back((int)pOrder->eOrderType);
+			vValues.push_back(pOrder->iData1);
+		}
+		break;
+	case RESULTLOG_CITYREC_RELIGION:
+	{
+		CvCityReligions* pReligions = kCity.GetCityReligions();
+		if (pReligions == NULL)
+			break;
+		for (int iReligion = 0; iReligion < GC.getNumReligionInfos(); iReligion++)
+		{
+			const int iFollowers = pReligions->GetNumFollowers((ReligionTypes)iReligion);
+			if (iFollowers > 0)
+			{
+				vValues.push_back(iReligion);
+				vValues.push_back(iFollowers);
+			}
+		}
+		break;
+	}
+	case RESULTLOG_CITYREC_SPECIALISTS:
+	{
+		const CvCityCitizens* pCitizens = kCity.GetCityCitizens();
+		if (pCitizens == NULL)
+			break;
+		for (int iSpecialist = 0; iSpecialist < GC.getNumSpecialistInfos(); iSpecialist++)
+		{
+			const int iCount = pCitizens->GetSpecialistCount((SpecialistTypes)iSpecialist);
+			if (iCount > 0)
+			{
+				vValues.push_back(iSpecialist);
+				vValues.push_back(iCount);
+			}
+		}
+		break;
+	}
+	}
+}
+
+//	--------------------------------------------------------------------------------
+/// The values RL_PlayerSample carries, in its order (top panel numbers).
+static void ResultLogReadPlayer(const CvPlayer& kPlayer, std::vector<int>& vValues)
+{
+	vValues.clear();
+	vValues.push_back(kPlayer.GetTreasury()->GetGoldTimes100());
+	vValues.push_back(kPlayer.getJONSCulture());
+	vValues.push_back(kPlayer.GetFaith());
+	vValues.push_back(kPlayer.getGoldenAgeTurns());
+	vValues.push_back(kPlayer.GetGoldenAgeProgressMeter());
+	vValues.push_back(kPlayer.GetHappiness());
+	vValues.push_back(kPlayer.GetUnhappiness());
+	const TechTypes eTech = kPlayer.GetPlayerTechs()->GetCurrentResearch();
+	vValues.push_back((int)eTech);
+	vValues.push_back((eTech != NO_TECH) ? GET_TEAM(kPlayer.getTeam()).GetTeamTechs()->GetResearchProgressTimes100(eTech) : 0);
+}
+
+//	--------------------------------------------------------------------------------
+/// Event numbers per RL_UnitAt / RL_CitySample / RL_Revealed event: save
+/// readers cap the numbers of one event, so a long list is split.
+static const size_t RESULTLOG_MAX_ARGS = 999;
+
+//	--------------------------------------------------------------------------------
+/// Right before an autosave: where every unit stands, each city's queue head,
+/// stocks, worked tiles, religion and status, and the tiles each major team
+/// revealed, each only when it changed since the last sample (everything after
+/// a load). One event per player (per team for tiles), then the marker.
+void CvGame::resultLogSample(int iSaveKind)
+{
+	ResultLogUnitMap kUnits;
+	ResultLogCityMap kCities;
+	ResultLogRecordMap akCityRecords[RESULTLOG_NUM_CITYRECS];
+	ResultLogRecordMap kPlayers;
+	for (int iI = 0; iI < MAX_PLAYERS; iI++)
+	{
+		CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)iI);
+		if (!kPlayer.isEverAlive())
+			continue;
+
+		// RL_UnitAt: unitID, plot, embarked; three numbers per unit that moved
+		// RL_UnitXP: unitID, experience, level; three numbers per unit whose experience changed
+		std::vector<int> vUnitArgs;
+		std::vector<int> vXPArgs;
+		int iLoop = 0;
+		for (CvUnit* pUnit = kPlayer.firstUnit(&iLoop); pUnit != NULL; pUnit = kPlayer.nextUnit(&iLoop))
+		{
+			if (pUnit->isDelayedDeath())
+				continue; // already logged as removed
+
+			const CvPlot* pPlot = pUnit->plot();
+			ResultLogUnitState kState;
+			kState.iPlot = (pPlot != NULL) ? pPlot->GetPlotIndex() : -1;
+			kState.iEmbarked = pUnit->isEmbarked() ? 1 : 0;
+			kState.iExperience = pUnit->getExperience();
+			kState.iLevel = pUnit->getLevel();
+			const std::pair<int, int> kKey(iI, pUnit->GetID());
+			kUnits[kKey] = kState;
+
+			ResultLogUnitMap::const_iterator itXP = m_kResultLogUnits.find(kKey);
+			if (itXP == m_kResultLogUnits.end() || itXP->second.iExperience != kState.iExperience || itXP->second.iLevel != kState.iLevel)
+			{
+				if (vXPArgs.size() + 3 > RESULTLOG_MAX_ARGS)
+				{
+					addReplayEvent(REPLAYEVENT_RL_UnitXP, (PlayerTypes)iI, vXPArgs);
+					vXPArgs.clear();
+				}
+				vXPArgs.push_back(pUnit->GetID());
+				vXPArgs.push_back(kState.iExperience);
+				vXPArgs.push_back(kState.iLevel);
+			}
+
+			ResultLogUnitMap::const_iterator it = m_kResultLogUnits.find(kKey);
+			if (it == m_kResultLogUnits.end() || it->second.iPlot != kState.iPlot || it->second.iEmbarked != kState.iEmbarked)
+			{
+				if (vUnitArgs.size() + 3 > RESULTLOG_MAX_ARGS)
+				{
+					addReplayEvent(REPLAYEVENT_RL_UnitAt, (PlayerTypes)iI, vUnitArgs);
+					vUnitArgs.clear();
+				}
+				vUnitArgs.push_back(pUnit->GetID());
+				vUnitArgs.push_back(kState.iPlot);
+				vUnitArgs.push_back(kState.iEmbarked);
+			}
+		}
+		if (!vUnitArgs.empty())
+		{
+			addReplayEvent(REPLAYEVENT_RL_UnitAt, (PlayerTypes)iI, vUnitArgs);
+		}
+		if (!vXPArgs.empty())
+		{
+			addReplayEvent(REPLAYEVENT_RL_UnitXP, (PlayerTypes)iI, vXPArgs);
+		}
+
+		// RL_CitySample: city plot + RESULTLOG_CITY_FIELDS values per city where one changed
+		std::vector<int> vCityArgs;
+		iLoop = 0;
+		for (CvCity* pCity = kPlayer.firstCity(&iLoop); pCity != NULL; pCity = kPlayer.nextCity(&iLoop))
+		{
+			const CvPlot* pPlot = pCity->plot();
+			if (pPlot == NULL)
+				continue;
+
+			ResultLogCityState kState;
+			ResultLogReadCity(*pCity, kState.aiValues);
+			const int iKey = pPlot->GetPlotIndex();
+			kCities[iKey] = kState;
+
+			bool bChanged = true;
+			ResultLogCityMap::const_iterator it = m_kResultLogCities.find(iKey);
+			if (it != m_kResultLogCities.end())
+			{
+				bChanged = false;
+				for (int iField = 0; iField < RESULTLOG_CITY_FIELDS; iField++)
+				{
+					if (it->second.aiValues[iField] != kState.aiValues[iField])
+					{
+						bChanged = true;
+						break;
+					}
+				}
+			}
+			if (bChanged)
+			{
+				if (vCityArgs.size() + 1 + RESULTLOG_CITY_FIELDS > RESULTLOG_MAX_ARGS)
+				{
+					addReplayEvent(REPLAYEVENT_RL_CitySample, (PlayerTypes)iI, vCityArgs);
+					vCityArgs.clear();
+				}
+				vCityArgs.push_back(iKey);
+				for (int iField = 0; iField < RESULTLOG_CITY_FIELDS; iField++)
+				{
+					vCityArgs.push_back(kState.aiValues[iField]);
+				}
+			}
+		}
+		if (!vCityArgs.empty())
+		{
+			addReplayEvent(REPLAYEVENT_RL_CitySample, (PlayerTypes)iI, vCityArgs);
+		}
+
+		// RL_CityYields .. RL_CitySpecialists: city plot, count, values; per city where the record changed
+		for (int iRecord = 0; iRecord < RESULTLOG_NUM_CITYRECS; iRecord++)
+		{
+			const int eType = REPLAYEVENT_RL_CityYields + iRecord;
+			std::vector<int> vArgs;
+			iLoop = 0;
+			for (CvCity* pCity = kPlayer.firstCity(&iLoop); pCity != NULL; pCity = kPlayer.nextCity(&iLoop))
+			{
+				const CvPlot* pPlot = pCity->plot();
+				if (pPlot == NULL)
+					continue;
+
+				const int iKey = pPlot->GetPlotIndex();
+				std::vector<int>& vValues = akCityRecords[iRecord][iKey];
+				ResultLogReadCityRecord(*pCity, iRecord, vValues);
+
+				ResultLogRecordMap::const_iterator it = m_akResultLogCityRecords[iRecord].find(iKey);
+				if (it != m_akResultLogCityRecords[iRecord].end() && it->second == vValues)
+					continue;
+
+				if (!vArgs.empty() && vArgs.size() + 2 + vValues.size() > RESULTLOG_MAX_ARGS)
+				{
+					addReplayEvent(eType, (PlayerTypes)iI, vArgs);
+					vArgs.clear();
+				}
+				vArgs.push_back(iKey);
+				vArgs.push_back((int)vValues.size());
+				vArgs.insert(vArgs.end(), vValues.begin(), vValues.end());
+			}
+			if (!vArgs.empty())
+			{
+				addReplayEvent(eType, (PlayerTypes)iI, vArgs);
+			}
+		}
+
+		// RL_PlayerSample: the top panel numbers, when one changed
+		if (kPlayer.isAlive() && !kPlayer.isBarbarian())
+		{
+			std::vector<int>& vValues = kPlayers[iI];
+			ResultLogReadPlayer(kPlayer, vValues);
+			ResultLogRecordMap::const_iterator it = m_kResultLogPlayers.find(iI);
+			if (it == m_kResultLogPlayers.end() || it->second != vValues)
+			{
+				addReplayEvent(REPLAYEVENT_RL_PlayerSample, (PlayerTypes)iI, vValues);
+			}
+		}
+	}
+	m_kResultLogUnits.swap(kUnits);
+	m_kResultLogCities.swap(kCities);
+	for (int iRecord = 0; iRecord < RESULTLOG_NUM_CITYRECS; iRecord++)
+	{
+		m_akResultLogCityRecords[iRecord].swap(akCityRecords[iRecord]);
+	}
+	m_kResultLogPlayers.swap(kPlayers);
+
+	// RL_Revealed: team, first plot, then the distance to the previous plot (ascending order)
+	for (int iTeam = 0; iTeam < MAX_TEAMS; iTeam++)
+	{
+		std::vector<int>& vPlots = m_aiResultLogRevealed[iTeam];
+		if (vPlots.empty())
+			continue;
+
+		std::sort(vPlots.begin(), vPlots.end());
+		std::vector<int> vArgs;
+		vArgs.push_back(iTeam);
+		int iPrevious = -1;
+		for (size_t i = 0; i < vPlots.size(); i++)
+		{
+			if (vPlots[i] == iPrevious)
+				continue; // revealed twice since the last sample
+			if (vArgs.size() >= RESULTLOG_MAX_ARGS)
+			{
+				addReplayEvent(REPLAYEVENT_RL_Revealed, NO_PLAYER, vArgs);
+				vArgs.clear();
+				vArgs.push_back(iTeam);
+				iPrevious = -1;
+			}
+			vArgs.push_back((iPrevious < 0) ? vPlots[i] : vPlots[i] - iPrevious);
+			iPrevious = vPlots[i];
+		}
+		if (vArgs.size() > 1)
+		{
+			addReplayEvent(REPLAYEVENT_RL_Revealed, NO_PLAYER, vArgs);
+		}
+		vPlots.clear();
+	}
+
+	std::vector<int> vMarker;
+	vMarker.push_back(iSaveKind);
+	vMarker.push_back((int)m_listReplayEvents.size());
+	addReplayEvent(REPLAYEVENT_RL_SaveMarker, getActivePlayer(), vMarker);
+}
+
+//	--------------------------------------------------------------------------------
+/// CvUnit::initWithNameOffset calls this first: until resultLogEndUnitInit the
+/// unit's damage and promotions are not logged one by one, RL_UnitCreated holds them.
+CvUnit* CvGame::resultLogBeginUnitInit(CvUnit* pUnit)
+{
+	CvUnit* pOuterUnit = m_pResultLogUnitInInit;
+	m_pResultLogUnitInInit = pUnit;
+	return pOuterUnit;
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogEndUnitInit(CvUnit* pOuterUnit)
+{
+	m_pResultLogUnitInInit = pOuterUnit;
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogUnitCreated(const CvUnit& kUnit)
+{
+	int iSource1 = -1;
+	int iSource2 = -1;
+	int iOrigin = getResultLogScope(RESULTLOG_SCOPE_UNIT_ORIGIN, iSource1, iSource2);
+	if (iOrigin < 0)
+	{
+		iOrigin = RESULTLOG_ORIGIN_OTHER;
+		iSource1 = -1;
+		iSource2 = -1;
+	}
+
+	std::vector<int> vArgs;
+	const CvPlot* pPlot = kUnit.plot();
+	vArgs.push_back(kUnit.GetID());
+	vArgs.push_back((int)kUnit.getUnitType());
+	vArgs.push_back((pPlot != NULL) ? pPlot->GetPlotIndex() : -1);
+	vArgs.push_back(iOrigin);
+	vArgs.push_back(iSource1);
+	vArgs.push_back(iSource2);
+	vArgs.push_back(kUnit.getDamage());
+	const int iNumPromotions = GC.getNumPromotionInfos();
+	for (int iI = 0; iI < iNumPromotions; iI++)
+	{
+		if (kUnit.isHasPromotion((PromotionTypes)iI))
+			vArgs.push_back(iI);
+	}
+	addReplayEvent(REPLAYEVENT_RL_UnitCreated, kUnit.getOwner(), vArgs);
+
+	// The next sample logs this unit only if it moves (or is embarked:
+	// RL_UnitCreated carries no embarked flag, a reader starts it at 0).
+	ResultLogUnitState kState;
+	kState.iPlot = (pPlot != NULL) ? pPlot->GetPlotIndex() : -1;
+	kState.iEmbarked = 0;
+	kState.iExperience = -1; // the next sample always writes its RL_UnitXP line (same on every machine)
+	kState.iLevel = -1;
+	m_kResultLogUnits[std::make_pair((int)kUnit.getOwner(), kUnit.GetID())] = kState;
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogUnitRemoved(const CvUnit& kUnit, PlayerTypes eKiller)
+{
+	std::vector<int> vArgs;
+	const CvPlot* pPlot = kUnit.plot();
+	vArgs.push_back(kUnit.GetID());
+	vArgs.push_back((int)kUnit.getUnitType());
+	vArgs.push_back((pPlot != NULL) ? pPlot->GetPlotIndex() : -1);
+	vArgs.push_back((int)eKiller);
+	addReplayEvent(REPLAYEVENT_RL_UnitRemoved, kUnit.getOwner(), vArgs);
+	m_kResultLogUnits.erase(std::make_pair((int)kUnit.getOwner(), kUnit.GetID()));
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogUnitDamage(const CvUnit& kUnit, PlayerTypes eByPlayer)
+{
+	if (&kUnit == m_pResultLogUnitInInit)
+		return;
+	// the unit that did the hit, while CvUnitCombat::ResolveCombat runs (RESULTLOG_SCOPE_COMBAT)
+	int iHitter = -1;
+	if (eByPlayer != NO_PLAYER)
+	{
+		int iAttackingPlayer = -1;
+		int iDefenderID = -1;
+		const int iAttackerID = getResultLogScope(RESULTLOG_SCOPE_COMBAT, iAttackingPlayer, iDefenderID);
+		if (iAttackingPlayer != -1)
+		{
+			if ((int)kUnit.getOwner() == iAttackingPlayer && kUnit.GetID() == iAttackerID)
+				iHitter = iDefenderID; // the attacker took damage back from the defender
+			else
+				iHitter = iAttackerID; // the defender took the attacker's hit
+		}
+	}
+	std::vector<int> vArgs;
+	vArgs.push_back(kUnit.GetID());
+	vArgs.push_back(kUnit.getDamage());
+	vArgs.push_back((int)eByPlayer);
+	vArgs.push_back(iHitter);
+	addReplayEvent(REPLAYEVENT_RL_UnitDamage, kUnit.getOwner(), vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogUnitPromotion(const CvUnit& kUnit, int iPromotion, bool bHas)
+{
+	if (&kUnit == m_pResultLogUnitInInit)
+		return;
+	std::vector<int> vArgs;
+	vArgs.push_back(kUnit.GetID());
+	vArgs.push_back(iPromotion);
+	vArgs.push_back(bHas ? 1 : 0);
+	addReplayEvent(REPLAYEVENT_RL_UnitPromotion, kUnit.getOwner(), vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogCityFounded(const CvCity& kCity, bool bInitialFounding)
+{
+	std::vector<int> vArgs;
+	vArgs.push_back(ResultLogPlotIndex(kCity.getX(), kCity.getY()));
+	vArgs.push_back(kCity.GetID());
+	vArgs.push_back(bInitialFounding ? 1 : 0);
+	addReplayEvent(REPLAYEVENT_RL_CityFounded, kCity.getOwner(), vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogCityRemoved(const CvCity& kCity)
+{
+	std::vector<int> vArgs;
+	vArgs.push_back(ResultLogPlotIndex(kCity.getX(), kCity.getY()));
+	vArgs.push_back(kCity.GetID());
+	addReplayEvent(REPLAYEVENT_RL_CityRemoved, kCity.getOwner(), vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogCitySize(const CvCity& kCity, int iPopulation)
+{
+	std::vector<int> vArgs;
+	vArgs.push_back(ResultLogPlotIndex(kCity.getX(), kCity.getY()));
+	vArgs.push_back(iPopulation);
+	addReplayEvent(REPLAYEVENT_RL_CitySize, kCity.getOwner(), vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogCityProduced(const CvCity& kCity, int iOrderType, int iItem, int iUnitID)
+{
+	int iSource1 = -1;
+	int iSource2 = -1;
+	int iPaidWith = getResultLogScope(RESULTLOG_SCOPE_CITY_PAYMENT, iSource1, iSource2);
+	if (iPaidWith < 0)
+		iPaidWith = RESULTLOG_PAID_OTHER;
+
+	std::vector<int> vArgs;
+	vArgs.push_back(ResultLogPlotIndex(kCity.getX(), kCity.getY()));
+	vArgs.push_back(iOrderType);
+	vArgs.push_back(iItem);
+	vArgs.push_back(iPaidWith);
+	vArgs.push_back(iUnitID);
+	addReplayEvent(REPLAYEVENT_RL_CityProduced, kCity.getOwner(), vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogCityBuilding(const CvCity& kCity, int iBuilding, int iRealCount, int iFreeCount)
+{
+	std::vector<int> vArgs;
+	vArgs.push_back(ResultLogPlotIndex(kCity.getX(), kCity.getY()));
+	vArgs.push_back(iBuilding);
+	vArgs.push_back(iRealCount);
+	vArgs.push_back(iFreeCount);
+	addReplayEvent(REPLAYEVENT_RL_CityBuilding, kCity.getOwner(), vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogCityDamage(const CvCity& kCity, int iDamage)
+{
+	std::vector<int> vArgs;
+	vArgs.push_back(ResultLogPlotIndex(kCity.getX(), kCity.getY()));
+	vArgs.push_back(iDamage);
+	addReplayEvent(REPLAYEVENT_RL_CityDamage, kCity.getOwner(), vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogPlotImprovement(const CvPlot& kPlot, int iOldImprovement, int iNewImprovement, PlayerTypes eBuilder)
+{
+	std::vector<int> vArgs;
+	vArgs.push_back(kPlot.GetPlotIndex());
+	vArgs.push_back(iOldImprovement);
+	vArgs.push_back(iNewImprovement);
+	addReplayEvent(REPLAYEVENT_RL_PlotImprovement, (eBuilder != NO_PLAYER) ? eBuilder : kPlot.getOwner(), vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogPlotPillaged(const CvPlot& kPlot, bool bPillaged)
+{
+	std::vector<int> vArgs;
+	vArgs.push_back(kPlot.GetPlotIndex());
+	vArgs.push_back(bPillaged ? 1 : 0);
+	addReplayEvent(REPLAYEVENT_RL_PlotPillaged, kPlot.getOwner(), vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+/// CvPlot::setRevealed: kept until the next sample (one RL_Revealed per team).
+/// Major teams only: no screen shows what a city-state or the barbarians explored.
+void CvGame::resultLogPlotRevealed(TeamTypes eTeam, int iPlotIndex)
+{
+	if (eTeam < 0 || eTeam >= MAX_TEAMS || eTeam == BARBARIAN_TEAM)
+		return;
+	const CvTeam& kTeam = GET_TEAM(eTeam);
+	if (kTeam.isMinorCiv() || kTeam.isBarbarian())
+		return;
+	const PlayerTypes eLeader = kTeam.getLeaderID();
+	if (eLeader == NO_PLAYER || CvPreGame::slotStatus(eLeader) == SS_OBSERVER)
+		return;
+	m_aiResultLogRevealed[eTeam].push_back(iPlotIndex);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogPolicy(PlayerTypes ePlayer, int iPolicy, bool bHas)
+{
+	std::vector<int> vArgs;
+	vArgs.push_back(iPolicy);
+	vArgs.push_back(bHas ? 1 : 0);
+	addReplayEvent(REPLAYEVENT_RL_Policy, ePlayer, vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogPolicyBranch(PlayerTypes ePlayer, int iBranch, bool bUnlocked)
+{
+	std::vector<int> vArgs;
+	vArgs.push_back(iBranch);
+	vArgs.push_back(bUnlocked ? 1 : 0);
+	addReplayEvent(REPLAYEVENT_RL_PolicyBranch, ePlayer, vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogReligion(PlayerTypes ePlayer, int iReligion, int iKind, int iBelief1, int iBelief2, int iBelief3, int iBelief4, const CvCity* pHolyCity)
+{
+	std::vector<int> vArgs;
+	vArgs.push_back(iReligion);
+	vArgs.push_back(iKind);
+	vArgs.push_back(iBelief1);
+	vArgs.push_back(iBelief2);
+	vArgs.push_back(iBelief3);
+	vArgs.push_back(iBelief4);
+	vArgs.push_back((pHolyCity != NULL) ? pHolyCity->getX() : -1);
+	vArgs.push_back((pHolyCity != NULL) ? pHolyCity->getY() : -1);
+	addReplayEvent(REPLAYEVENT_RL_Religion, ePlayer, vArgs);
+}
+
+//	--------------------------------------------------------------------------------
+void CvGame::resultLogMinorAlly(PlayerTypes eMinor, PlayerTypes eOldAlly, PlayerTypes eNewAlly)
+{
+	std::vector<int> vArgs;
+	vArgs.push_back((int)eOldAlly);
+	vArgs.push_back((int)eNewAlly);
+	addReplayEvent(REPLAYEVENT_RL_MinorAlly, eMinor, vArgs);
+}
+#endif
+
 #ifdef KEK_SAVE_DATA
 //	--------------------------------------------------------------------------------
 /// Record the turn JSON's live per-player values as replay datasets, right
@@ -10323,7 +11538,9 @@ void CvGame::addReplayEvent(int eType, PlayerTypes ePlayer, std::vector<int> vNu
 /// (ENHANCED_GRAPHS). Kept out of the replay viewer (not in ReplayDataSets).
 /// Also logs the game key (REPLAYEVENT_KEK_GameKey) when it is new or changed:
 /// the save holds the map seed but not the sync seed.
-void CvGame::recordKekReplayData()
+/// KEK_RESULT_LOG: ends with the result log's samples and its save marker
+/// (iSaveKind = ResultLogSaveKind), so they are the last events in the save.
+void CvGame::recordKekReplayData(int iSaveKind)
 {
 	const int iTurn = getGameTurn();
 #ifdef KEK_PLAYER_STATS
@@ -10376,6 +11593,11 @@ void CvGame::recordKekReplayData()
 		kPlayer.setReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_KEK_FOODRATE"), iTurn, iFood);
 		kPlayer.setReplayDataValue(kPlayer.getReplayDataSetIndex("REPLAYDATASET_KEK_PRODUCTIONRATE"), iTurn, iProduction);
 	}
+#ifdef KEK_RESULT_LOG
+	resultLogSample(iSaveKind);
+#else
+	UNREFERENCED_PARAMETER(iSaveKind);
+#endif
 }
 #endif
 

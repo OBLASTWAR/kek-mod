@@ -1393,6 +1393,12 @@ public:
 	bool IsAnyProposalType(MPVotingSystemProposalTypes eType);
 	bool IsProposalTypeOnCooldown(MPVotingSystemProposalTypes eType, PlayerTypes ePlayerID);
 	bool IsProposalTypeAvailable(MPVotingSystemProposalTypes eType);
+#ifdef TEAMER_BALANCE_TEAM_CC
+	/// TeamerBalance mode: no IRR, and a CC only to a player of another team.
+	bool IsTeamerProposalAllowed(MPVotingSystemProposalTypes eType, PlayerTypes eOwner, PlayerTypes eSubject);
+	/// TeamerBalance mode: a CC is voted on only by the players not on the winning (subject's) team.
+	bool IsTeamerVoter(int iProposalID, PlayerTypes ePlayer);
+#endif
 
 	void DoTurn();
 	void AddProposal(MPVotingSystemProposalTypes eProposalType, PlayerTypes eProposalOwner, PlayerTypes eProposalSubject);

@@ -276,6 +276,9 @@ public:
 
 	bool IsEnabledQuest(MinorCivQuestTypes eQuest);
 	bool IsValidQuestForPlayer(PlayerTypes ePlayer, MinorCivQuestTypes eQuest);
+#ifdef TEAMER_BALANCE_CS_QUEST_SIDES
+	static int GetTeamerMapSide(PlayerTypes ePlayer);
+#endif
 	bool IsValidQuestCopyForPlayer(PlayerTypes ePlayer, CvMinorCivQuest* pQuest);
 	bool IsGlobalQuest(MinorCivQuestTypes eQuest) const;
 	bool IsPersonalQuest(MinorCivQuestTypes eQuest) const;
@@ -322,6 +325,10 @@ public:
 	PlayerTypes GetMostRecentBullyForQuest() const;
 	bool IsWantsMinorDead(PlayerTypes eMinor);
 	PlayerTypes GetBestPlayerToFind(PlayerTypes ePlayer);
+#ifdef TEAMER_BALANCE_FAIR_CS_QUESTS
+	int GetQuestRandNum(int iNum, const char* szLog, PlayerTypes eMajor, int iSalt);
+	int GetFairQuestTargetKey(PlayerTypes eAsker, PlayerTypes eTarget);
+#endif
 	bool IsGoodTimeForNaturalWonderQuest(PlayerTypes ePlayer);
 	bool IsGoodTimeForGiveGoldQuest();
 	bool IsGoodTimeForPledgeToProtectQuest();

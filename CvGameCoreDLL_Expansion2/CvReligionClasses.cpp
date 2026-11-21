@@ -602,7 +602,7 @@ CvGameReligions::FOUNDING_RESULT CvGameReligions::CanCreatePantheon(PlayerTypes 
 		return FOUNDING_PLAYER_ALREADY_CREATED_PANTHEON;
 	}
 
-	if(bCheckFaithTotal && iFaith < GetMinimumFaithNextPantheon())
+	if(bCheckFaithTotal && iFaith < GetPantheonPriceThisTurn())
 	{
 		return FOUNDING_NOT_ENOUGH_FAITH;
 	}
@@ -613,7 +613,7 @@ CvGameReligions::FOUNDING_RESULT CvGameReligions::CanCreatePantheon(PlayerTypes 
 	{
 		if(it->m_bEnhanced)
 		{
-			if (GetNumPantheonsCreated() >= GC.getMap().getWorldInfo().getMaxActiveReligions())
+			if (GetNumPantheonsCreated() >= GetMaxReligions())
 			{
 #ifdef BYZANTIUM_CAN_ALWAYS_FOUND_RELIGION
 				if (strcmp(kPlayer.getCivilizationTypeKey(), "CIVILIZATION_BYZANTIUM") == 0)
@@ -649,7 +649,7 @@ CvGameReligions::FOUNDING_RESULT CvGameReligions::CanCreatePantheon(PlayerTypes 
 		}
 	}
 
-	if (GetAvailablePantheonBeliefs().size() == 0)
+	if (GetAvailablePantheonBeliefs(ePlayer).size() == 0)
 		return FOUNDING_NO_BELIEFS_AVAILABLE;
 
 	return FOUNDING_OK;
@@ -750,15 +750,21 @@ void CvGameReligions::FoundPantheon(PlayerTypes ePlayer, BeliefTypes eBelief)
 	CvGame& kGame = GC.getGame();
 	CvPlayer& kPlayer = GET_PLAYER(ePlayer);
 
+	// Read before this pantheon joins the list: it counts toward this turn's price otherwise.
+	const int iPrice = GetPantheonPriceThisTurn();
+
 	CvReligion newReligion(RELIGION_PANTHEON, ePlayer, NULL, true);
 	newReligion.m_Beliefs.AddBelief(eBelief);
 
 	// Found it
 	m_CurrentReligions.push_back(newReligion);
+#ifdef KEK_RESULT_LOG
+	kGame.resultLogReligion(ePlayer, (int)RELIGION_PANTHEON, RESULTLOG_RELIGION_PANTHEON, (int)eBelief, -1, -1, -1, NULL);
+#endif
 
 	// Update game systems
 	kPlayer.UpdateReligion();
-	kPlayer.ChangeFaith(-GetMinimumFaithNextPantheon());
+	kPlayer.ChangeFaith(-iPrice);
 
 	int iIncrement = GC.getRELIGION_GAME_FAITH_DELTA_NEXT_PANTHEON();
 	iIncrement *= GC.getGame().getGameSpeedInfo().getTrainPercent();
@@ -895,6 +901,9 @@ void CvGameReligions::FoundReligion(PlayerTypes ePlayer, ReligionTypes eReligion
 
 	// Found it
 	m_CurrentReligions.push_back(kReligion);
+#ifdef KEK_RESULT_LOG
+	GC.getGame().resultLogReligion(ePlayer, (int)eReligion, RESULTLOG_RELIGION_FOUNDED, (int)eBelief1, (int)eBelief2, (int)eBelief3, (int)eBelief4, pkHolyCity);
+#endif
 
 	// Inform the holy city
 	pkHolyCity->GetCityReligions()->DoReligionFounded(kReligion.m_eReligion);
@@ -1049,6 +1058,26 @@ CvGameReligions::FOUNDING_RESULT CvGameReligions::CanFoundReligion(PlayerTypes e
 		strcpy_s(kReligion.m_szCustomName, szCustomName);
 	}
 
+#ifdef TEAMER_BALANCE_SAME_TURN_BELIEFS
+	// TeamerBalance: a pantheon shared with another team (both founded it on the same turn) may go
+	// into either founder's religion, and picks another team made this turn don't block.
+	// (GAMEOPTION_TEAM_BELIEFS: picks another team made on any turn don't block.)
+	if(GC.getGame().isTeamerOption(TEAMER_OPTION_SAME_TURN_PANTHEONS) || GC.getGame().isTeamerOption(TEAMER_OPTION_TEAM_BELIEFS))
+	{
+		for(ReligionList::const_iterator it = m_CurrentReligions.begin(); it != m_CurrentReligions.end(); it++)
+		{
+			if ((*it).m_eFounder != ePlayer && kReligion.m_eReligion == (*it).m_eReligion)
+				return FOUNDING_RELIGION_IN_USE;
+		}
+		for(int iDestBelief = kReligion.m_Beliefs.GetNumBeliefs(); iDestBelief--;)
+		{
+			BeliefTypes eDestBelief = kReligion.m_Beliefs.GetBelief(iDestBelief);
+			if(eDestBelief != NO_BELIEF && eDestBelief != eBelief && IsBeliefTakenFor(eDestBelief, ePlayer))
+				return FOUNDING_BELIEF_IN_USE;
+		}
+		return FOUNDING_OK;
+	}
+#endif
 	// Now see if there are any conflicts.
 	for(ReligionList::const_iterator it = m_CurrentReligions.begin(); it != m_CurrentReligions.end(); it++)
 	{
@@ -1099,6 +1128,9 @@ void CvGameReligions::EnhanceReligion(PlayerTypes ePlayer, ReligionTypes eReligi
 	it->m_Beliefs.AddBelief(eBelief1);
 	it->m_Beliefs.AddBelief(eBelief2);
 	it->m_bEnhanced = true;
+#ifdef KEK_RESULT_LOG
+	GC.getGame().resultLogReligion(ePlayer, (int)eReligion, RESULTLOG_RELIGION_ENHANCED, (int)eBelief1, (int)eBelief2, -1, -1, NULL);
+#endif
 
 	// Update game systems
 	UpdateAllCitiesThisReligion(eReligion);
@@ -1184,9 +1216,9 @@ CvGameReligions::FOUNDING_RESULT CvGameReligions::CanEnhanceReligion(PlayerTypes
 
 	if(bFoundIt)
 	{
-		if(eBelief1 != NO_BELIEF && IsInSomeReligion(eBelief1))
+		if(eBelief1 != NO_BELIEF && IsBeliefTakenFor(eBelief1, ePlayer))
 			return FOUNDING_BELIEF_IN_USE;
-		if(eBelief2 != NO_BELIEF && IsInSomeReligion(eBelief2))
+		if(eBelief2 != NO_BELIEF && IsBeliefTakenFor(eBelief2, ePlayer))
 			return FOUNDING_BELIEF_IN_USE;
 
 		return FOUNDING_OK;
@@ -1216,6 +1248,9 @@ void CvGameReligions::AddReformationBelief(PlayerTypes ePlayer, ReligionTypes eR
 	}
 
 	it->m_Beliefs.AddBelief(eBelief1);
+#ifdef KEK_RESULT_LOG
+	GC.getGame().resultLogReligion(ePlayer, (int)eReligion, RESULTLOG_RELIGION_REFORMED, (int)eBelief1, -1, -1, -1, NULL);
+#endif
 
 	// Update game systems
 	UpdateAllCitiesThisReligion(eReligion);
@@ -1363,6 +1398,81 @@ bool CvGameReligions::IsInSomeReligion(BeliefTypes eBelief) const
 	return false;
 }
 
+/// Is this belief taken for ePlayer?
+// TeamerBalance (TEAMER_BALANCE_SAME_TURN_BELIEFS): a pick another TEAM made on this very turn does not
+// block, so same-turn founders can share it: pantheon beliefs held by a pantheon founded this
+// turn, founder/follower beliefs held by a religion founded this turn. Anything older, anything
+// a teammate holds, and anything the player holds already stays taken. "This turn" is the
+// religion's founding turn, which the save keeps.
+bool CvGameReligions::IsBeliefTakenFor(BeliefTypes eBelief, PlayerTypes ePlayer) const
+{
+#ifdef TEAMER_BALANCE_SAME_TURN_BELIEFS
+	CvBeliefEntry* pEntry = GC.GetGameBeliefs()->GetEntry(eBelief);
+	const bool bTeamBeliefs = GC.getGame().isTeamerOption(TEAMER_OPTION_TEAM_BELIEFS);
+	if(ePlayer == NO_PLAYER || ePlayer >= MAX_MAJOR_CIVS || pEntry == NULL || (!GC.getGame().isTeamerOption(TEAMER_OPTION_SAME_TURN_PANTHEONS) && !bTeamBeliefs))
+		return IsInSomeReligion(eBelief);
+
+	const bool bPantheonBelief = pEntry->IsPantheonBelief();
+	const bool bFoundingBelief = pEntry->IsFounderBelief() || pEntry->IsFollowerBelief();
+	const int iTurn = GC.getGame().getGameTurn();
+	const TeamTypes eTeam = GET_PLAYER(ePlayer).getTeam();
+
+	ReligionList::const_iterator it;
+	for(it = m_CurrentReligions.begin(); it != m_CurrentReligions.end(); it++)
+	{
+		if(!it->m_Beliefs.HasBelief(eBelief))
+			continue;
+#ifdef TEAMER_BALANCE_TEAM_BELIEFS
+		// GAMEOPTION_TEAM_BELIEFS: only my own team's picks block me
+		if(bTeamBeliefs && it->m_eFounder != NO_PLAYER && it->m_eFounder != ePlayer && GET_PLAYER(it->m_eFounder).getTeam() != eTeam)
+			continue;
+#endif
+
+		bool bSameTurnOtherTeam = it->m_iTurnFounded == iTurn && it->m_eFounder != NO_PLAYER && it->m_eFounder != ePlayer
+			&& GET_PLAYER(it->m_eFounder).getTeam() != eTeam;
+		if(bSameTurnOtherTeam)
+			bSameTurnOtherTeam = bPantheonBelief ? it->m_bPantheon : (bFoundingBelief && !it->m_bPantheon && !it->m_bEnhanced);
+
+		if(!bSameTurnOtherTeam)
+			return true;
+	}
+
+	return false;
+#else
+	return IsInSomeReligion(eBelief);
+#endif
+}
+
+/// What a pantheon costs right now
+// TeamerBalance (TEAMER_BALANCE_SAME_TURN_BELIEFS): every pantheon founded on a turn costs that turn's
+// starting price; the rise for each of them shows from the next turn on. The stored minimum
+// still rises at once (that value is what the save keeps), so the price here takes this turn's
+// rises off again, counting the pantheons whose founding turn is this turn.
+int CvGameReligions::GetPantheonPriceThisTurn() const
+{
+#ifdef TEAMER_BALANCE_SAME_TURN_BELIEFS
+	if(!GC.getGame().isTeamerOption(TEAMER_OPTION_SAME_TURN_PANTHEONS))
+		return m_iMinimumFaithForNextPantheon;
+
+	int iIncrement = GC.getRELIGION_GAME_FAITH_DELTA_NEXT_PANTHEON();
+	iIncrement *= GC.getGame().getGameSpeedInfo().getTrainPercent();
+	iIncrement /= 100;
+
+	const int iTurn = GC.getGame().getGameTurn();
+	int iFoundedThisTurn = 0;
+	ReligionList::const_iterator it;
+	for(it = m_CurrentReligions.begin(); it != m_CurrentReligions.end(); it++)
+	{
+		if(it->m_bPantheon && it->m_iTurnFounded == iTurn)
+			iFoundedThisTurn++;
+	}
+
+	return std::max(0, m_iMinimumFaithForNextPantheon - iIncrement * iFoundedThisTurn);
+#else
+	return m_iMinimumFaithForNextPantheon;
+#endif
+}
+
 /// Get the belief in this player's pantheon
 BeliefTypes CvGameReligions::GetBeliefInPantheon(PlayerTypes ePlayer) const
 {
@@ -1415,7 +1525,7 @@ int CvGameReligions::GetNumPantheonsCreated() const
 }
 
 /// List of beliefs that can be adopted by pantheons
-std::vector<BeliefTypes> CvGameReligions::GetAvailablePantheonBeliefs()
+std::vector<BeliefTypes> CvGameReligions::GetAvailablePantheonBeliefs(PlayerTypes ePlayer)
 {
 	std::vector<BeliefTypes> availableBeliefs;
 
@@ -1426,7 +1536,7 @@ std::vector<BeliefTypes> CvGameReligions::GetAvailablePantheonBeliefs()
 	for(int iI = 0; iI < iNumBeleifs; iI++)
 	{
 		const BeliefTypes eBelief(static_cast<BeliefTypes>(iI));
-		if(!IsInSomeReligion(eBelief))
+		if(!IsBeliefTakenFor(eBelief, ePlayer))
 		{
 			CvBeliefEntry* pEntry = pkBeliefs->GetEntry(eBelief);
 			if(pEntry && pEntry->IsPantheonBelief())
@@ -1468,10 +1578,10 @@ std::vector<BeliefTypes> CvGameReligions::GetAvailablePantheonBeliefs()
 }
 
 // Is the supplied belief available to a pantheon?
-bool CvGameReligions::IsPantheonBeliefAvailable(BeliefTypes eBelief)
+bool CvGameReligions::IsPantheonBeliefAvailable(BeliefTypes eBelief, PlayerTypes ePlayer)
 {
 	CvBeliefXMLEntries* pkBeliefs = GC.GetGameBeliefs();
-	if(!IsInSomeReligion(eBelief))
+	if(!IsBeliefTakenFor(eBelief, ePlayer))
 	{
 		CvBeliefEntry* pEntry = pkBeliefs->GetEntry(eBelief);
 		if(pEntry && pEntry->IsPantheonBelief())
@@ -1704,11 +1814,31 @@ int CvGameReligions::GetNumReligionsEnhanced() const
 /// Number of religions that still can be founded on this size map
 int CvGameReligions::GetNumReligionsStillToFound() const
 {
-	return (GC.getMap().getWorldInfo().getMaxActiveReligions() - GetNumReligionsFounded());
+	return (GetMaxReligions() - GetNumReligionsFounded());
+}
+
+/// How many religions this game allows (the map size's number; TeamerBalance "religion for all": one per civ)
+int CvGameReligions::GetMaxReligions() const
+{
+	int iMax = GC.getMap().getWorldInfo().getMaxActiveReligions();
+#ifdef TEAMER_BALANCE_RELIGION_FOR_ALL
+	if(GC.getGame().isTeamerOption(TEAMER_OPTION_RELIGION_FOR_ALL))
+	{
+		int iMajors = 0;
+		for(int iPlayer = 0; iPlayer < MAX_MAJOR_CIVS; iPlayer++)
+		{
+			if(GET_PLAYER((PlayerTypes)iPlayer).isEverAlive() && !GET_PLAYER((PlayerTypes)iPlayer).isMinorCiv())
+				iMajors++;
+		}
+		const int iReligionTypes = GC.getNumReligionInfos() - 1;	// without the pantheon
+		iMax = std::max(iMax, std::min(iMajors, iReligionTypes));
+	}
+#endif
+	return iMax;
 }
 
 /// List of beliefs that can be adopted by religion founders
-std::vector<BeliefTypes> CvGameReligions::GetAvailableFounderBeliefs()
+std::vector<BeliefTypes> CvGameReligions::GetAvailableFounderBeliefs(PlayerTypes ePlayer)
 {
 	std::vector<BeliefTypes> availableBeliefs;
 
@@ -1719,7 +1849,7 @@ std::vector<BeliefTypes> CvGameReligions::GetAvailableFounderBeliefs()
 	for(int iI = 0; iI < iNumBeleifs; iI++)
 	{
 		const BeliefTypes eBelief(static_cast<BeliefTypes>(iI));
-		if(!IsInSomeReligion(eBelief))
+		if(!IsBeliefTakenFor(eBelief, ePlayer))
 		{
 			CvBeliefEntry* pEntry = pkBeliefs->GetEntry(eBelief);
 			if(pEntry && pEntry->IsFounderBelief())
@@ -1761,7 +1891,7 @@ std::vector<BeliefTypes> CvGameReligions::GetAvailableFounderBeliefs()
 }
 
 /// List of beliefs that can be adopted by religion followers
-std::vector<BeliefTypes> CvGameReligions::GetAvailableFollowerBeliefs()
+std::vector<BeliefTypes> CvGameReligions::GetAvailableFollowerBeliefs(PlayerTypes ePlayer)
 {
 	std::vector<BeliefTypes> availableBeliefs;
 
@@ -1772,7 +1902,7 @@ std::vector<BeliefTypes> CvGameReligions::GetAvailableFollowerBeliefs()
 	for(int iI = 0; iI < iNumBeleifs; iI++)
 	{
 		const BeliefTypes eBelief(static_cast<BeliefTypes>(iI));
-		if(!IsInSomeReligion(eBelief))
+		if(!IsBeliefTakenFor(eBelief, ePlayer))
 		{
 			CvBeliefEntry* pEntry = pkBeliefs->GetEntry(eBelief);
 			if(pEntry && pEntry->IsFollowerBelief())
@@ -1814,7 +1944,7 @@ std::vector<BeliefTypes> CvGameReligions::GetAvailableFollowerBeliefs()
 }
 
 /// List of beliefs that enhance religions
-std::vector<BeliefTypes> CvGameReligions::GetAvailableEnhancerBeliefs()
+std::vector<BeliefTypes> CvGameReligions::GetAvailableEnhancerBeliefs(PlayerTypes ePlayer)
 {
 	std::vector<BeliefTypes> availableBeliefs;
 
@@ -1825,7 +1955,7 @@ std::vector<BeliefTypes> CvGameReligions::GetAvailableEnhancerBeliefs()
 	for(int iI = 0; iI < iNumBeleifs; iI++)
 	{
 		const BeliefTypes eBelief(static_cast<BeliefTypes>(iI));
-		if(!IsInSomeReligion(eBelief))
+		if(!IsBeliefTakenFor(eBelief, ePlayer))
 		{
 			CvBeliefEntry* pEntry = pkBeliefs->GetEntry(eBelief);
 			if(pEntry && pEntry->IsEnhancerBelief())
@@ -1867,7 +1997,7 @@ std::vector<BeliefTypes> CvGameReligions::GetAvailableEnhancerBeliefs()
 }
 
 /// List of all beliefs still available
-std::vector<BeliefTypes> CvGameReligions::GetAvailableBonusBeliefs()
+std::vector<BeliefTypes> CvGameReligions::GetAvailableBonusBeliefs(PlayerTypes ePlayer)
 {
 	std::vector<BeliefTypes> availableBeliefs;
 
@@ -1878,7 +2008,7 @@ std::vector<BeliefTypes> CvGameReligions::GetAvailableBonusBeliefs()
 	for(int iI = 0; iI < iNumBeleifs; iI++)
 	{
 		const BeliefTypes eBelief(static_cast<BeliefTypes>(iI));
-		if(!IsInSomeReligion(eBelief))
+		if(!IsBeliefTakenFor(eBelief, ePlayer))
 		{
 			CvBeliefEntry* pEntry = pkBeliefs->GetEntry(eBelief);
 			if(pEntry && (pEntry->IsEnhancerBelief() || pEntry->IsFollowerBelief() || pEntry->IsFounderBelief() || pEntry->IsPantheonBelief()))
@@ -1938,7 +2068,7 @@ std::vector<BeliefTypes> CvGameReligions::GetAvailableBonusBeliefs()
 }
 
 /// List of beliefs that are added with Reformation social policy
-std::vector<BeliefTypes> CvGameReligions::GetAvailableReformationBeliefs()
+std::vector<BeliefTypes> CvGameReligions::GetAvailableReformationBeliefs(PlayerTypes ePlayer)
 {
 	std::vector<BeliefTypes> availableBeliefs;
 
@@ -1949,7 +2079,7 @@ std::vector<BeliefTypes> CvGameReligions::GetAvailableReformationBeliefs()
 	for(int iI = 0; iI < iNumBeleifs; iI++)
 	{
 		const BeliefTypes eBelief(static_cast<BeliefTypes>(iI));
-		if(!IsInSomeReligion(eBelief))
+		if(!IsBeliefTakenFor(eBelief, ePlayer))
 		{
 			CvBeliefEntry* pEntry = pkBeliefs->GetEntry(eBelief);
 			if(pEntry && pEntry->IsReformationBelief())
@@ -2290,6 +2420,11 @@ bool CvGameReligions::CheckSpawnGreatProphet(CvPlayer& kPlayer)
 
 	int iChance = GC.getRELIGION_BASE_CHANCE_PROPHET_SPAWN();
 	iChance += (iFaith - iCost);
+#ifdef TEAMER_BALANCE_GUARANTEED_PROPHET
+	// TeamerBalance: enough faith always brings the Great Prophet (no luck roll).
+	if(GC.getGame().isTeamerOption(TEAMER_OPTION_GUARANTEED_PROPHET))
+		iChance = 100;
+#endif
 
 	int iRand = GC.getGame().getJonRandNum(100, "Religion: spawn Great Prophet roll.");
 	if(iRand >= iChance)
@@ -4507,7 +4642,7 @@ BeliefTypes CvReligionAI::ChoosePantheonBelief()
 	CvGameReligions* pGameReligions = GC.getGame().GetGameReligions();
 	CvWeightedVector<BeliefTypes, SAFE_ESTIMATE_NUM_BELIEFS, true> beliefChoices;
 
-	std::vector<BeliefTypes> availableBeliefs = pGameReligions->GetAvailablePantheonBeliefs();
+	std::vector<BeliefTypes> availableBeliefs = pGameReligions->GetAvailablePantheonBeliefs(m_pPlayer->GetID());
 
 	for(std::vector<BeliefTypes>::iterator it = availableBeliefs.begin();
 	        it!= availableBeliefs.end(); ++it)
@@ -4540,7 +4675,7 @@ BeliefTypes CvReligionAI::ChooseFounderBelief()
 	CvGameReligions* pGameReligions = GC.getGame().GetGameReligions();
 	CvWeightedVector<BeliefTypes, SAFE_ESTIMATE_NUM_BELIEFS, true> beliefChoices;
 
-	std::vector<BeliefTypes> availableBeliefs = pGameReligions->GetAvailableFounderBeliefs();
+	std::vector<BeliefTypes> availableBeliefs = pGameReligions->GetAvailableFounderBeliefs(m_pPlayer->GetID());
 
 	for(std::vector<BeliefTypes>::iterator it = availableBeliefs.begin();
 	        it!= availableBeliefs.end(); ++it)
@@ -4573,7 +4708,7 @@ BeliefTypes CvReligionAI::ChooseFollowerBelief()
 	CvGameReligions* pGameReligions = GC.getGame().GetGameReligions();
 	CvWeightedVector<BeliefTypes, SAFE_ESTIMATE_NUM_BELIEFS, true> beliefChoices;
 
-	std::vector<BeliefTypes> availableBeliefs = pGameReligions->GetAvailableFollowerBeliefs();
+	std::vector<BeliefTypes> availableBeliefs = pGameReligions->GetAvailableFollowerBeliefs(m_pPlayer->GetID());
 
 	for(std::vector<BeliefTypes>::iterator it = availableBeliefs.begin();
 	        it!= availableBeliefs.end(); ++it)
@@ -4606,7 +4741,7 @@ BeliefTypes CvReligionAI::ChooseEnhancerBelief()
 	CvGameReligions* pGameReligions = GC.getGame().GetGameReligions();
 	CvWeightedVector<BeliefTypes, SAFE_ESTIMATE_NUM_BELIEFS, true> beliefChoices;
 
-	std::vector<BeliefTypes> availableBeliefs = pGameReligions->GetAvailableEnhancerBeliefs();
+	std::vector<BeliefTypes> availableBeliefs = pGameReligions->GetAvailableEnhancerBeliefs(m_pPlayer->GetID());
 
 	for(std::vector<BeliefTypes>::iterator it = availableBeliefs.begin();
 	        it!= availableBeliefs.end(); ++it)
@@ -4639,7 +4774,7 @@ BeliefTypes CvReligionAI::ChooseBonusBelief(int iExcludeBelief1, int iExcludeBel
 	CvGameReligions* pGameReligions = GC.getGame().GetGameReligions();
 	CvWeightedVector<BeliefTypes, SAFE_ESTIMATE_NUM_BELIEFS, true> beliefChoices;
 
-	std::vector<BeliefTypes> availableBeliefs = pGameReligions->GetAvailableBonusBeliefs();
+	std::vector<BeliefTypes> availableBeliefs = pGameReligions->GetAvailableBonusBeliefs(m_pPlayer->GetID());
 
 	for(std::vector<BeliefTypes>::iterator it = availableBeliefs.begin();
 	        it!= availableBeliefs.end(); ++it)
@@ -4675,7 +4810,7 @@ BeliefTypes CvReligionAI::ChooseReformationBelief()
 	CvGameReligions* pGameReligions = GC.getGame().GetGameReligions();
 	CvWeightedVector<BeliefTypes, SAFE_ESTIMATE_NUM_BELIEFS, true> beliefChoices;
 
-	std::vector<BeliefTypes> availableBeliefs = pGameReligions->GetAvailableReformationBeliefs();
+	std::vector<BeliefTypes> availableBeliefs = pGameReligions->GetAvailableReformationBeliefs(m_pPlayer->GetID());
 
 	for(std::vector<BeliefTypes>::iterator it = availableBeliefs.begin();
 	        it!= availableBeliefs.end(); ++it)

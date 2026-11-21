@@ -43,6 +43,228 @@ g_VictoryCondtionsManager = InstanceManager:new("GameOptionInstance", "GameOptio
 -- Pulled out from Screen Options since they were so long
 ------------------------------------------------------------------------------------------------------
 -- Refreshes all dynamic drop down game options
+-- TeamerBalance rule checkboxes (sorted below the normal options).
+g_TeamerBalanceRules = {
+	GAMEOPTION_SAME_TURN_WONDERS = true,
+	GAMEOPTION_SAME_TURN_PANTHEONS = true,
+	GAMEOPTION_NO_RELIGIOUS_CS = true,
+	GAMEOPTION_FAIR_RUINS = true,
+	GAMEOPTION_EXTRA_LUXURY_HAPPINESS = true,
+	GAMEOPTION_REVEAL_OWN_HALF = true,
+	GAMEOPTION_MIRRORED_CITY_STATES = true,
+	GAMEOPTION_NO_RUIN_UPGRADE = true,
+	GAMEOPTION_FAIR_BARBARIAN_CAMPS = true,
+	GAMEOPTION_FAIR_CS_QUESTS = true,
+	GAMEOPTION_GUARANTEED_PROPHET = true,
+	GAMEOPTION_RELIGION_FOR_ALL = true,
+	GAMEOPTION_CS_WORKERS = true,
+	GAMEOPTION_NO_GLOBAL_CS_QUESTS = true,
+	GAMEOPTION_CS_QUESTS_OWN_SIDE = true,
+	GAMEOPTION_TEAM_BELIEFS = true,
+	GAMEOPTION_CAPTURE_POP_FLOOR = true,
+};
+
+-- TeamerBalance war block dropdowns, int game options read by the DLL (CvGame::IsFairWarBlocked):
+--   GAMEOPTION_NO_WAR_TURNS: 0 = off, else no war between players before that many turns.
+--   GAMEOPTION_NO_WAR_ERA:   0 = off, else no war until any player reaches that era (era ID).
+function AddFairIntDropDown(strOption, strNameKey, strHelpKey, values)
+	local gameOption = g_DropDownOptionsManager:GetInstance();
+	local toolTip = Locale.ConvertTextKey(strHelpKey);
+
+	gameOption.OptionName:SetText(Locale.ConvertTextKey(strNameKey));
+	gameOption.OptionName:SetToolTipString(toolTip);
+	gameOption.OptionDropDown:SetDisabled(false);
+
+	local dropDownButton = gameOption.OptionDropDown:GetButton();
+	dropDownButton:SetToolTipString(toolTip);
+
+	gameOption.OptionDropDown:ClearEntries();
+	for _, entry in ipairs(values) do
+		local controlTable = {};
+		gameOption.OptionDropDown:BuildEntry( "InstanceOne", controlTable );
+		controlTable.Button:SetText(entry.Name);
+		controlTable.Button:RegisterCallback(Mouse.eLClick, function()
+			dropDownButton:SetText(entry.Name);
+			PreGame.SetGameOption(strOption, entry.Value);
+		end);
+	end
+
+	local current = values[1];
+	for _, entry in ipairs(values) do
+		if(PreGame.GetGameOption(strOption) == entry.Value) then
+			current = entry;
+		end
+	end
+	dropDownButton:SetText(current.Name);
+
+	gameOption.OptionDropDown:CalculateInternals();
+end
+
+-- TeamerBalance game mode (GAMEOPTION_TEAMER_MODE: 0 = Normal KEK, 1 = TeamerBalance). The
+-- TeamerBalance options only show (and only count, see CvGame::isTeamerOption) in TeamerBalance mode.
+-- Picking the mode sets its defaults.
+g_TeamerModeDefaults = {
+	GAMEOPTION_SAME_TURN_WONDERS = 1,
+	GAMEOPTION_SAME_TURN_PANTHEONS = 1,
+	GAMEOPTION_NO_RELIGIOUS_CS = 1,
+	GAMEOPTION_FAIR_RUINS = 1,
+	GAMEOPTION_EXTRA_LUXURY_HAPPINESS = 1,
+	GAMEOPTION_MIRRORED_CITY_STATES = 1,
+	GAMEOPTION_NO_RUIN_UPGRADE = 1,
+	GAMEOPTION_FAIR_BARBARIAN_CAMPS = 1,
+	GAMEOPTION_FAIR_CS_QUESTS = 1,
+	GAMEOPTION_GUARANTEED_PROPHET = 0,
+	GAMEOPTION_RELIGION_FOR_ALL = 0,
+	GAMEOPTION_CS_WORKERS = 0,
+	GAMEOPTION_NO_GLOBAL_CS_QUESTS = 1,
+	GAMEOPTION_CS_QUESTS_OWN_SIDE = 1,
+	GAMEOPTION_TEAM_BELIEFS = 1,
+	GAMEOPTION_CAPTURE_POP_FLOOR = 0,
+	GAMEOPTION_BARB_CAMPS_PER_PLAYER = 2,
+	GAMEOPTION_REVEAL_OWN_HALF = 0,
+	GAMEOPTION_BAN_BUILDING_GREAT_LIBRARY = 1,
+	GAMEOPTION_BAN_BUILDING_GREAT_WALL = 1,
+	GAMEOPTION_BAN_BUILDING_TERRACOTTA_ARMY = 1,
+	GAMEOPTION_NO_WAR_TURNS = 0,
+	GAMEOPTION_NO_WAR_ERA = 0,
+};
+
+-- Game modes (GAMEOPTION_TEAMER_MODE): 0 = KEK, 1 = TeamerBalance, 2 = KEK+ Balance (hidden in the
+-- mode list for now). The DLL reads an option only in a mode that shows it.
+g_ExtraOptions = {	-- every mode
+	GAMEOPTION_SAME_TURN_WONDERS = true,
+	GAMEOPTION_GUARANTEED_PROPHET = true,
+	GAMEOPTION_RELIGION_FOR_ALL = true,
+	GAMEOPTION_CAPTURE_POP_FLOOR = true,
+	GAMEOPTION_CS_WORKERS = true,
+};
+-- Recommended settings: what picking a mode ticks (the TeamerBalance rules keep g_TeamerModeDefaults).
+g_ModeRecommended = {
+	GAMEOPTION_SAME_TURN_WONDERS = 0,
+	GAMEOPTION_GUARANTEED_PROPHET = 1,
+	GAMEOPTION_RELIGION_FOR_ALL = 0,
+	GAMEOPTION_CAPTURE_POP_FLOOR = 0,
+	GAMEOPTION_CS_WORKERS = 1,
+};
+
+function GetTeamerMode()
+	local iMode = PreGame.GetGameOption("GAMEOPTION_TEAMER_MODE");
+	if(iMode ~= nil and iMode >= 1 and iMode <= 2) then
+		return iMode;
+	end
+	return 0;
+end
+
+-- Any mode but plain KEK (shows the extra options).
+function IsTeamerMode()
+	return GetTeamerMode() ~= 0;
+end
+-- TeamerBalance (the fairness rules, wonder bans, war blocks).
+function IsTeamerFair()
+	return GetTeamerMode() == 1;
+end
+
+-- True when some team has more than one civ (team vs team, not 1v1).
+function IsTeamGame()
+	local sizes = {};
+	for i = 0, GameDefines.MAX_MAJOR_CIVS - 1 do
+		local status = PreGame.GetSlotStatus(i);
+		if(status == SlotStatus.SS_TAKEN or status == SlotStatus.SS_COMPUTER) then
+			local t = PreGame.GetTeam(i);
+			sizes[t] = (sizes[t] or 0) + 1;
+			if(sizes[t] > 1) then return true; end
+		end
+	end
+	return false;
+end
+
+function IsShownInMode(strType)
+	-- Extra luxury copies: 1v1 only, hidden in team vs team.
+	if(strType == "GAMEOPTION_EXTRA_LUXURY_HAPPINESS" and IsTeamGame()) then
+		return false;
+	end
+	if(g_ExtraOptions[strType]) then
+		return IsTeamerMode();
+	end
+	return IsTeamerFair();
+end
+
+function IsTeamerOptionType(strType)
+	return g_TeamerModeDefaults[strType] ~= nil or string.find(strType, "^GAMEOPTION_BAN_BUILDING_") ~= nil;
+end
+
+function SetTeamerMode(iMode)
+	PreGame.SetGameOption("GAMEOPTION_TEAMER_MODE", iMode);
+	for strType, iDefault in pairs(g_TeamerModeDefaults) do
+		local iValue = 0;
+		if(iMode ~= 0 and IsShownInMode(strType)) then
+			if(g_ModeRecommended[strType] ~= nil) then
+				iValue = g_ModeRecommended[strType];
+			else
+				iValue = iDefault;
+			end
+		end
+		PreGame.SetGameOption(strType, iValue);
+	end
+end
+
+function AddTeamerModeDropDown(bCanEdit, fnChanged)
+	local gameOption = g_DropDownOptionsManager:GetInstance();
+	local toolTip = Locale.ConvertTextKey("TXT_KEY_GAME_OPTION_TEAMER_MODE_HELP");
+	gameOption.OptionName:SetText(Locale.ConvertTextKey("TXT_KEY_GAME_OPTION_TEAMER_MODE"));
+	gameOption.OptionName:SetToolTipString(toolTip);
+	gameOption.OptionDropDown:SetDisabled(not bCanEdit);
+	local dropDownButton = gameOption.OptionDropDown:GetButton();
+	dropDownButton:SetToolTipString(toolTip);
+	local values = {
+		{ Value = 0, Name = Locale.ConvertTextKey("TXT_KEY_GAME_OPTION_TEAMER_MODE_NORMAL") },
+		{ Value = 1, Name = Locale.ConvertTextKey("TXT_KEY_GAME_OPTION_TEAMER_MODE_TEAMER") },
+	};
+	gameOption.OptionDropDown:ClearEntries();
+	for _, entry in ipairs(values) do
+		local controlTable = {};
+		gameOption.OptionDropDown:BuildEntry( "InstanceOne", controlTable );
+		controlTable.Button:SetText(entry.Name);
+		controlTable.Button:RegisterCallback(Mouse.eLClick, function()
+			dropDownButton:SetText(entry.Name);
+			if(PreGame.GetGameOption("GAMEOPTION_TEAMER_MODE") ~= entry.Value) then
+				SetTeamerMode(entry.Value);
+				fnChanged();
+			end
+		end);
+	end
+	for _, entry in ipairs(values) do
+		if(entry.Value == GetTeamerMode()) then dropDownButton:SetText(entry.Name) end
+	end
+	gameOption.OptionDropDown:CalculateInternals();
+end
+
+function AddFairWarBlockDropDowns()
+	local strOff = Locale.ConvertTextKey("TXT_KEY_GAME_OPTION_NO_WAR_OFF");
+
+	local turns = { { Value = 0, Name = strOff } };
+	for _, n in ipairs({ 10, 20, 30, 40, 50, 60, 75, 100, 125, 150 }) do
+		table.insert(turns, { Value = n, Name = tostring(n) });
+	end
+	AddFairIntDropDown("GAMEOPTION_NO_WAR_TURNS", "TXT_KEY_GAME_OPTION_NO_WAR_TURNS", "TXT_KEY_GAME_OPTION_NO_WAR_TURNS_HELP", turns);
+
+	local eras = { { Value = 0, Name = strOff } };
+	for era in GameInfo.Eras() do
+		if(era.ID > 0 and era.ID <= 5) then	-- Classical .. Modern
+			table.insert(eras, { Value = era.ID, Name = Locale.ConvertTextKey(era.Description) });
+		end
+	end
+	table.sort(eras, function(a, b) return a.Value < b.Value end);
+	AddFairIntDropDown("GAMEOPTION_NO_WAR_ERA", "TXT_KEY_GAME_OPTION_NO_WAR_ERA", "TXT_KEY_GAME_OPTION_NO_WAR_ERA_HELP", eras);
+
+	-- Fair barbarian camps: how many camps each civ gets at the start.
+	local camps = {};
+	for n = 0, 6 do
+		table.insert(camps, { Value = n, Name = tostring(n) });
+	end
+	AddFairIntDropDown("GAMEOPTION_BARB_CAMPS_PER_PLAYER", "TXT_KEY_GAME_OPTION_BARB_CAMPS_PER_PLAYER", "TXT_KEY_GAME_OPTION_BARB_CAMPS_PER_PLAYER_HELP", camps);
+end
+
 function RefreshDropDownGameOptions()
 	g_DropDownOptionsManager:ResetInstances();
 
@@ -154,6 +376,14 @@ function RefreshDropDownGameOptions()
 		gameOption.OptionDropDown:CalculateInternals();
 	end
 	
+	AddTeamerModeDropDown(true, function()
+		RefreshDropDownGameOptions();
+		RefreshCheckBoxGameOptions();
+	end);
+	if(IsTeamerFair()) then
+		AddFairWarBlockDropDowns();
+	end
+
 	Controls.DropDownOptionsStack:CalculateSize();
 	Controls.DropDownOptionsStack:ReprocessAnchoring();
 
@@ -179,6 +409,14 @@ function RefreshCheckBoxGameOptions()
 			SortPriority = 0, 
 			SupportsSinglePlayer = option.SupportsSinglePlayer,
 		};
+
+		-- TeamerBalance options (one checkbox per rule, all unticked = normal KEK) go to the bottom:
+		-- the rules first, then the wonder bans.
+		if( g_TeamerBalanceRules[option.Type] ) then
+			option.SortPriority = 2;
+		elseif( string.find( option.Type, "^GAMEOPTION_BAN_" ) ) then
+			option.SortPriority = 3;
+		end
 		
 		local savedValue = PreGame.GetGameOption(option.Type);
 		if(savedValue ~= nil) then
@@ -211,6 +449,40 @@ function RefreshCheckBoxGameOptions()
 	end
 	
 	-- Sort the options alphabetically
+	-- TeamerBalance options only show in TeamerBalance game mode.
+	if(not IsTeamerMode()) then
+		-- ...and are never left ticked outside it (the game ignores them there anyway).
+		if(true) then
+			local bCleared = false;
+			for strType, _ in pairs(g_TeamerModeDefaults) do
+				if(PreGame.GetGameOption(strType) ~= nil and PreGame.GetGameOption(strType) ~= 0 and PreGame.GetGameOption(strType) ~= -1) then
+					PreGame.SetGameOption(strType, 0);
+					bCleared = true;
+				end
+			end
+			if(bCleared) then
+				-- single player: nothing to send
+			end
+		end
+		local kept = {};
+		for _, option in ipairs(options) do
+			if(not option.Type or not IsTeamerOptionType(option.Type)) then
+				table.insert(kept, option);
+			end
+		end
+		options = kept;
+	end
+
+	if(IsTeamerMode()) then
+		local shown = {};
+		for _, option in ipairs(options) do
+			if(not option.Type or not IsTeamerOptionType(option.Type) or IsShownInMode(option.Type)) then
+				table.insert(shown, option);
+			end
+		end
+		options = shown;
+	end
+
 	table.sort(options, function(a, b) 
 		if(a.SortPriority == b.SortPriority) then
 			return Locale.Compare(a.Name, b.Name) == -1;
@@ -960,6 +1232,12 @@ ScreenOptions = {
 				
 				if(mapScript.DefaultCityStates ~= nil) then
 					PreGame.SetNumMinorCivs(mapScript.DefaultCityStates);
+				else
+					-- the world size's usual number of city-states (12 on Small, 4 on Duel...)
+					local worldNow = GameInfo.Worlds[PreGame.GetWorldSize()];
+					if(worldNow ~= nil) then
+						PreGame.SetNumMinorCivs(worldNow.DefaultMinorCivs);
+					end
 				end
 				
 				-- If it's a WB Map, we have more to do.
@@ -1461,8 +1739,15 @@ ContextPtr:SetInputHandler( InputHandler );
 ----------------------------------------------------------------
 -- Visibility Handler
 ---------------------------------------------------------------- 
+-- TeamerBalance: the first time this screen opens after the main menu, the game mode starts as Normal KEK
+-- (later visits keep what the player picked). The front end reloads this file after every game.
+g_TeamerModeResetDone = false;
 function ShowHideHandler( bIsHide, bInit )
 	if (not bIsHide) then
+		if(not g_TeamerModeResetDone) then
+			g_TeamerModeResetDone = true;
+			SetTeamerMode(0);
+		end
 		PerformPartialSync();
 		PerformValidation();
 	end

@@ -1061,6 +1061,18 @@
 // replay datasets REPLAYDATASET_KEK_*, kept out of the replay viewer.
 // Needs KEK_SAVE_DATA (written in recordKekReplayData).
 #define KEK_PLAYER_STATS
+// Result log (REPLAYEVENT_RL_*): what the game DID, for every player (AI,
+// city-states and barbarians too), so that one final save rebuilds the whole
+// replay: units created / standing / removed / hit / promoted, city size,
+// production, buildings, queue, stocks, worked tiles, religion, damage, map
+// improvements and pillage, policies, beliefs, city-state allies, explored
+// tiles, and a marker right before each autosave so a reader can cut the log
+// exactly at that save. Hooks sit in simulation code that runs alike on every
+// machine; nothing in the game reads these events back, and they are left out
+// of the turn JSON. Needs REPLAY_EVENTS and KEK_SAVE_DATA.
+#if defined(REPLAY_EVENTS) && defined(KEK_SAVE_DATA)
+#define KEK_RESULT_LOG
+#endif
 // Dev-only: dumps finished games to an external SQLite file (Civ5FinishedGameDatabase.db)
 // for cross-game analytics. Separate from REPLAY_EVENTS because this is the only piece
 // that actually needs winsqlite3.h from the Windows 10 SDK (10.0.15063+); the in-game
@@ -1080,6 +1092,73 @@
 #define PREGAMEAPI_GET_NETID
 /*OTHER CHANGES END*/
 
+/*TEAMER BALANCE START*/
+// TeamerBalance: rules for team games and fair starts, one lobby option in KEK.
+// One switch per rule. None of them changes the save layout: what they need is read back
+// from data every save already holds, so a loaded game and every machine agree.
+// Each rule is off unless its own lobby checkbox is ticked (CvGame::isTeamerOption); all unticked,
+// the game plays exactly like KEK.
+/// Lobby checkboxes "Ban: <wonder>" (GameOptions rows GAMEOPTION_BAN_<BUILDING_TYPE>).
+#define TEAMER_BALANCE_WONDER_BANS
+/// A world wonder that players of different teams finish on the same turn: each of them gets it
+/// (one per team: a teammate still loses the race the usual way).
+#define TEAMER_BALANCE_SAME_TURN_WONDERS
+/// Pantheons founded on the same turn all cost the turn's starting price (the rise waits for the
+/// next turn), and a belief another team picked this turn stays open (pantheon beliefs, and the
+/// founder/follower picks of religions founded this turn). Teammates still block each other.
+#define TEAMER_BALANCE_SAME_TURN_BELIEFS
+/// Religious city-states are swapped for unused other city-states at game start.
+#define TEAMER_BALANCE_NO_RELIGIOUS_CITY_STATES
+/// Fair ruins: every major civ's n-th ruin gives what the first civ to open an n-th ruin got,
+/// when the lobby ticks GAMEOPTION_FAIR_RUINS. The order is read from the save's
+/// goody-hut events (REPLAYEVENT_GoodyHut, logged for every player by KEK_SAVE_DATA).
+#if defined(REPLAY_EVENTS) && defined(KEK_SAVE_DATA)
+#define TEAMER_BALANCE_FAIR_RUINS
+#endif
+/// Lobby checkbox GAMEOPTION_EXTRA_LUXURY_HAPPINESS: every extra copy of a luxury a civ keeps
+/// (beyond the first) gives this much happiness.
+#define TEAMER_BALANCE_EXTRA_LUXURY_HAPPINESS
+#define TEAMER_BALANCE_EXTRA_LUXURY_COPY_HAPPINESS 2
+/// Lobby checkbox GAMEOPTION_REVEAL_OWN_HALF: at game start each civ sees the half of the map
+/// (left or right of the middle line) its start is on.
+#define TEAMER_BALANCE_REVEAL_OWN_HALF
+/// Lobby dropdowns: no war between major civs before turn N (GAMEOPTION_NO_WAR_TURNS) and/or
+/// until any major civ reaches era E (GAMEOPTION_NO_WAR_ERA).
+#define TEAMER_BALANCE_WAR_BLOCK
+/// Lobby checkbox GAMEOPTION_MIRRORED_CITY_STATES: on a mirror map, city-states on mirrored spots
+/// get the same type (the game's picks are made to pair up), personality, unique unit and build dice.
+#define TEAMER_BALANCE_MIRRORED_CITY_STATES
+/// In the TeamerBalance game mode there is no IRR vote, and a CC goes to a team: only the players
+/// not on the winning team vote, and all of them must say yes. The winners don't vote.
+#define TEAMER_BALANCE_TEAM_CC
+/// Lobby checkbox GAMEOPTION_FAIR_BARBARIAN_CAMPS: barbarian camps are placed once, in the game's
+/// first camp pass (the game's own first-turn amount), and never again.
+#define TEAMER_BALANCE_FAIR_BARBARIAN_CAMPS
+/// Lobby checkbox GAMEOPTION_FAIR_CS_QUESTS (with mirrored city-states): twin city-states roll the
+/// same dice for quests (when, which quest, which target) towards mirrored players.
+#define TEAMER_BALANCE_FAIR_CS_QUESTS
+/// Lobby checkbox GAMEOPTION_GUARANTEED_PROPHET: a civ with enough faith always gets its Great Prophet.
+#define TEAMER_BALANCE_GUARANTEED_PROPHET
+/// Set up at game start (CvGame::TeamerStartItems): the fair barbarian camps.
+#define TEAMER_BALANCE_START_ITEMS
+/// Lobby checkbox GAMEOPTION_RELIGION_FOR_ALL: as many religions can be founded as there are civs.
+#define TEAMER_BALANCE_RELIGION_FOR_ALL
+/// TeamerBalance mode on a mirror map: cities on mirrored spots roll the same dice for We Love the
+/// King Day (when the first luxury request comes, and which luxury), so mirrored cities ask alike.
+#define TEAMER_BALANCE_MIRRORED_WLTKD
+/// Lobby checkboxes GAMEOPTION_NO_GLOBAL_CS_QUESTS (city-states start no global quests, only personal
+/// ones) and GAMEOPTION_CS_QUESTS_OWN_SIDE (a city-state gives quests only to majors on its own half of
+/// the map, by starting plot; one on the centre line gives to both). TeamerBalance mode only.
+#define TEAMER_BALANCE_CS_QUEST_SIDES
+/// Lobby checkbox GAMEOPTION_TEAM_BELIEFS (TeamerBalance mode, needs TEAMER_BALANCE_SAME_TURN_BELIEFS): beliefs
+/// are only taken within a team. A pick another team made (any turn) never blocks, so both teams have the same
+/// pantheon / founder / follower / enhancer / reformation choices all game. Within a team they stay unique.
+#define TEAMER_BALANCE_TEAM_BELIEFS
+/// Lobby checkbox GAMEOPTION_CAPTURE_POP_FLOOR (TeamerBalance and KEK+ Balance): a captured city never drops below a
+/// quarter of its highest population (saved by the game anyway), so a city at its peak loses population on the
+/// first capture and on the next one, then no more: no recapturing a city down to size 1.
+#define TEAMER_BALANCE_CAPTURE_POP_FLOOR
+/*TEAMER BALANCE END*/
 
 
 /*DUEL MODE STUFF START*/

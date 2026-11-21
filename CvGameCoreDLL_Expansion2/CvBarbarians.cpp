@@ -271,6 +271,12 @@ void CvBarbarians::DoCamps()
 		return;
 	}
 
+#ifdef TEAMER_BALANCE_FAIR_BARBARIAN_CAMPS
+	// TeamerBalance fair camps: every camp was placed at game start (DoFairStartCamps); none later.
+	if(kGame.isTeamerOption(TEAMER_OPTION_FAIR_BARB_CAMPS))
+		return;
+#endif
+
 	int iNumNotVisiblePlots = 0;
 	int iNumCampsInExistence = 0;
 	CvPlot* pLoopPlot;
@@ -507,6 +513,136 @@ void CvBarbarians::DoCamps()
 }
 
 //	--------------------------------------------------------------------------------
+#ifdef TEAMER_BALANCE_FAIR_BARBARIAN_CAMPS
+//	--------------------------------------------------------------------------------
+// A plot for a fair camp of ePlayer: open land iMin..iMax tiles from its start, strictly closer to
+// its start than to any other civ's, not next to a city-state's start, and away from other camps.
+static bool FairCampPlotOk(CvPlot* pPlot, PlayerTypes ePlayer, int iMin, int iMax, ImprovementTypes eCamp)
+{
+	if(pPlot == NULL || pPlot->isWater() || pPlot->isImpassable() || pPlot->isMountain() || pPlot->isOwned() || pPlot->isCity())
+		return false;
+	if(pPlot->getResourceType() != NO_RESOURCE || pPlot->getImprovementType() != NO_IMPROVEMENT || pPlot->getNumUnits() > 0)
+		return false;
+	if(pPlot->getFeatureType() != NO_FEATURE && GC.getFeatureInfo(pPlot->getFeatureType())->isNoImprovement())
+		return false;
+	if(pPlot->area() == NULL || pPlot->area()->getNumTiles() <= 1)
+		return false;
+
+	CvPlot* pOwnStart = GET_PLAYER(ePlayer).getStartingPlot();
+	if(pOwnStart == NULL)
+		return false;
+	const int iOwn = plotDistance(pOwnStart->getX(), pOwnStart->getY(), pPlot->getX(), pPlot->getY());
+	if(iOwn < iMin || iOwn > iMax)
+		return false;
+
+	for(int iPlayer = 0; iPlayer < MAX_CIV_PLAYERS; iPlayer++)
+	{
+		if(iPlayer == ePlayer)
+			continue;
+		CvPlayer& kOther = GET_PLAYER((PlayerTypes)iPlayer);
+		CvPlot* pStart = kOther.isAlive() ? kOther.getStartingPlot() : NULL;
+		if(pStart == NULL)
+			continue;
+		const int iDist = plotDistance(pStart->getX(), pStart->getY(), pPlot->getX(), pPlot->getY());
+		if(kOther.isMinorCiv() ? (iDist < 4) : (iDist <= iOwn))
+			return false;
+	}
+
+	const int iSpacing = 5;
+	for(int iDX = -iSpacing; iDX <= iSpacing; iDX++)
+	{
+		for(int iDY = -iSpacing; iDY <= iSpacing; iDY++)
+		{
+			CvPlot* pLoop = plotXY(pPlot->getX(), pPlot->getY(), iDX, iDY);
+			if(pLoop != NULL && pLoop->getImprovementType() == eCamp && plotDistance(pLoop->getX(), pLoop->getY(), pPlot->getX(), pPlot->getY()) <= iSpacing)
+				return false;
+		}
+	}
+	return true;
+}
+
+//	--------------------------------------------------------------------------------
+void CvBarbarians::PlaceFairCamp(CvPlot* pPlot, ImprovementTypes eCamp, UnitTypes eUnit)
+{
+	pPlot->setImprovementType(eCamp);
+	DoCampActivationNotice(pPlot);
+	if(eUnit != NO_UNIT)
+		GET_PLAYER(BARBARIAN_PLAYER).initUnit(eUnit, pPlot->getX(), pPlot->getY(), (UnitAITypes)GC.getUnitInfo(eUnit)->GetDefaultUnitAIType());
+}
+
+//	--------------------------------------------------------------------------------
+// TeamerBalance / KEK+ Balance fair camps, at game start: every civ gets the same number of camps
+// (lobby dropdown GAMEOPTION_BARB_CAMPS_PER_PLAYER, default 2) at the same kind of distance from
+// its start (6-9 tiles, widened to 5-11 and 4-14 when there is no room), each closer to it than to
+// anyone else. On a TeamerBalance mirror map the camps come in mirrored pairs with the same unit.
+// DoCamps never adds a camp afterwards.
+void CvBarbarians::DoFairStartCamps()
+{
+	CvGame& kGame = GC.getGame();
+	if(!kGame.isTeamerOption(TEAMER_OPTION_FAIR_BARB_CAMPS))
+		return;
+#ifdef DUEL_MOVING_SOME_OPTIONS_TO_DUEL_MODE
+	if(kGame.isNetworkMultiPlayer() && kGame.isOption("GAMEOPTION_DUEL_STUFF") && kGame.isOption(GAMEOPTION_NO_BARBARIANS) || !kGame.isNetworkMultiPlayer() && kGame.isOption(GAMEOPTION_NO_BARBARIANS))
+#else
+	if(kGame.isOption(GAMEOPTION_NO_BARBARIANS))
+#endif
+		return;
+
+	const ImprovementTypes eCamp = (ImprovementTypes)GC.getBARBARIAN_CAMP_IMPROVEMENT();
+	if(eCamp == NO_IMPROVEMENT)
+		return;
+
+	int iPerPlayer = 2;
+	CvPreGame::GetGameOption("GAMEOPTION_BARB_CAMPS_PER_PLAYER", iPerPlayer);
+	if(iPerPlayer <= 0)
+		return;
+
+	static const int aiBand[3][2] = { {6, 9}, {5, 11}, {4, 14} };
+	CvMap& kMap = GC.getMap();
+	for(int iPlayer = 0; iPlayer < MAX_MAJOR_CIVS; iPlayer++)
+	{
+		CvPlayer& kPlayer = GET_PLAYER((PlayerTypes)iPlayer);
+		if(!kPlayer.isAlive() || kPlayer.isMinorCiv() || kPlayer.getStartingPlot() == NULL)
+			continue;
+		const PlayerTypes eTwin = kGame.GetMirrorStartTwin((PlayerTypes)iPlayer);
+		if(eTwin != NO_PLAYER && eTwin < iPlayer)
+			continue;	// placed together with its twin
+
+		int iPlaced = 0;
+		for(int iBand = 0; iBand < 3 && iPlaced < iPerPlayer; iBand++)
+		{
+			while(iPlaced < iPerPlayer)
+			{
+				std::vector<int> aiCandidates;
+				for(int iI = 0; iI < kMap.numPlots(); iI++)
+				{
+					CvPlot* pPlot = kMap.plotByIndexUnchecked(iI);
+					if(!FairCampPlotOk(pPlot, (PlayerTypes)iPlayer, aiBand[iBand][0], aiBand[iBand][1], eCamp))
+						continue;
+					if(eTwin != NO_PLAYER)
+					{
+						CvPlot* pTwin = kGame.GetMirrorPlot(pPlot);
+						if(pTwin == NULL || pTwin == pPlot || !FairCampPlotOk(pTwin, eTwin, aiBand[iBand][0], aiBand[iBand][1], eCamp)
+							|| plotDistance(pPlot->getX(), pPlot->getY(), pTwin->getX(), pTwin->getY()) <= 5)
+							continue;
+					}
+					aiCandidates.push_back(iI);
+				}
+				if(aiCandidates.empty())
+					break;
+
+				CvPlot* pPick = kMap.plotByIndexUnchecked(aiCandidates[kGame.getJonRandNum(aiCandidates.size(), "TeamerBalance: fair barbarian camp")]);
+				const UnitTypes eUnit = GetRandomBarbarianUnitType(kMap.getArea(pPick->getArea()), UNITAI_DEFENSE);
+				PlaceFairCamp(pPick, eCamp, eUnit);
+				if(eTwin != NO_PLAYER)
+					PlaceFairCamp(kGame.GetMirrorPlot(pPick), eCamp, eUnit);
+				iPlaced++;
+			}
+		}
+	}
+}
+#endif
+
 UnitTypes CvBarbarians::GetRandomBarbarianUnitType(CvArea* pArea, UnitAITypes eUnitAI)
 {
 	UnitTypes eBestUnit = NO_UNIT;

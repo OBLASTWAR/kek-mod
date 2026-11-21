@@ -2619,6 +2619,15 @@ void CvUnitCombat::ResolveNuclearCombat(const CvCombatInfo& kCombatInfo, uint ui
 //	---------------------------------------------------------------------------
 void CvUnitCombat::ResolveCombat(const CvCombatInfo& kInfo, uint uiParentEventID /* = 0 */)
 {
+#ifdef KEK_RESULT_LOG
+	// The result log's RL_UnitDamage names the unit that did each hit while this combat resolves.
+	CvUnit* pResultLogAttacker = kInfo.getUnit(BATTLE_UNIT_ATTACKER);
+	CvCity* pResultLogAttackerCity = kInfo.getCity(BATTLE_UNIT_ATTACKER);
+	CvUnit* pResultLogDefender = kInfo.getUnit(BATTLE_UNIT_DEFENDER);
+	const int iResultLogAttackingPlayer = pResultLogAttacker ? (int)pResultLogAttacker->getOwner() : (pResultLogAttackerCity ? (int)pResultLogAttackerCity->getOwner() : -1);
+	CvResultLogScope kResultLogCombat(RESULTLOG_SCOPE_COMBAT, pResultLogAttacker ? pResultLogAttacker->GetID() : -1,
+		iResultLogAttackingPlayer, pResultLogDefender ? pResultLogDefender->GetID() : -1);
+#endif
 	PlayerTypes eAttackingPlayer = NO_PLAYER;
 	// Restore visibility
 	CvUnit* pAttacker = kInfo.getUnit(BATTLE_UNIT_ATTACKER);

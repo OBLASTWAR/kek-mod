@@ -27,6 +27,32 @@ class CvReplayMessage;
 class CvReplayEvent;
 #endif
 class CvReplayInfo;
+class CvBuildingEntry;
+
+// TeamerBalance: one lobby checkbox per rule (CvGame::isTeamerOption). All unticked = normal KEK.
+enum TeamerBalanceOption
+{
+	TEAMER_OPTION_SAME_TURN_WONDERS   = 1 << 0,	// GAMEOPTION_SAME_TURN_WONDERS
+	TEAMER_OPTION_SAME_TURN_PANTHEONS = 1 << 1,	// GAMEOPTION_SAME_TURN_PANTHEONS
+	TEAMER_OPTION_NO_RELIGIOUS_CS     = 1 << 2,	// GAMEOPTION_NO_RELIGIOUS_CS
+	TEAMER_OPTION_FAIR_RUINS          = 1 << 3,	// GAMEOPTION_FAIR_RUINS
+	TEAMER_OPTION_EXTRA_LUXURY        = 1 << 4,	// GAMEOPTION_EXTRA_LUXURY_HAPPINESS
+	TEAMER_OPTION_REVEAL_OWN_HALF     = 1 << 5,	// GAMEOPTION_REVEAL_OWN_HALF
+	TEAMER_OPTION_MIRRORED_CS         = 1 << 6,	// GAMEOPTION_MIRRORED_CITY_STATES
+	TEAMER_OPTION_NO_RUIN_UPGRADE     = 1 << 8,	// GAMEOPTION_NO_RUIN_UPGRADE
+	TEAMER_OPTION_FAIR_BARB_CAMPS     = 1 << 9,	// GAMEOPTION_FAIR_BARBARIAN_CAMPS
+	TEAMER_OPTION_FAIR_CS_QUESTS      = 1 << 10,	// GAMEOPTION_FAIR_CS_QUESTS
+	TEAMER_OPTION_GUARANTEED_PROPHET  = 1 << 11,	// GAMEOPTION_GUARANTEED_PROPHET
+	TEAMER_OPTION_RELIGION_FOR_ALL    = 1 << 14,	// GAMEOPTION_RELIGION_FOR_ALL
+	TEAMER_OPTION_NO_GLOBAL_CS_QUESTS = 1 << 24,	// GAMEOPTION_NO_GLOBAL_CS_QUESTS
+	TEAMER_OPTION_CS_QUESTS_OWN_SIDE  = 1 << 25,	// GAMEOPTION_CS_QUESTS_OWN_SIDE
+	TEAMER_OPTION_TEAM_BELIEFS        = 1 << 26,	// GAMEOPTION_TEAM_BELIEFS
+	TEAMER_OPTION_CAPTURE_POP_FLOOR   = 1 << 27,	// GAMEOPTION_CAPTURE_POP_FLOOR (TeamerBalance and KEK+ Balance)
+	TEAMER_OPTION_CS_WORKERS          = 1 << 29,	// GAMEOPTION_CS_WORKERS (TeamerBalance and KEK+ Balance)
+	TEAMER_OPTION_FFA_MODE            = 1 << 16,	// GAMEOPTION_TEAMER_MODE == 2: the KEK+ Balance game mode (a subset of the options)
+	TEAMER_OPTION_MODE                = 1 << 7,	// GAMEOPTION_TEAMER_MODE == 1: the TeamerBalance game mode (every option needs it)
+	TEAMER_OPTION_ANY_MODE            = TEAMER_OPTION_MODE | TEAMER_OPTION_FFA_MODE,
+};
 class CvSiteEvaluatorForSettler;
 class CvSiteEvaluatorForStart;
 class CvStartPositioner;
@@ -40,6 +66,82 @@ class CvMPVotingSystem;
 #endif
 class CvAdvisorCounsel;
 class CvAdvisorRecommender;
+
+#ifdef KEK_RESULT_LOG
+class CvUnit;
+
+// Result log: REPLAYEVENT_RL_UnitCreated origin (arg 5).
+enum ResultLogUnitOrigin
+{
+	RESULTLOG_ORIGIN_OTHER    = 0, // start units, city units (see RL_CityProduced), great people, free units, spawns
+	RESULTLOG_ORIGIN_UPGRADE  = 1, // source = owner and ID of the unit it replaces
+	RESULTLOG_ORIGIN_CAPTURED = 2, // source = the old owner (the old unit's RL_UnitRemoved comes just before)
+	RESULTLOG_ORIGIN_GIFT     = 3  // source = old owner and old unit ID
+};
+
+// Result log: REPLAYEVENT_RL_CityProduced paidWith (arg 5).
+enum ResultLogPayment
+{
+	RESULTLOG_PAID_PRODUCTION = 0,
+	RESULTLOG_PAID_GOLD       = 1,
+	RESULTLOG_PAID_FAITH      = 2,
+	RESULTLOG_PAID_OTHER      = 3  // given by the game: World Congress reward, Apollo from Lua, a spaceship part from a unit
+};
+
+// Result log: REPLAYEVENT_RL_SaveMarker kind (arg 1).
+enum ResultLogSaveKind
+{
+	RESULTLOG_SAVE_TURN     = 0, // the end-of-turn autosave
+	RESULTLOG_SAVE_PROPOSAL = 1, // the save after a resolved proposal (CvHttp_OnUpdate)
+	RESULTLOG_SAVE_GAME_END = 2  // the save at the game's end (CvHttp_OnGameEnd)
+};
+
+// Result log: REPLAYEVENT_RL_Religion kind (arg 2).
+enum ResultLogReligionKind
+{
+	RESULTLOG_RELIGION_PANTHEON = 0,
+	RESULTLOG_RELIGION_FOUNDED  = 1,
+	RESULTLOG_RELIGION_ENHANCED = 2,
+	RESULTLOG_RELIGION_REFORMED = 3
+};
+
+enum ResultLogScopeKind
+{
+	RESULTLOG_SCOPE_UNIT_ORIGIN  = 0, // value = ResultLogUnitOrigin, sources = player, unit ID
+	RESULTLOG_SCOPE_CITY_PAYMENT = 1, // value = ResultLogPayment
+	RESULTLOG_SCOPE_COMBAT       = 2, // value = attacking unit ID (-1: a city), sources = attacking player, defending unit ID (-1: a city)
+	RESULTLOG_NUM_SCOPES         = 3
+};
+
+// Tells the result log why the next unit appears (or how the next city item is paid for) while the
+// object lives; restores the outer value when it goes out of scope.
+class CvResultLogScope
+{
+public:
+	CvResultLogScope(ResultLogScopeKind eKind, int iValue, int iSource1 = -1, int iSource2 = -1);
+	~CvResultLogScope();
+private:
+	ResultLogScopeKind m_eKind;
+	int m_iOldValue;
+	int m_iOldSource1;
+	int m_iOldSource2;
+};
+
+// The city values REPLAYEVENT_RL_CitySample carries after the city plot.
+#define RESULTLOG_CITY_FIELDS 8
+
+// The other city records sampled before each autosave, one replay event type each, in the order of
+// REPLAYEVENT_RL_CityYields .. REPLAYEVENT_RL_CitySpecialists. Each entry: city plot, count, values.
+enum ResultLogCityRecord
+{
+	RESULTLOG_CITYREC_YIELDS      = 0, // REPLAYEVENT_RL_CityYields
+	RESULTLOG_CITYREC_CULTURE     = 1, // REPLAYEVENT_RL_CityCulture
+	RESULTLOG_CITYREC_QUEUE       = 2, // REPLAYEVENT_RL_CityQueue
+	RESULTLOG_CITYREC_RELIGION    = 3, // REPLAYEVENT_RL_CityReligion
+	RESULTLOG_CITYREC_SPECIALISTS = 4, // REPLAYEVENT_RL_CitySpecialists
+	RESULTLOG_NUM_CITYRECS        = 5
+};
+#endif
 
 
 class CvGameInitialItemsOverrides
@@ -417,6 +519,41 @@ public:
 	int getBuildingClassCreatedCount(BuildingClassTypes eIndex);
 	bool isBuildingClassMaxedOut(BuildingClassTypes eIndex, int iExtra = 0);
 	void incrementBuildingClassCreatedCount(BuildingClassTypes eIndex);
+	// Is this TeamerBalance rule's lobby checkbox ticked? (TeamerBalanceOption flags)
+	bool isTeamerOption(int iFlag);
+#ifdef TEAMER_BALANCE_WONDER_BANS
+	bool isWonderBanned(BuildingTypes eBuilding);
+#endif
+#ifdef TEAMER_BALANCE_SAME_TURN_WONDERS
+	// Set by CvCity::doTurn only while a city that tied for this wonder runs its production.
+	void setFairTieWonder(BuildingClassTypes eClass, TeamTypes eTeam);
+#endif
+#ifdef TEAMER_BALANCE_FAIR_RUINS
+	GoodyTypes GetFairRuinGoody(PlayerTypes ePlayer, const std::vector<GoodyTypes>& aeValid) const;
+#endif
+#ifdef TEAMER_BALANCE_WAR_BLOCK
+	bool IsFairWarBlocked(TeamTypes eTeamA, TeamTypes eTeamB);
+#endif
+#ifdef TEAMER_BALANCE_REVEAL_OWN_HALF
+	void FairRevealOwnHalves();
+#endif
+#ifdef TEAMER_BALANCE_MIRRORED_CITY_STATES
+	// The city-state on the exact mirror spot of this one (NO_PLAYER if none or the option is off).
+	PlayerTypes GetMirrorTwin(PlayerTypes ePlayer);
+	// The major civ whose start is the exact mirror spot of this one's (NO_PLAYER if none, or fair quests are off).
+	PlayerTypes GetMirrorMajor(PlayerTypes ePlayer);
+	void ReadTeamerMirrorTwins();
+	// TeamerBalance mode on a mirror map: every major civ's start has a twin on the exact mirror spot.
+	bool IsTeamerMirrorMap();
+	// The major civ on the mirror start (only on a TeamerBalance mirror map, else NO_PLAYER).
+	PlayerTypes GetMirrorStartTwin(PlayerTypes ePlayer);
+	// The plot on the exact left-right mirror spot (same row), NULL off the map.
+	CvPlot* GetMirrorPlot(CvPlot* pPlot);
+	bool IsTeamerRotatedMap();
+#endif
+#ifdef TEAMER_BALANCE_START_ITEMS
+	void TeamerStartItems();
+#endif
 #ifdef DUEL_WORLD_WONDERS_SAME_TURN
 	int getBuildingClassCreationTurn(BuildingClassTypes eIndex);
 	void setBuildingClassCreationTurn(BuildingClassTypes eIndex, int iValue);
@@ -474,10 +611,36 @@ public:
 	void addReplayEvent(int eType, std::vector<int> vNumArgs, CvString strArg = "");
 	void addReplayEvent(int eType, PlayerTypes ePlayer, std::vector<int> vNumArgs, CvString strArg = "");
 #ifdef KEK_SAVE_DATA
-	void recordKekReplayData();
+	void recordKekReplayData(int iSaveKind = 0);
 #endif
 	uint getNumReplayEvents() const;
 	const CvReplayEvent* getReplayEvent(uint i) const;
+#endif
+#ifdef KEK_RESULT_LOG
+	// Result log (REPLAYEVENT_RL_*, see the enum at the end of this file).
+	void resultLogClear();
+	void resultLogSample(int iSaveKind);
+	CvUnit* resultLogBeginUnitInit(CvUnit* pUnit);
+	void resultLogEndUnitInit(CvUnit* pOuterUnit);
+	void resultLogUnitCreated(const CvUnit& kUnit);
+	void resultLogUnitRemoved(const CvUnit& kUnit, PlayerTypes eKiller);
+	void resultLogUnitDamage(const CvUnit& kUnit, PlayerTypes eByPlayer);
+	void resultLogUnitPromotion(const CvUnit& kUnit, int iPromotion, bool bHas);
+	void resultLogCityFounded(const CvCity& kCity, bool bInitialFounding);
+	void resultLogCityRemoved(const CvCity& kCity);
+	void resultLogCitySize(const CvCity& kCity, int iPopulation);
+	void resultLogCityProduced(const CvCity& kCity, int iOrderType, int iItem, int iUnitID);
+	void resultLogCityBuilding(const CvCity& kCity, int iBuilding, int iRealCount, int iFreeCount);
+	void resultLogCityDamage(const CvCity& kCity, int iDamage);
+	void resultLogPlotImprovement(const CvPlot& kPlot, int iOldImprovement, int iNewImprovement, PlayerTypes eBuilder);
+	void resultLogPlotPillaged(const CvPlot& kPlot, bool bPillaged);
+	void resultLogPlotRevealed(TeamTypes eTeam, int iPlotIndex);
+	void resultLogPolicy(PlayerTypes ePlayer, int iPolicy, bool bHas);
+	void resultLogPolicyBranch(PlayerTypes ePlayer, int iBranch, bool bUnlocked);
+	void resultLogReligion(PlayerTypes ePlayer, int iReligion, int iKind, int iBelief1, int iBelief2, int iBelief3, int iBelief4, const CvCity* pHolyCity);
+	void resultLogMinorAlly(PlayerTypes eMinor, PlayerTypes eOldAlly, PlayerTypes eNewAlly);
+	int getResultLogScope(int iKind, int& iSource1, int& iSource2) const;
+	void setResultLogScope(int iKind, int iValue, int iSource1, int iSource2);
 #endif
 #ifdef REPLAY_EVENTS_SQLITE_EXPORT
 	void exportReplayEvents();
@@ -772,9 +935,51 @@ protected:
 
 	typedef std::vector<CvReplayMessage> ReplayMessageList;
 	ReplayMessageList m_listReplayMessages;
+	// Not saved: read from the lobby options (which the save holds) on first use after reset/load.
+	int m_iTeamerOptions;	// TeamerBalanceOption flags, -1 = not read yet
+#ifdef TEAMER_BALANCE_MIRRORED_CITY_STATES
+	// Not saved: worked out again from the players' starting plots (which the save holds).
+	std::vector<int> m_aiTeamerMirrorTwin;
+	bool m_bTeamerMirrorTwinsRead;
+	bool m_bTeamerRotated;	// the map is turned 180 degrees, not mirrored (read from the starts, not saved)
+#endif
+#ifdef TEAMER_BALANCE_WONDER_BANS
+	// Not saved: rebuilt from the lobby options (which the save holds) on first use after reset/load.
+	std::vector<char> m_abFairWonderBanned;
+	bool m_bFairWonderBansRead;
+#endif
+#ifdef TEAMER_BALANCE_SAME_TURN_WONDERS
+	// Not saved: only set inside one city's CvCity::doTurn.
+	BuildingClassTypes m_eFairTieWonderClass;
+	TeamTypes m_eFairTieWonderTeam;
+#endif
 #ifdef REPLAY_EVENTS
 	typedef std::vector< CvReplayEvent > ReplayEventList;
 	ReplayEventList m_listReplayEvents;
+#endif
+#ifdef KEK_RESULT_LOG
+	// Result log state. Not saved: after a load the first sample logs every unit and city again.
+	struct ResultLogUnitState
+	{
+		int iPlot;
+		int iEmbarked;
+		int iExperience;
+		int iLevel;
+	};
+	struct ResultLogCityState
+	{
+		int aiValues[RESULTLOG_CITY_FIELDS];
+	};
+	typedef std::map< std::pair<int, int>, ResultLogUnitState > ResultLogUnitMap; // (owner, unit ID) -> last logged
+	typedef std::map< int, ResultLogCityState > ResultLogCityMap;                 // city plot index -> last logged
+	ResultLogUnitMap m_kResultLogUnits;
+	ResultLogCityMap m_kResultLogCities;
+	typedef std::map< int, std::vector<int> > ResultLogRecordMap;                 // city plot (or player) -> last logged values
+	ResultLogRecordMap m_akResultLogCityRecords[RESULTLOG_NUM_CITYRECS];
+	ResultLogRecordMap m_kResultLogPlayers;
+	std::vector<int> m_aiResultLogRevealed[MAX_TEAMS];                            // plots revealed since the last sample
+	CvUnit* m_pResultLogUnitInInit;                                               // its init() runs: its events wait for RL_UnitCreated
+	int m_aiResultLogScope[RESULTLOG_NUM_SCOPES][3];                              // value, source 1, source 2 (CvResultLogScope)
 #endif
 
 	int m_iNumSessions;
@@ -995,6 +1200,97 @@ enum ReplayEventTypes
 
 	// Deal events
 	REPLAYEVENT_DealGoldItem,
+
+	// Result log (KEK_RESULT_LOG): what the game did, for every player. Unit
+	// events carry the unit ID (not its type); every tile is a plot index
+	// (y * map width + x, as KEK's CityPlot); "-1" = none. Kept out of the
+	// turn JSON. Lists are split into events of at most 999 numbers.
+	// The autosave marker: every RL event before it is in that save.
+	// Args: kind (0 end of turn, 1 proposal, 2 game end), events before it.
+	// Player: the machine's active player.
+	REPLAYEVENT_RL_SaveMarker,
+	// Args: unitID, unitType, plot, origin (0 other, 1 upgrade, 2 captured,
+	// 3 gift), sourcePlayer, sourceUnitID, damage, then every promotion the
+	// unit has at birth. Player: owner.
+	REPLAYEVENT_RL_UnitCreated,
+	// Sampled right before each autosave, one event per player: for every
+	// unit whose tile or embarked flag changed since the last sample (all
+	// units after a load) three numbers: unitID, plot, embarked.
+	REPLAYEVENT_RL_UnitAt,
+	// Args: unitID, unitType, plot, killerPlayer. Player: owner.
+	REPLAYEVENT_RL_UnitRemoved,
+	// Every change of a unit's damage. Args: unitID, damage, byPlayer,
+	// hitterUnitID (in combat: the unit that did the hit, the defender when
+	// an attacker takes damage back; -1 for a city, or outside combat).
+	REPLAYEVENT_RL_UnitDamage,
+	// A promotion gained or lost after birth. Args: unitID, promotion, has.
+	REPLAYEVENT_RL_UnitPromotion,
+	// Args: cityPlot, cityID, initialFounding (0 = re-created by a capture,
+	// gift or liberation). Player: owner.
+	REPLAYEVENT_RL_CityFounded,
+	// Args: cityPlot, cityID. Player: owner.
+	REPLAYEVENT_RL_CityRemoved,
+	// Args: cityPlot, population. Player: owner.
+	REPLAYEVENT_RL_CitySize,
+	// Args: cityPlot, orderType, item, paidWith (0 production, 1 gold,
+	// 2 faith, 3 other), unitID (-1 unless a unit). Player: owner.
+	REPLAYEVENT_RL_CityProduced,
+	// Every change of a building count (built, bought, free, sold, lost).
+	// Args: cityPlot, building, realCount, freeCount. Player: owner.
+	REPLAYEVENT_RL_CityBuilding,
+	// Args: cityPlot, damage. Player: owner.
+	REPLAYEVENT_RL_CityDamage,
+	// Sampled right before each autosave, one event per player: for every
+	// city where a value changed since the last sample nine numbers:
+	// cityPlot, orderType, orderItem, foodTimes100, productionTimes100,
+	// workedPlotsLow, workedPlotsHigh (bit i = city plot index i),
+	// majorityReligion, flags (1 puppet, 2 razing, 4 resistance, 8 occupied,
+	// 16 we-love-the-king day).
+	REPLAYEVENT_RL_CitySample,
+	// Args: plot, oldImprovement, newImprovement. Player: builder or owner.
+	REPLAYEVENT_RL_PlotImprovement,
+	// Args: plot, pillaged (the improvement; roads: REPLAYEVENT_RouteChanged).
+	REPLAYEVENT_RL_PlotPillaged,
+	// Args: policy, has. Player: the player.
+	REPLAYEVENT_RL_Policy,
+	// Args: policyBranch, unlocked. Player: the player.
+	REPLAYEVENT_RL_PolicyBranch,
+	// Args: religion, kind (0 pantheon, 1 founded, 2 enhanced, 3 reformed),
+	// belief1..belief4, holyCityX, holyCityY. Player: founder.
+	REPLAYEVENT_RL_Religion,
+	// Args: oldAlly, newAlly. Player: the city-state.
+	REPLAYEVENT_RL_MinorAlly,
+	// Sampled right before each autosave: tiles a major team revealed since
+	// the last sample. Args: team, first plot, then each next plot as the
+	// distance from the previous one (ascending).
+	REPLAYEVENT_RL_Revealed,
+	// Result log v3. The five city records below are sampled right before
+	// each autosave like RL_CitySample, one event per player: for every city
+	// where the record changed since the last sample: cityPlot, count, then
+	// "count" values.
+	// Values: foodDifferenceTimes100, productionTimes100 (the city's
+	// production yield), productionToItemTimes100 (what the current item
+	// gets this turn), goldTimes100, scienceTimes100, culturePerTurn,
+	// faithPerTurn: the numbers the city screen shows.
+	REPLAYEVENT_RL_CityYields,
+	// Values: cultureStored (toward the next tile).
+	REPLAYEVENT_RL_CityCulture,
+	// Values: orderType, item for every entry of the production queue.
+	REPLAYEVENT_RL_CityQueue,
+	// Values: religion, followers for every religion with followers.
+	REPLAYEVENT_RL_CityReligion,
+	// Values: specialist, count for every specialist type in use
+	// (unemployed citizens included).
+	REPLAYEVENT_RL_CitySpecialists,
+	// Sampled right before each autosave for every living player except the
+	// barbarians, when a value changed: goldTimes100, culture, faith,
+	// goldenAgeTurns, goldenAgeMeter, happiness, unhappiness,
+	// currentResearch, researchProgressTimes100. Player: the player.
+	REPLAYEVENT_RL_PlayerSample,
+	// Sampled right before each autosave, one event per player: for every
+	// unit whose experience or level changed since the last sample (all
+	// units after a load) three numbers: unitID, experience, level.
+	REPLAYEVENT_RL_UnitXP,
 
 	NUM_REPLAYEVENTS
 };

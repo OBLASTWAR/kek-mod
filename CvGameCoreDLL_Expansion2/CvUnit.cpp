@@ -383,6 +383,11 @@ void CvUnit::initWithNameOffset(int iID, UnitTypes eUnit, int iNameOffset, UnitA
 
 	CvAssert(NO_UNIT != eUnit);
 
+#ifdef KEK_RESULT_LOG
+	// Damage and promotions set during init go into RL_UnitCreated (end of this function).
+	CvUnit* pResultLogOuterUnit = GC.getGame().resultLogBeginUnitInit(this);
+#endif
+
 	initPromotions();
 	m_pReligion->Init();
 
@@ -766,6 +771,11 @@ void CvUnit::initWithNameOffset(int iID, UnitTypes eUnit, int iNameOffset, UnitA
 			}
 		}
 	}
+
+#ifdef KEK_RESULT_LOG
+	GC.getGame().resultLogEndUnitInit(pResultLogOuterUnit);
+	GC.getGame().resultLogUnitCreated(*this);
+#endif
 
 	if(bSetupGraphical)
 		setupGraphical();
@@ -1450,6 +1460,14 @@ void CvUnit::kill(bool bDelay, PlayerTypes ePlayer /*= NO_PLAYER*/)
 		LuaSupport::CallHook(pkScriptSystem, "UnitPrekill", args.get(), bResult);
 	}
 
+#ifdef KEK_RESULT_LOG
+	// Once per unit: a delayed death logs here, with the killer; the later kill(false) from doDelayedDeath does not.
+	if(!isDelayedDeath())
+	{
+		GC.getGame().resultLogUnitRemoved(*this, ePlayer);
+	}
+#endif
+
 	if(bDelay)
 	{
 		startDelayedDeath();
@@ -1671,7 +1689,14 @@ bool CvUnit::getCaptureDefinition(CvUnitCaptureDefinition* pkCaptureDef, PlayerT
 			CvPlayerAI& kCapturingPlayer = GET_PLAYER(kCaptureDef.eCapturingPlayer);
 			if(kCapturingPlayer.isHuman() || kCapturingPlayer.AI_captureUnit(kCaptureDef.eCaptureUnitType, pkPlot) || 0 == GC.getAI_CAN_DISBAND_UNITS())
 			{
+#ifdef KEK_RESULT_LOG
+				{
+					CvResultLogScope kResultLogOrigin(RESULTLOG_SCOPE_UNIT_ORIGIN, RESULTLOG_ORIGIN_CAPTURED, (int)kCaptureDef.eOldPlayer, -1);
+					pkCapturedUnit = kCapturingPlayer.initUnit(kCaptureDef.eCaptureUnitType, kCaptureDef.iX, kCaptureDef.iY);
+				}
+#else
 				pkCapturedUnit = kCapturingPlayer.initUnit(kCaptureDef.eCaptureUnitType, kCaptureDef.iX, kCaptureDef.iY);
+#endif
 
 				if(pkCapturedUnit != NULL)
 				{
@@ -3631,10 +3656,17 @@ void CvUnit::gift(bool bTestTransport)
 	}
 
 	CvAssertMsg(plot()->getOwner() != NO_PLAYER, "plot()->getOwner() is not expected to be equal with NO_PLAYER");
+#ifdef KEK_RESULT_LOG
+	{
+	CvResultLogScope kResultLogOrigin(RESULTLOG_SCOPE_UNIT_ORIGIN, RESULTLOG_ORIGIN_GIFT, (int)getOwner(), GetID());
+#endif
 #ifdef AUI_UNIT_FIX_GIFTED_UNITS_ARE_GIFTED_NOT_CLONED
 	pGiftUnit = GET_PLAYER(plot()->getOwner()).initUnit(getUnitType(), getX(), getY(), AI_getUnitAIType(), NO_DIRECTION, false, false, DEFAULT_UNIT_MAP_LAYER, 0, true);
 #else
 	pGiftUnit = GET_PLAYER(plot()->getOwner()).initUnit(getUnitType(), getX(), getY(), AI_getUnitAIType(), NO_DIRECTION, false, false);
+#endif
+#ifdef KEK_RESULT_LOG
+	}
 #endif
 
 	CvAssertMsg(pGiftUnit != NULL, "GiftUnit is not assigned a valid value");
@@ -7297,7 +7329,7 @@ bool CvUnit::CanFoundReligion(const CvPlot* pPlot) const
 		}
 	}
 
-	if (pReligions->GetAvailableFounderBeliefs().size() < 1 || pReligions->GetAvailableFollowerBeliefs().size() < 1)
+	if (pReligions->GetAvailableFounderBeliefs(getOwner()).size() < 1 || pReligions->GetAvailableFollowerBeliefs(getOwner()).size() < 1)
 	{
 		return false;
 	}
@@ -7437,7 +7469,7 @@ bool CvUnit::CanEnhanceReligion(const CvPlot* pPlot) const
 		return false;
 	}
 
-	if (pReligions->GetAvailableEnhancerBeliefs().size() < 1 || pReligions->GetAvailableFollowerBeliefs().size() < 1)
+	if (pReligions->GetAvailableEnhancerBeliefs(getOwner()).size() < 1 || pReligions->GetAvailableFollowerBeliefs(getOwner()).size() < 1)
 	{
 		return false;
 	}
@@ -9992,7 +10024,15 @@ CvUnit* CvUnit::DoUpgrade()
 	thisPlayer.GetTreasury()->ChangeGold(-iUpgradeCost);
 
 	// Add newly upgraded Unit & kill the old one
+#ifdef KEK_RESULT_LOG
+	CvUnit* pNewUnit = NULL;
+	{
+		CvResultLogScope kResultLogOrigin(RESULTLOG_SCOPE_UNIT_ORIGIN, RESULTLOG_ORIGIN_UPGRADE, (int)getOwner(), GetID());
+		pNewUnit = thisPlayer.initUnit(eUnitType, getX(), getY(), NO_UNITAI, NO_DIRECTION, false, false);
+	}
+#else
 	CvUnit* pNewUnit = thisPlayer.initUnit(eUnitType, getX(), getY(), NO_UNITAI, NO_DIRECTION, false, false);
+#endif
 
 	if(NULL != pNewUnit)
 	{
@@ -14721,6 +14761,9 @@ int CvUnit::setDamage(int iNewValue, PlayerTypes ePlayer, float fAdditionalTextD
 
 	if(iOldValue != getDamage())
 	{
+#ifdef KEK_RESULT_LOG
+		GC.getGame().resultLogUnitDamage(*this, ePlayer);
+#endif
 		if(IsGarrisoned())
 		{
 			if(GetGarrisonedCity() != NULL)
@@ -18270,6 +18313,9 @@ void CvUnit::setHasPromotion(PromotionTypes eIndex, bool bNewValue)
 
 		m_Promotions.SetPromotion(eIndex, bNewValue);
 		iChange = ((isHasPromotion(eIndex)) ? 1 : -1);
+#ifdef KEK_RESULT_LOG
+		GC.getGame().resultLogUnitPromotion(*this, (int)eIndex, bNewValue);
+#endif
 
 		// Promotions will set Invisibility once but not change it later
 		if(getInvisibleType() == NO_INVISIBLE && thisPromotion.GetInvisibleType() != NO_INVISIBLE)

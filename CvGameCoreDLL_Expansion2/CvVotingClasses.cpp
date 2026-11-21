@@ -11276,6 +11276,10 @@ bool CvMPVotingSystem::IsProposalTypeOnCooldown(MPVotingSystemProposalTypes eTyp
 
 bool CvMPVotingSystem::IsProposalTypeAvailable(MPVotingSystemProposalTypes eType)
 {
+#ifdef TEAMER_BALANCE_TEAM_CC
+	if (eType == PROPOSAL_IRR && GC.getGame().isTeamerOption(TEAMER_OPTION_MODE))
+		return false;
+#endif
 #ifdef TOURNAMENT_VOTING_SYSTEM_CHANGES
 	if (GC.getGame().isOption("GAMEOPTION_TOURNAMENT_MODE"))  // TODO: UI checkbox?
 	{
@@ -11321,6 +11325,32 @@ bool CvMPVotingSystem::IsProposalTypeAvailable(MPVotingSystemProposalTypes eType
 	}
 	return true;
 }
+
+#ifdef TEAMER_BALANCE_TEAM_CC
+bool CvMPVotingSystem::IsTeamerProposalAllowed(MPVotingSystemProposalTypes eType, PlayerTypes eOwner, PlayerTypes eSubject)
+{
+	if (!GC.getGame().isTeamerOption(TEAMER_OPTION_MODE))
+		return true;
+	if (eType == PROPOSAL_IRR)
+		return false;
+	if (eType == PROPOSAL_CC)
+	{
+		if (eOwner < 0 || eOwner >= MAX_MAJOR_CIVS || eSubject < 0 || eSubject >= MAX_MAJOR_CIVS)
+			return false;
+		if (!GET_PLAYER(eSubject).isAlive() || GET_PLAYER(eSubject).getTeam() == GET_PLAYER(eOwner).getTeam())
+			return false;
+	}
+	return true;
+}
+
+bool CvMPVotingSystem::IsTeamerVoter(int iProposalID, PlayerTypes ePlayer)
+{
+	const Proposal& kProposal = m_vProposals.at(iProposalID);
+	if (kProposal.eType != PROPOSAL_CC || kProposal.eProposalSubject == NO_PLAYER || !GC.getGame().isTeamerOption(TEAMER_OPTION_MODE))
+		return true;
+	return GET_PLAYER(ePlayer).getTeam() != GET_PLAYER(kProposal.eProposalSubject).getTeam();
+}
+#endif
 
 void CvMPVotingSystem::DoTurn()
 {
@@ -11383,6 +11413,10 @@ void CvMPVotingSystem::DoTurn()
 
 void CvMPVotingSystem::AddProposal(MPVotingSystemProposalTypes eProposalType, PlayerTypes eProposalOwner, PlayerTypes eProposalSubject)
 {
+#ifdef TEAMER_BALANCE_TEAM_CC
+	if (!IsTeamerProposalAllowed(eProposalType, eProposalOwner, eProposalSubject))
+		return;
+#endif
 	int ID = GetLastProposalID();
 	m_iLastProposalID++;
 
@@ -11561,9 +11595,19 @@ void CvMPVotingSystem::DoCheckVoters(int iProposalID)
 					AddResultNotification(iProposalID);
 				}
 			}
+#ifdef TEAMER_BALANCE_TEAM_CC
+			else if (GetVoterEligibility(iProposalID, (PlayerTypes)i) && !IsTeamerVoter(iProposalID, (PlayerTypes)i))
+			{
+				SetVoterEligibility(iProposalID, (PlayerTypes)i, false);  // TeamerBalance: the winning team doesn't vote
+			}
+#endif
 			else if (!pProposal.vIsEligible.at(i) && kPlayer.isHuman() && kPlayer.isAlive())
 			{
+#ifdef TEAMER_BALANCE_TEAM_CC
+				if ((int)pProposal.eProposalSubject != i && IsTeamerVoter(iProposalID, (PlayerTypes)i))
+#else
 				if ((int)pProposal.eProposalSubject != i)
+#endif
 					SetVoterEligibility(iProposalID, (PlayerTypes)i, true);
 				// new eligible voter since last check: do nothing (by now) -- TODO rebroadcast proposal notification for new players
 			}

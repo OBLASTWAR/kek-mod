@@ -6084,6 +6084,9 @@ void CvPlot::setImprovementType(ImprovementTypes eNewValue, PlayerTypes eBuilder
 
 	if(eOldImprovement != eNewValue)
 	{
+#ifdef KEK_RESULT_LOG
+		GC.getGame().resultLogPlotImprovement(*this, (int)eOldImprovement, (int)eNewValue, eBuilder);
+#endif
 #ifdef AUI_PLOT_FIX_PILLAGED_PLOT_ON_NEW_IMPROVEMENT
 		SetImprovementPillaged(false);
 #endif
@@ -6393,6 +6396,9 @@ void CvPlot::SetImprovementPillaged(bool bPillaged)
 	if(bPillaged != bWasPillaged)
 	{
 		m_bImprovementPillaged = bPillaged;
+#ifdef KEK_RESULT_LOG
+		GC.getGame().resultLogPlotPillaged(*this, bPillaged);
+#endif
 		updateYield();
 
 		// Quantified Resource changes
@@ -8444,6 +8450,12 @@ bool CvPlot::setRevealed(TeamTypes eTeam, bool bNewValue, bool bTerrainOnly, Tea
 	{
 
 		m_bfRevealed.ToggleBit(eTeam);
+#ifdef KEK_RESULT_LOG
+		if(bNewValue)
+		{
+			GC.getGame().resultLogPlotRevealed(eTeam, GetPlotIndex());
+		}
+#endif
 
 		bool bEligibleForAchievement = GET_PLAYER(GC.getGame().getActivePlayer()).isHuman() && !GC.getGame().isGameMultiPlayer();
 

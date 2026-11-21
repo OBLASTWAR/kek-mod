@@ -176,6 +176,10 @@ public:
 	// General religion information functions
 	const CvReligion* GetReligion(ReligionTypes eReligion, PlayerTypes ePlayer) const;
 	bool IsInSomeReligion(BeliefTypes eBelief) const;
+	// Is this belief taken for ePlayer? NO_PLAYER = taken if anyone has it (the game's own rule).
+	bool IsBeliefTakenFor(BeliefTypes eBelief, PlayerTypes ePlayer) const;
+	// What a pantheon costs right now (TEAMER_BALANCE_SAME_TURN_BELIEFS: the price at the start of this turn).
+	int GetPantheonPriceThisTurn() const;
 
 	// Pantheon information functions
 	void SetMinimumFaithNextPantheon(int iMinFaith)
@@ -189,8 +193,8 @@ public:
 	BeliefTypes GetBeliefInPantheon(PlayerTypes ePlayer) const;
 	bool HasCreatedPantheon(PlayerTypes ePlayer) const;
 	int GetNumPantheonsCreated() const;
-	std::vector<BeliefTypes> GetAvailablePantheonBeliefs();
-	bool IsPantheonBeliefAvailable(BeliefTypes eBelief);
+	std::vector<BeliefTypes> GetAvailablePantheonBeliefs(PlayerTypes ePlayer = NO_PLAYER);
+	bool IsPantheonBeliefAvailable(BeliefTypes eBelief, PlayerTypes ePlayer = NO_PLAYER);
 
 	// Main religion information functions
 	int GetNumFollowers(ReligionTypes eReligion) const;
@@ -204,11 +208,12 @@ public:
 	int GetNumReligionsFounded() const;
 	int GetNumReligionsEnhanced() const;
 	int GetNumReligionsStillToFound() const;
-	std::vector<BeliefTypes> GetAvailableFounderBeliefs();
-	std::vector<BeliefTypes> GetAvailableFollowerBeliefs();
-	std::vector<BeliefTypes> GetAvailableEnhancerBeliefs();
-	std::vector<BeliefTypes> GetAvailableBonusBeliefs();
-	std::vector<BeliefTypes> GetAvailableReformationBeliefs();
+	int GetMaxReligions() const;
+	std::vector<BeliefTypes> GetAvailableFounderBeliefs(PlayerTypes ePlayer = NO_PLAYER);
+	std::vector<BeliefTypes> GetAvailableFollowerBeliefs(PlayerTypes ePlayer = NO_PLAYER);
+	std::vector<BeliefTypes> GetAvailableEnhancerBeliefs(PlayerTypes ePlayer = NO_PLAYER);
+	std::vector<BeliefTypes> GetAvailableBonusBeliefs(PlayerTypes ePlayer = NO_PLAYER);
+	std::vector<BeliefTypes> GetAvailableReformationBeliefs(PlayerTypes ePlayer = NO_PLAYER);
 
 	int GetAdjacentCityReligiousPressure (ReligionTypes eReligion, CvCity *pFromCity, CvCity *pToCity, int& iNumTradeRoutesInfluencing, bool bPretendTradeConnection);
 
