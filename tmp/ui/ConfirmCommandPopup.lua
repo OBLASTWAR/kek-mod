@@ -22,6 +22,10 @@ PopupLayouts[ButtonPopupTypes.BUTTONPOPUP_CONFIRMCOMMAND] = function(popupInfo)
 		-- Initialize 'yes' button.
 		OnYesClicked = function()
 			Matchmaking.KickPlayer( PlayerID );
+			-- kekmod (from ImmoSS 12.3): close the kicked player's slot so nobody can
+			-- hot-join into it; the AI keeps playing the civ.
+			PreGame.SetSlotStatus( PlayerID, SlotStatus.SS_CLOSED );
+			Network.BroadcastPlayerInfo();
 		end
 	else
 		local bAlt = popupInfo.Option1;
