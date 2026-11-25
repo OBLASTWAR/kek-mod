@@ -49,6 +49,10 @@ local function onProposalResult( Id, expires, OwnerId, SubjectId, iType, Status)
 				-- human ended the game for them instead (CvMPVotingSystem): no kick.
 				if Matchmaking.IsHost() and Game.GetWinner() == -1 then
 					Matchmaking.KickPlayer(SubjectId)
+					-- close the IRR'd slot (as a kick from the player list does), so nobody
+					-- can hot-join into it; the AI keeps playing the civ.
+					PreGame.SetSlotStatus(SubjectId, SlotStatus.SS_CLOSED)
+					Network.BroadcastPlayerInfo()
 				end
 			elseif iType ==1002 then
 				--Events.EndGameShow(EndGameTypes.Diplomatic, Players[SubjectId]:GetTeam())

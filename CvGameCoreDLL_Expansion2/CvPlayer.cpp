@@ -25968,7 +25968,13 @@ void CvPlayer::Read(FDataStream& kStream)
 	if(GetID() != NO_PLAYER)
 	{
 		SlotStatus s = CvPreGame::slotStatus(GetID());
+#ifdef KEK_CLOSED_SLOT_AI_FLAVORS
+		// a kicked or IRR'd player's slot is closed while the AI plays on (ConfirmCommandPopup.lua,
+		// ProposalChartPopup.lua): a save of it still needs the AI's flavor recipients
+		if((s == SS_TAKEN || s == SS_COMPUTER || (s == SS_CLOSED && m_bAlive)) && !isBarbarian())
+#else
 		if((s == SS_TAKEN || s == SS_COMPUTER) && !isBarbarian())
+#endif
 		{
 			m_pFlavorManager->AddFlavorRecipient(m_pPlayerTechs,        false /*bPropogateFlavors*/);
 			m_pFlavorManager->AddFlavorRecipient(m_pPlayerPolicies,     false /*bPropogateFlavors*/);
