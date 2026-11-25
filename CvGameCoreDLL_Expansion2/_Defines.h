@@ -1792,4 +1792,12 @@
 // "no proposal" values instead of crashing.
 #define MP_VOTE_VALIDATION
 
+// A kick from the player list or a passed IRR vote closes the player's slot
+// (SS_CLOSED, from ImmoSS 12.3), so nobody can hot-join into it while the AI
+// plays the civ on. A save keeps the closed slot, and CvPlayer::Read hooked up
+// the AI's tech/policy/wonder flavor recipients only for SS_TAKEN/SS_COMPUTER:
+// after a rehost that civ's AI would have had no flavors. An alive civ in a
+// closed slot now gets them too (dead civs stay closed and unhooked, as before).
+#define KEK_CLOSED_SLOT_AI_FLAVORS
+
 #endif
